@@ -1,31 +1,33 @@
 import React, { Component } from 'react';
-import { View,Text } from 'react-native';
-import { Container, Content, Footer, FooterTab, Button, Icon } from 'native-base';
+import { View, TouchableOpacity } from 'react-native';
+import { Container, Content, Header, Title, Button, Left, Right, Body, Icon, Text } from 'native-base';
 import Book from '../components/Book';
+import DnaFooter from '../common/DnaFooter';
+
 
 class Home extends Component {
     render() {
         return (
             <Container >
+                <Header>
+                    <Left>
+                        <TouchableOpacity transparent>
+                            <Icon name='arrow-back' style={{ color: '#FFFFFF' }} />
+                        </TouchableOpacity>
+                    </Left>
+                    <Body>
+                        <Title>书架</Title>
+                    </Body>
+                    <Right>
+                        <TouchableOpacity transparent>
+                            <Icon name='menu' style={{ color: '#FFFFFF' }} />
+                        </TouchableOpacity>
+                    </Right>
+                </Header>
                 <Content>
-                <Book></Book>
+                    <Book />
                 </Content>
-                <Footer>
-                    <FooterTab style={{backgroundColor:'#f5fcff'}}>
-                        <Button active>
-                            <Icon name="apps" />
-                            <Text>书架</Text>
-                        </Button>
-                        <Button>
-                            <Icon name="camera" />
-                            <Text>搜索</Text>
-                        </Button>
-                        <Button>
-                            <Icon name="person" />
-                            <Text>我</Text>
-                        </Button>
-                    </FooterTab>
-                </Footer>
+                <DnaFooter activeKey='home'></DnaFooter>
             </Container>
         );
     }
