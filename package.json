@@ -7,6 +7,7 @@
     "clean-apk": "cd android && gradlew clean",
     "install-apk": "adb install -r ./android/app/build/outputs/apk/app-debug.apk",
     "debug-apk": "cd android && gradlew assembleDebug && npm run install-apk",
+    "release-apk": "cd android && gradlew assembleRelease && npm run install-apk",
     "test": "jest"
   },
   "dependencies": {

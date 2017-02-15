@@ -17,7 +17,8 @@ class Reader extends Component {
   chapter = new ChapterModel()
 
   componentDidMount() {
-    this.chapter.get();
+    console.warn(this.props.navigation.state.params.url);
+    this.chapter.get(this.props.navigation.state.params.url);
   }
 
 

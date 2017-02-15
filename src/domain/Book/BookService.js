@@ -109,7 +109,7 @@ export class BookModel {
       const index = list.filter(item => item.url === url);
       if (!!text && !!url && index.length === 0) {
         list.push({
-          id: Date.now(), url, text
+          id: Date.now(), url: host + url, text
         })
       }
     }
@@ -139,11 +139,9 @@ export class ChapterModel {
   @observable
   content = ''
 
-  uri = 'http://www.biquge.com/43_43821/2663276.html'
-
-  async get() {
-    // const $ = await BookService.fetchData(this.uri);
-    const $ = cheerio.load(html2);
+  async get(uri) {
+    const $ = await BookService.fetchData(uri);
+    // const $ = cheerio.load(html2);
     const rule = rules.biquge;
     this.content = $(rule.content).html();
   }
