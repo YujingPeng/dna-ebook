@@ -3,7 +3,7 @@ import { View, Text, Image } from 'react-native';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react/native';
 import { BookModel } from '../domain/Book/BookService';
-import { Button } from 'native-base';
+import { Button } from 'antd-mobile';
 
 @observer
 class Book extends Component {
