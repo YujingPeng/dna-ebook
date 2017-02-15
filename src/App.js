@@ -1,21 +1,22 @@
 import React from 'react';
-import { Actions, Scene, Router } from 'react-native-router-flux';
-import Home from './pages/Home';
-import Search from './pages/Search';
-import Reader from './pages/Reader';
+import { StackNavigator, TabNavigator } from 'react-navigation';
+import Home from './screen/Home';
+import Search from './screen/Search';
+import Reader from './screen/Reader';
 
-const scenes = Actions.create(
-    <Scene key="root" hideNavBar >
-        <Scene key="home" component={Home} initial />
-        <Scene key="search" component={Search} title="Login" />
-        <Scene key="reader" component={Reader} title="Reader" />
-    </Scene>
-);
+const HomeTabBar = TabNavigator({
+    Home: { screen: Home },
+    Search: { screen: Search },
+}, {
+        tabBarPosition: 'bottom'
+    });
 
-global.route = Actions;
+const Screen = StackNavigator({
+    Home: { screen: HomeTabBar },
+    Search: { screen: Search },
+    Reader: { screen: Reader }
+});
 
-export default class App extends React.Component {
-    render() {
-        return <Router scenes={scenes} />
-    }
-}
+// global.route = Actions;
+
+export default Screen;
