@@ -58,7 +58,8 @@ export class BookModel {
 
   @action
   async get() {
-    const $ = await BookService.fetchData('http://www.biquge.com/43_43821/');
+    // const $ = await BookService.fetchData('http://www.biquge.com/43_43821/');
+    const $ = cheerio.load(html);
     this.translator($);
     this.translatorChapterMenu($);
   }
@@ -166,9 +167,9 @@ class BookService {
       method: 'GET',
       headers: headers
     };
-    // const res = await fetch(url, option);
-    // const resHtml = await res.text();
+    const res = await fetch(url, option);
+    const resHtml = await res.text();
     // console.log(resHtml);
-    return cheerio.load(html);
+    return cheerio.load(resHtml);
   }
 }
