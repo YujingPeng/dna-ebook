@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, ScrollView } from 'react-native';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react/native';
 import { BookModel } from '../domain/Book/BookService';
-import { Button } from 'antd-mobile';
+import { Button, List, Toast } from 'antd-mobile';
 
 @observer
 class Book extends Component {
@@ -14,11 +14,11 @@ class Book extends Component {
   componentDidMount() {
     this.book.get()
   }
-  
+
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <ScrollView >
         <View style={{ flexDirection: 'row', paddingLeft: 10, paddingTop: 10 }}>
           <View style={{ width: 120, height: 150 }}>
             {this.book.thumbImage != '' ? <Image source={{ uri: this.book.thumbImage }} style={{ width: 120, height: 150 }} /> : null}
@@ -31,8 +31,18 @@ class Book extends Component {
           </View>
         </View>
         <Text>{this.book.desc}</Text>
-        <Button type="primary" onClick={() => { this.props.navigation.navigate('Reader',{}) }}><Text>开始阅读</Text></Button>
-      </View>
+        <View style={{ flex: 1, flexDirection: 'row' }}>
+          <Button style={{ flex: 1, margin: 10 }} type="primary" onClick={() => { this.props.navigation.navigate('Reader', {}) }}><Text>开始阅读</Text></Button>
+          <Button style={{ flex: 1, margin: 10 }} ><Text>收藏</Text></Button>
+        </View>
+        <View>
+          <List>
+            {this.book.chapterList.map(item => (
+              <List.Item key={item.id} onClick={() => { Toast.info(item.text) }}>{item.text}</List.Item>
+            ))}
+          </List>
+        </View>
+      </ScrollView>
     );
   }
 }

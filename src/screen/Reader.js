@@ -6,30 +6,30 @@ import { ChapterModel } from '../domain/Book/BookService';
 
 @observer
 class Reader extends Component {
-    static navigationOptions = {
-        title:'aa',
-        header:{
-            visible:false
-        }
+  static navigationOptions = {
+    title: 'aa',
+    header: {
+      visible: false
     }
+  }
 
-    @observable
-    chapter = new ChapterModel()
+  @observable
+  chapter = new ChapterModel()
 
-    componentDidMount() {
-        this.chapter.get();
-    }
+  componentDidMount() {
+    this.chapter.get();
+  }
 
 
-    render() {
-        return (
-            <View style={{ flex: 1, flexDirection: 'row' }}>
-                <WebView source={{ html: this.chapter.content }} style={{ backgroundColor: '#ececec', flex: 1, }}
-                    scrollEnabled={false}>
-                </WebView>
-            </View>
-        );
-    }
+  render() {
+    return (
+      <View style={{ flex: 1, flexDirection: 'row' }}>
+        <WebView source={{ html: this.chapter.content }} style={{ backgroundColor: '#ececec', flex: 1, }}
+          scrollEnabled={false}>
+        </WebView>
+      </View>
+    );
+  }
 }
 
 export default Reader;
