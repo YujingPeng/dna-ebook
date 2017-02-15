@@ -6,6 +6,12 @@ import { ChapterModel } from '../domain/Book/BookService';
 
 @observer
 class Reader extends Component {
+    static navigationOptions = {
+        title:'aa',
+        header:{
+            visible:false
+        }
+    }
 
     @observable
     chapter = new ChapterModel()

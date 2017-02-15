@@ -7,13 +7,10 @@ import Reader from './screen/Reader';
 const HomeTabBar = TabNavigator({
     Home: { screen: Home },
     Search: { screen: Search },
-}, {
-        tabBarPosition: 'bottom'
-    });
+}, { tabBarPosition: 'bottom' });
 
 const Screen = StackNavigator({
     Home: { screen: HomeTabBar },
-    Search: { screen: Search },
     Reader: { screen: Reader }
 });
 
