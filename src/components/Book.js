@@ -31,7 +31,7 @@ class Book extends Component {
           </View>
         </View>
         <Text>{this.book.desc}</Text>
-        <Button onPress={() => { global.route.reader() }}><Text style={{color:'#FFFFFF'}}>开始阅读</Text></Button>
+        <Button type="primary" onClick={() => { this.props.navigation.navigate('Reader',{}) }}><Text>开始阅读</Text></Button>
       </View>
     );
   }
