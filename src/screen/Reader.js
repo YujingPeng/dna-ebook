@@ -13,7 +13,6 @@ class Reader extends Component {
     }
   }
 
-  @observable
   chapter = new ChapterModel()
 
   componentDidMount() {

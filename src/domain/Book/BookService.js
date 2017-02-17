@@ -62,10 +62,21 @@ export class BookModel {
     const $ = cheerio.load(html);
     this.translator($);
     this.translatorChapterMenu($);
+
+    // GBK
+    // const res = await fetch('http://www.bxwx9.org/binfo/24/24675.htm');
+    // const blob = await res.blob();
+
+    // const reader = new FileReader();
+    // reader.readAsText(blob, 'GBK');
+    // reader.onloadend = () => {
+    //   console.log(reader.result);
+    // }
+
   }
 
 
-  translator($) {
+  async translator($) {
     const self = this;
     const {info, thumbImage, host} = rules.biquge;
     for (let [k, v] of Object.entries(info)) {
@@ -79,29 +90,24 @@ export class BookModel {
     }
     this.thumbImage = `${host}${$(thumbImage).attr('src')}`;
 
+    // 转成base64
+
+    // const res = await fetch(this.thumbImage);
+    // const blob = await res.blob();
+    // let reader = new FileReader();
+    // reader.readAsDataURL(blob);
+    // reader.onloadend = function () {
+    //   base64data = reader.result;
+    //   console.log(base64data);
+    // }
   }
 
   translatorChapterMenu($) {
+    // console.time('translatorChapterMenu');
     const self = this;
     const {host, chapterMenu} = rules.biquge;
     let list = [];
     const length = $('#list>dl>dd>a').length;
-    // list = $('#list>dl>dd>a').map((intex, item) => {
-    //   if (item && item.text) {
-    //     return {
-    //       id: Date.now(),
-    //       url: item.attribs.href,
-    //       text: item.firstChild.data
-    //     }
-    //   }
-    //   else {
-    //     return {
-    //       id: Date.now(),
-    //       url: '',
-    //       text: ''
-    //     }
-    //   }
-    // });
     for (let i = 0; i < length; i++) {
       const selector = chapterMenu.replace('@chapterMenu', i);
       const $elem = $(selector);
@@ -127,6 +133,7 @@ export class BookModel {
     }
 
     this.chapterList = list;
+    // console.timeEnd('translatorChapterMenu');
   }
 }
 

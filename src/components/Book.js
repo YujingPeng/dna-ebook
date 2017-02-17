@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, Image, ScrollView } from 'react-native';
-import { observable } from 'mobx';
+import { View, Text, Image, ScrollView, ListView, TouchableOpacity } from 'react-native';
+import { observable, action } from 'mobx';
 import { observer } from 'mobx-react/native';
 import { BookModel } from '../domain/Book/BookService';
 import { Button, List, Toast } from 'antd-mobile';
@@ -8,17 +8,31 @@ import { Button, List, Toast } from 'antd-mobile';
 @observer
 class Book extends Component {
 
-  @observable
-  book = new BookModel();
+  dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
+
+  book = new BookModel()
 
   componentDidMount() {
-    this.book.get()
+    this.book.get();
   }
 
+  renderRow = (item) => {
+    const rowItemPress = () => {
+      this.props.navigation.navigate('Reader', { url: item.url })
+    };
+    return (
+      <TouchableOpacity key={item.id} onPress={rowItemPress}>
+        <View style={{ paddingVertical: 10, borderBottomWidth: 1, borderColor: '#cfcfcf', marginHorizontal: 10 }}>
+          <Text>{item.text}</Text>
+        </View>
+      </TouchableOpacity>
+    )
+  }
 
   render() {
+
     return (
-      <ScrollView >
+      <ScrollView style={{ backgroundColor: '#ffffff' }}>
         <View style={{ flexDirection: 'row', paddingLeft: 10, paddingTop: 10 }}>
           <View style={{ width: 120, height: 150 }}>
             {this.book.thumbImage != '' ? <Image source={{ uri: this.book.thumbImage }} style={{ width: 120, height: 150 }} /> : null}
@@ -36,11 +50,13 @@ class Book extends Component {
           <Button style={{ flex: 1, margin: 10 }} ><Text>收藏</Text></Button>
         </View>
         <View>
-          <List>
-            {this.book.chapterList.map(item => (
-              <List.Item key={item.id} onClick={() => { this.props.navigation.navigate('Reader', { url: item.url }) }}>{item.text}</List.Item>
-            ))}
-          </List>
+          <ListView
+            style={{ flex: 1 }}
+            initialListSize={50}
+            enableEmptySections
+            dataSource={this.dataSource.cloneWithRows(this.book.chapterList.slice(0))}
+            renderRow={this.renderRow}
+          />
         </View>
       </ScrollView>
     );
@@ -48,3 +64,4 @@ class Book extends Component {
 }
 
 export default Book;
+
