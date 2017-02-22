@@ -14,6 +14,10 @@ class Book extends Component {
 
   componentDidMount() {
     this.book.get();
+    const self = this;
+    setTimeout(function () {
+      self.book.translatorChapterMenu();
+    }, 100);
   }
 
   renderRow = (item) => {

@@ -61,7 +61,6 @@ export class BookModel {
     // const $ = await BookService.fetchData('http://www.biquge.com/43_43821/');
     const $ = cheerio.load(html);
     this.translator($);
-    this.translatorChapterMenu($);
 
     // GBK
     // const res = await fetch('http://www.bxwx9.org/binfo/24/24675.htm');
@@ -102,15 +101,15 @@ export class BookModel {
     // }
   }
 
+  @action
   translatorChapterMenu($) {
+    $ = cheerio.load(html);
     // console.time('translatorChapterMenu');
     const self = this;
     const {host, chapterMenu} = rules.biquge;
     let list = [];
-    const length = $('#list>dl>dd>a').length;
-    for (let i = 0; i < length; i++) {
-      const selector = chapterMenu.replace('@chapterMenu', i);
-      const $elem = $(selector);
+    $('#list>dl>dd>a').each((i, item) => {
+      const $elem = $(item);
       let url = $elem.attr('href');
       let text = $elem.text();
       const index = list.filter(item => item.url === url);
@@ -119,7 +118,7 @@ export class BookModel {
           id: Date.now(), url: host + url, text
         })
       }
-    }
+    });
 
     const len = list.length
     for (let i = 0; i < len; i++) {
