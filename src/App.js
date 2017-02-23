@@ -1,8 +1,8 @@
 import React from 'react';
 import { StackNavigator, TabNavigator } from 'react-navigation';
-import Home from './screen/Home';
-import Search from './screen/Search';
-import Reader from './screen/Reader';
+import Home from './page/Home';
+import Search from './page/Search';
+import Reader from './page/Reader';
 
 const HomeTabBar = TabNavigator({
     Home: { screen: Home },
