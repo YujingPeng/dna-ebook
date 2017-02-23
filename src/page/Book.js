@@ -8,6 +8,10 @@ import { Button, List, Toast } from 'antd-mobile';
 @observer
 class Book extends Component {
 
+  static navigationOptions = {
+    title: '圣墟',
+  };
+
   dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
 
   book = new BookModel()
