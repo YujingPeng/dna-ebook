@@ -1,7 +1,8 @@
-import { observable, action } from 'mobx';
+import { observable, action, computed } from 'mobx';
 import html from './html';
 import html2 from './html2';
 import cheerio from 'cheerio-without-node-native';
+import { tmpl } from '../../assets/html';
 
 const rules = {
   'biquge': {
@@ -24,7 +25,7 @@ const rules = {
       desc: '#intro',
     },
     thumbImage: '#fmimg > img',
-    chapterMenu: '#list > dl > dd:nth-child(@chapterMenu) > a',
+    chapterMenu: '#list > dl > dd > a',
     content: '#content'
   }
 }
@@ -61,17 +62,7 @@ export class BookModel {
     // const $ = await BookService.fetchData('http://www.biquge.com/43_43821/');
     const $ = cheerio.load(html);
     this.translator($);
-
-    // GBK
-    // const res = await fetch('http://www.bxwx9.org/binfo/24/24675.htm');
-    // const blob = await res.blob();
-
-    // const reader = new FileReader();
-    // reader.readAsText(blob, 'GBK');
-    // reader.onloadend = () => {
-    //   console.log(reader.result);
-    // }
-
+    this.translatorChapterMenu($);
   }
 
 
@@ -88,23 +79,9 @@ export class BookModel {
       }
     }
     this.thumbImage = `${host}${$(thumbImage).attr('src')}`;
-
-    // 转成base64
-
-    // const res = await fetch(this.thumbImage);
-    // const blob = await res.blob();
-    // let reader = new FileReader();
-    // reader.readAsDataURL(blob);
-    // reader.onloadend = function () {
-    //   base64data = reader.result;
-    //   console.log(base64data);
-    // }
   }
 
-  @action
   translatorChapterMenu($) {
-    $ = cheerio.load(html);
-    // console.time('translatorChapterMenu');
     const self = this;
     const {host, chapterMenu} = rules.biquge;
     let list = [];
@@ -132,7 +109,6 @@ export class BookModel {
     }
 
     this.chapterList = list;
-    // console.timeEnd('translatorChapterMenu');
   }
 }
 
@@ -146,13 +122,16 @@ export class ChapterModel {
   @observable
   content = ''
 
+  @observable
+  htmlstring = ''
+
   async get(uri) {
     const $ = await BookService.fetchData(uri);
     // const $ = cheerio.load(html2);
     const rule = rules.biquge;
     this.content = $(rule.content).html();
+    this.htmlstring = tmpl(this.content);
   }
-
 }
 
 class BookService {

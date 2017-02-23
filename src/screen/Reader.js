@@ -18,6 +18,7 @@ class Reader extends Component {
     pageIndex: 0
   }
 
+  @observable
   chapter = new ChapterModel();
 
   handlePress = () => {
@@ -31,19 +32,20 @@ class Reader extends Component {
   }
 
   handleMessage = (event) => {
-    if(event.nativeEvent.data){
+    if (event.nativeEvent.data) {
       alert('到底了')
     }
   }
 
   render() {
-    const html = tmpl(this.chapter.content);
+    // const html = tmpl(this.chapter.content);
+    // console.log(this.htmlss);
     return (
       <View style={{ flex: 1, flexDirection: 'row' }}>
         <TouchableOpacity onPress={this.handlePress} style={{ flex: 1 }}>
           <WebView
             onMessage={this.handleMessage}
-            source={{ html }}
+            source={{ html: this.chapter.htmlstring }}
             style={{ backgroundColor: '#ececec', flex: 1 }}
             javaScriptEnabled={true}
             scrollEnabled={false}
@@ -55,10 +57,5 @@ class Reader extends Component {
   }
 }
 
-const GenWebView = ({html}) => (
-
-  <WebView source={{ html }} style={{ backgroundColor: '#ececec', flex: 1 }} javaScriptEnabled={true} scrollEnabled={false} injectedJavaScript={``}>
-  </WebView>
-)
 
 export default Reader;
