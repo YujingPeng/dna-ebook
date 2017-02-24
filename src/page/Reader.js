@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView, WebView, TouchableOpacity } from 'react-native';
 import { observable, computed } from 'mobx';
 import { observer } from 'mobx-react/native';
-import { ChapterModel } from '../domain/Book/BookService';
+import { ChapterModel } from '../domain/Book';
 import { tmpl } from '../assets/html';
 
 @observer
@@ -14,18 +14,8 @@ class Reader extends Component {
     }
   }
 
-  state = {
-    pageIndex: 0
-  }
-
   @observable
   chapter = new ChapterModel();
-
-  handlePress = () => {
-    this.setState({
-      pageIndex: this.state.pageIndex + 1
-    })
-  }
 
   componentDidMount() {
     this.chapter.get(this.props.navigation.state.params.url);
