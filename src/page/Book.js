@@ -14,7 +14,7 @@ class Book extends Component {
 
   dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
 
-  book = new BookModel()
+  book = new BookModel('http://www.biquge.com/43_43821/')
 
   componentDidMount() {
     this.book.get();

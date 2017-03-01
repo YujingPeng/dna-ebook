@@ -3,7 +3,6 @@ import { View, Text, ScrollView, WebView, TouchableOpacity } from 'react-native'
 import { observable, computed } from 'mobx';
 import { observer } from 'mobx-react/native';
 import { ChapterModel } from '../domain/Book';
-import { tmpl } from '../assets/html';
 
 @observer
 class Reader extends Component {
@@ -13,8 +12,6 @@ class Reader extends Component {
       visible: false
     }
   }
-
-  @observable
   chapter = new ChapterModel();
 
   componentDidMount() {
@@ -22,8 +19,16 @@ class Reader extends Component {
   }
 
   handleMessage = (event) => {
-    if (event.nativeEvent.data) {
-      alert('到底了')
+    switch (event.nativeEvent.data) {
+      case '-1':
+        chapter.prev();
+        break;
+      case '1':
+        chapter.next();
+      break;
+      default:
+        alert('弹出菜单');
+        break;
     }
   }
 

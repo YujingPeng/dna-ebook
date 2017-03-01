@@ -1,4 +1,4 @@
-import { observable, action, computed } from 'mobx';
+import { observable, action, computed,toJS } from 'mobx';
 import html from './html';
 import html2 from './html2';
 import cheerio from 'cheerio-without-node-native';
@@ -6,6 +6,8 @@ import { tmpl } from '../../assets/html';
 import BookService from './BookService';
 
 export default class BookModel {
+
+  uri =''
 
   @observable
   name = '';
@@ -31,22 +33,27 @@ export default class BookModel {
   @observable
   chapterList = []
 
+  constructor(uri) {
+    this.uri = uri;
+  }
+
   @action
   async get() {
-    // const $ = await BookService.fetchData('http://www.biquge.com/43_43821/');
-    const $ = cheerio.load(html);
+    const $ = await BookService.fetchData(this.uri);
+    // const $ = cheerio.load(html);
     this.translator($);
     this.translatorChapterMenu($);
+    BookService.saveBook(toJS(this));
   }
 
 
-  async translator($) {
+  translator($) {
     const self = this;
     const {info, thumbImage, host} = BookService.rules.biquge;
     for (let [k, v] of Object.entries(info)) {
-      if (v.regex) {
+      if (v.pattern) {
         const text = $(v.selector).text();
-        self[k] = text.replace(v.regex, '');
+        self[k] = text.replace(v.pattern, '');
       }
       else {
         self[k] = $(v).text();

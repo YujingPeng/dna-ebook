@@ -2,7 +2,6 @@ import { observable, action, computed } from 'mobx';
 import html from './html';
 import html2 from './html2';
 import cheerio from 'cheerio-without-node-native';
-import { tmpl } from '../../assets/html';
 
 // https://www.baidu.com/s?q1=%E9%AD%94%E5%A4%A9%E8%AE%B0&q2=&q3=&q4=&rn=10&lm=0&ct=0&ft=&q5=&q6=biquge.com&tn=baidulocal
 
@@ -14,15 +13,15 @@ const rules = {
       name: '#info > h1',
       author: {
         selector: '#info > p:nth-child(2)',
-        regex: '作    者：'
+        pattern: '作    者：'
       },
       updateAt: {
         selector: '#info > p:nth-child(4)',
-        regex: '最后更新：',
+        pattern: '最后更新：',
       },
       latestChapter: {
         selector: '#info > p:nth-child(5) > a',
-        regex: '最新章节：'
+        pattern: '最新章节：'
       },
       desc: '#intro',
     },
@@ -56,5 +55,27 @@ export default class BookService {
     const resHtml = await res.text();
     // console.log(resHtml);
     return cheerio.load(resHtml);
+  }
+
+  /**
+   * 保存小说信息及目录
+   * @param {BookModel} model
+   */
+  static saveBook = async (model) => {
+    const storage = global.storage;
+    storage.save({
+      key: 'book',  // 注意:请不要在key中使用_下划线符号!
+       id: '1001',   // 注意:请不要在id中使用_下划线符号!
+      rawData: model
+    });
+  }
+
+  /**
+   * 获取下一个章节
+   * @param {string} 小说id
+   * @param {Number} 章节id
+   */
+  static getNextChapter = async (bookId,chapterId)=>{
+    // todo
   }
 }
