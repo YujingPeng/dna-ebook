@@ -1,14 +1,14 @@
 
-import { observable, action, computed,toJS } from 'mobx';
+import { observable, action, computed,extendObservable } from 'mobx';
 import html from './html';
 import html2 from './html2';
 import cheerio from 'cheerio-without-node-native';
-import { tmpl } from '../../assets/html';
+import tmpl from './tmpl';
 import BookService from './BookService';
 
 export default class BookModel {
 
-  uri =''
+  uri = ''
 
   @observable
   name = '';
@@ -40,17 +40,14 @@ export default class BookModel {
 
   @action
   async get() {
-    const $ = await BookService.fetchData(this.uri);
-    // const $ = cheerio.load(html);
-    this.translator($);
-    this.translatorChapterMenu($);
-    BookService.saveBook(toJS(this));
+    const book = await BookService.getBookInfo('1001', this.uri);
+    extendObservable(this,book)
   }
 
 
   translator($) {
     const self = this;
-    const {info, thumbImage, host} = BookService.rules.biquge;
+    const { info, thumbImage, host } = BookService.rules.biquge;
     for (let [k, v] of Object.entries(info)) {
       if (v.pattern) {
         const text = $(v.selector).text();
@@ -65,7 +62,7 @@ export default class BookModel {
 
   translatorChapterMenu($) {
     const self = this;
-    const {host, chapterMenu} = BookService.rules.biquge;
+    const { host, chapterMenu } = BookService.rules.biquge;
     let list = [];
     $('#list>dl>dd>a').each((i, item) => {
       const $elem = $(item);

@@ -7,11 +7,13 @@ import BookService from './BookService';
 
 export default class ChapterModel {
 
-  bookId = '';
+  bookId = '1001';
 
-  id = '';
+  id = 0;
 
   uri = '';
+
+  seq = 0;
 
   @observable
   name = '屠海龙'
@@ -36,15 +38,24 @@ export default class ChapterModel {
   /**
    * 获取下一页
    */
-  async next(){
+  @action
+  async next() {
     //todo
-    alert('下一页')
+    // alert('下一页')
+    const nextId = this.id + 1;
+    const book = await BookService.getBookInfo(this.bookId, this.uri);
+    const data = book.chapterList.find(item => item.seq === nextId);
+    console.log(book,data);
+    if (data) {
+      this.get(data.uri);
+    }
+
   }
 
   /**
    * 获取上一页
    */
-  async prev(){
+  async prev() {
     //todo
     alert('上一页')
   }

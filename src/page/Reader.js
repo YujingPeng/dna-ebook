@@ -21,10 +21,10 @@ class Reader extends Component {
   handleMessage = (event) => {
     switch (event.nativeEvent.data) {
       case '-1':
-        chapter.prev();
+        this.chapter.prev();
         break;
       case '1':
-        chapter.next();
+        this.chapter.next();
       break;
       default:
         alert('弹出菜单');

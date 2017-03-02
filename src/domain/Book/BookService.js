@@ -31,6 +31,54 @@ const rules = {
   }
 }
 
+
+function translator($) {
+  const self = {};
+  const { info, thumbImage, host } = BookService.rules.biquge;
+  for (let [k, v] of Object.entries(info)) {
+    if (v.pattern) {
+      const text = $(v.selector).text();
+      self[k] = text.replace(v.pattern, '');
+    }
+    else {
+      self[k] = $(v).text();
+    }
+  }
+  self.thumbImage = `${host}${$(thumbImage).attr('src')}`;
+  return self;
+}
+
+function translatorChapterMenu($) {
+  const self = this;
+  const { host, chapterMenu } = BookService.rules.biquge;
+  let list = [];
+  $('#list>dl>dd>a').each((i, item) => {
+    const $elem = $(item);
+    let uri = host + $elem.attr('href');
+    let text = $elem.text();
+    const index = list.findIndex(item => item.uri === uri);
+    if (!!text && !!uri && index < 0) {
+      list.push({
+        id: Date.now(), uri, text
+      })
+    }
+  });
+
+  const len = list.length
+  for (let i = 0; i < len; i++) {
+    for (let j = 0; j < len; j++) {
+      if (list[i].uri < list[j].uri) {
+        let temp = list[i];
+        list[i] = list[j];
+        list[j] = temp;
+        list[i].seq = i;
+      }
+    }
+  }
+  return list;
+}
+
+
 export default class BookService {
   static rules = rules;
 
@@ -53,8 +101,57 @@ export default class BookService {
     };
     const res = await fetch(url, option);
     const resHtml = await res.text();
-    // console.log(resHtml);
+    console.log(resHtml);
     return cheerio.load(resHtml);
+  }
+
+  /**
+   * @param {String} id
+   * @param {Number} uri
+   * @returns BookModel
+   */
+  static getBookInfo = async (id, uri) => {
+    try {
+      const storage = global.storage;
+      storage.sync = {
+        async book(params) {
+          let { id, resolve, reject, syncParams: { uri } } = params;
+          console.log('异步读取', params, uri);
+          try {
+            const $ = await BookService.fetchData(this.uri);
+            let data = translator($) || {};
+            console.log(data);
+            data.chapterList = translatorChapterMenu($) || [];
+            storage.save({
+              key: 'book',  // 注意:请不要在key中使用_下划线符号!
+              id: id,   // 注意:请不要在id中使用_下划线符号!
+              rawData: data
+            });
+            resolve && resolve(data);
+          } catch (error) {
+            console.log(error);
+            reject && reject(error);
+          }
+        }
+      }
+      let book = await storage.load({
+        id,
+        key: 'book',
+        autoSync: true,
+        syncInBackground: true,
+        syncParams: {
+          uri
+        },
+      })
+      if (book) {
+        return book
+      }
+      else {
+        throw new Error('获取数据失败!');
+      }
+    } catch (error) {
+      throw new Error('获取数据失败:', error.message)
+    }
   }
 
   /**
@@ -65,7 +162,7 @@ export default class BookService {
     const storage = global.storage;
     storage.save({
       key: 'book',  // 注意:请不要在key中使用_下划线符号!
-       id: '1001',   // 注意:请不要在id中使用_下划线符号!
+      id: '1001',   // 注意:请不要在id中使用_下划线符号!
       rawData: model
     });
   }
@@ -75,7 +172,7 @@ export default class BookService {
    * @param {string} 小说id
    * @param {Number} 章节id
    */
-  static getNextChapter = async (bookId,chapterId)=>{
+  static getNextChapter = async (bookId, chapterId) => {
     // todo
   }
 }

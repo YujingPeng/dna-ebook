@@ -18,7 +18,6 @@ class Book extends Component {
 
   componentDidMount() {
     this.book.get();
-    const self = this;
   }
 
   renderRow = (item) => {
