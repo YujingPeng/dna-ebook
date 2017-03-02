@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Image, ScrollView, ListView, TouchableOpacity } from 'react-native';
 import { observable, action } from 'mobx';
 import { observer } from 'mobx-react/native';
-import { BookModel } from '../domain/Book/BookService';
+import { BookModel } from '../domain/Book';
 import { Button, List, Toast } from 'antd-mobile';
 
 @observer
@@ -14,7 +14,7 @@ class Book extends Component {
 
   dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
 
-  book = new BookModel()
+  book = new BookModel('http://www.biquge.com/43_43821/')
 
   componentDidMount() {
     this.book.get();

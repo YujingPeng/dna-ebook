@@ -1,4 +1,5 @@
-export const tmpl = (htmlStr) => `
+export default function tmpl(htmlStr){
+  return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -103,4 +104,5 @@ export const tmpl = (htmlStr) => `
     </script>
 </body>
 
-</html>`;
+</html>`
+};

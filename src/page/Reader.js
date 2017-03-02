@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, ScrollView, WebView, TouchableOpacity } from 'react-native';
 import { observable, computed } from 'mobx';
 import { observer } from 'mobx-react/native';
-import { ChapterModel } from '../domain/Book/BookService';
-import { tmpl } from '../assets/html';
+import { ChapterModel } from '../domain/Book';
 
 @observer
 class Reader extends Component {
@@ -13,27 +12,23 @@ class Reader extends Component {
       visible: false
     }
   }
-
-  state = {
-    pageIndex: 0
-  }
-
-  @observable
   chapter = new ChapterModel();
-
-  handlePress = () => {
-    this.setState({
-      pageIndex: this.state.pageIndex + 1
-    })
-  }
 
   componentDidMount() {
     this.chapter.get(this.props.navigation.state.params.url);
   }
 
   handleMessage = (event) => {
-    if (event.nativeEvent.data) {
-      alert('到底了')
+    switch (event.nativeEvent.data) {
+      case '-1':
+        chapter.prev();
+        break;
+      case '1':
+        chapter.next();
+      break;
+      default:
+        alert('弹出菜单');
+        break;
     }
   }
 

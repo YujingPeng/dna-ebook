@@ -2,7 +2,8 @@ import { observable, action, computed } from 'mobx';
 import html from './html';
 import html2 from './html2';
 import cheerio from 'cheerio-without-node-native';
-import { tmpl } from '../../assets/html';
+
+// https://www.baidu.com/s?q1=%E9%AD%94%E5%A4%A9%E8%AE%B0&q2=&q3=&q4=&rn=10&lm=0&ct=0&ft=&q5=&q6=biquge.com&tn=baidulocal
 
 const rules = {
   'biquge': {
@@ -12,15 +13,15 @@ const rules = {
       name: '#info > h1',
       author: {
         selector: '#info > p:nth-child(2)',
-        regex: '作    者：'
+        pattern: '作    者：'
       },
       updateAt: {
         selector: '#info > p:nth-child(4)',
-        regex: '最后更新：',
+        pattern: '最后更新：',
       },
       latestChapter: {
         selector: '#info > p:nth-child(5) > a',
-        regex: '最新章节：'
+        pattern: '最新章节：'
       },
       desc: '#intro',
     },
@@ -30,111 +31,9 @@ const rules = {
   }
 }
 
-export class BookModel {
+export default class BookService {
+  static rules = rules;
 
-
-  @observable
-  name = '';
-
-  @observable
-  desc = '';
-
-  @observable
-  author = ''
-
-  @observable
-  updateAt = ''
-
-  @observable
-  latestChapter = ''
-
-  @observable
-  thumbImage = ''
-
-  @observable
-  currentReader = ''
-
-  @observable
-  chapterList = []
-
-  @action
-  async get() {
-    // const $ = await BookService.fetchData('http://www.biquge.com/43_43821/');
-    const $ = cheerio.load(html);
-    this.translator($);
-    this.translatorChapterMenu($);
-  }
-
-
-  async translator($) {
-    const self = this;
-    const {info, thumbImage, host} = rules.biquge;
-    for (let [k, v] of Object.entries(info)) {
-      if (v.regex) {
-        const text = $(v.selector).text();
-        self[k] = text.replace(v.regex, '');
-      }
-      else {
-        self[k] = $(v).text();
-      }
-    }
-    this.thumbImage = `${host}${$(thumbImage).attr('src')}`;
-  }
-
-  translatorChapterMenu($) {
-    const self = this;
-    const {host, chapterMenu} = rules.biquge;
-    let list = [];
-    $('#list>dl>dd>a').each((i, item) => {
-      const $elem = $(item);
-      let url = $elem.attr('href');
-      let text = $elem.text();
-      const index = list.filter(item => item.url === url);
-      if (!!text && !!url && index.length === 0) {
-        list.push({
-          id: Date.now(), url: host + url, text
-        })
-      }
-    });
-
-    const len = list.length
-    for (let i = 0; i < len; i++) {
-      for (let j = 0; j < len; j++) {
-        if (list[i].url < list[j].url) {
-          let temp = list[i];
-          list[i] = list[j];
-          list[j] = temp;
-        }
-      }
-    }
-
-    this.chapterList = list;
-  }
-}
-
-export class ChapterModel {
-  @observable
-  name = '屠海龙'
-
-  @observable
-  numbers = '第二百一十四章'
-
-  @observable
-  content = ''
-
-  @observable
-  htmlstring = ''
-
-  async get(uri) {
-    const $ = await BookService.fetchData(uri);
-    // const $ = cheerio.load(html2);
-    const rule = rules.biquge;
-    this.content = $(rule.content).html();
-    this.htmlstring = tmpl(this.content);
-  }
-}
-
-class BookService {
   static fetchData = async (url) => {
     let origin = url;
     let headers = {
@@ -156,5 +55,27 @@ class BookService {
     const resHtml = await res.text();
     // console.log(resHtml);
     return cheerio.load(resHtml);
+  }
+
+  /**
+   * 保存小说信息及目录
+   * @param {BookModel} model
+   */
+  static saveBook = async (model) => {
+    const storage = global.storage;
+    storage.save({
+      key: 'book',  // 注意:请不要在key中使用_下划线符号!
+       id: '1001',   // 注意:请不要在id中使用_下划线符号!
+      rawData: model
+    });
+  }
+
+  /**
+   * 获取下一个章节
+   * @param {string} 小说id
+   * @param {Number} 章节id
+   */
+  static getNextChapter = async (bookId,chapterId)=>{
+    // todo
   }
 }

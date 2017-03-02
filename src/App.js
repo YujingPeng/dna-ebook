@@ -2,7 +2,8 @@ import React from 'react';
 import { StackNavigator, TabNavigator } from 'react-navigation';
 import Search from './page/Search';
 import Reader from './page/Reader';
-import Book from '../page/Book';
+import Book from './page/Book';
+import './storage';
 
 const HomeTabBar = TabNavigator({
   BookInfo: { screen: Book },
