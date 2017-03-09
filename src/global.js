@@ -1,3 +1,3 @@
-import storage from './storage';
+import storage from './storage'
 
-global.storage = storage;
+global.storage = storage

@@ -4,5 +4,6 @@
         "import", {
             "libraryName": "antd-mobile"
         }
-    ]]
+    ]],
+    "sourceMaps":true
 }
