@@ -36,6 +36,7 @@
     "eslint-plugin-react": "^6.10.0",
     "eslint-plugin-standard": "^2.1.1",
     "jest": "18.1.0",
+    "mobx-logger": "^0.4.0",
     "react-test-renderer": "~15.4.0",
     "standard": "*"
   },

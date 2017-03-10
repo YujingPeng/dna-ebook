@@ -1,13 +1,8 @@
 
-import { observable, action, computed,extendObservable } from 'mobx';
-import html from './html';
-import html2 from './html2';
-import cheerio from 'cheerio-without-node-native';
-import tmpl from './tmpl';
-import BookService from './BookService';
+import { observable, action, extendObservable } from 'mobx'
+import BookService from './BookService'
 
 export default class BookModel {
-
   uri = ''
 
   @observable
@@ -34,60 +29,57 @@ export default class BookModel {
   @observable
   chapterList = []
 
-  constructor(uri) {
-    this.uri = uri;
+  constructor (uri) {
+    this.uri = uri
   }
 
   @action
-  async get() {
-    const book = await BookService.getBookInfo('1001', this.uri);
-    extendObservable(this,book)
+  async get () {
+    const book = await BookService.getBookInfo('1001', this.uri)
+    extendObservable(this, book)
   }
 
-
-  translator($) {
-    const self = this;
-    const { info, thumbImage, host } = BookService.rules.biquge;
+  translator ($) {
+    const self = this
+    const { info, thumbImage, host } = BookService.rules.biquge
     for (let [k, v] of Object.entries(info)) {
       if (v.pattern) {
-        const text = $(v.selector).text();
-        self[k] = text.replace(v.pattern, '');
-      }
-      else {
-        self[k] = $(v).text();
+        const text = $(v.selector).text()
+        self[k] = text.replace(v.pattern, '')
+      } else {
+        self[k] = $(v).text()
       }
     }
-    this.thumbImage = `${host}${$(thumbImage).attr('src')}`;
+    this.thumbImage = `${host}${$(thumbImage).attr('src')}`
   }
 
-  translatorChapterMenu($) {
-    const self = this;
-    const { host, chapterMenu } = BookService.rules.biquge;
-    let list = [];
+  translatorChapterMenu ($) {
+    const { host } = BookService.rules.biquge
+    let list = []
     $('#list>dl>dd>a').each((i, item) => {
-      const $elem = $(item);
-      let url = host + $elem.attr('href');
-      let text = $elem.text();
-      const index = list.findIndex(item => item.url === url);
+      const $elem = $(item)
+      let url = host + $elem.attr('href')
+      let text = $elem.text()
+      const index = list.findIndex(item => item.url === url)
       if (!!text && !!url && index < 0) {
         list.push({
           id: Date.now(), url, text
         })
       }
-    });
+    })
 
     const len = list.length
     for (let i = 0; i < len; i++) {
       for (let j = 0; j < len; j++) {
         if (list[i].url < list[j].url) {
-          let temp = list[i];
-          list[i] = list[j];
-          list[j] = temp;
+          let temp = list[i]
+          list[i] = list[j]
+          list[j] = temp
         }
       }
-      list[i].seq = i;
+      list[i].seq = i
     }
 
-    this.chapterList = list;
+    this.chapterList = list
   }
 }

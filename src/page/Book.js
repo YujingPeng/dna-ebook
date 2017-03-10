@@ -1,29 +1,27 @@
-import React, { Component } from 'react';
-import { View, Text, Image, ScrollView, ListView, TouchableOpacity } from 'react-native';
-import { observable, action } from 'mobx';
-import { observer } from 'mobx-react/native';
-import { BookModel } from '../domain/Book';
-import { Button, List, Toast } from 'antd-mobile';
+import React, { Component } from 'react'
+import { View, Text, Image, ScrollView, ListView, TouchableOpacity } from 'react-native'
+import { observer } from 'mobx-react/native'
+import { BookModel } from '../domain/Book'
+import { Button } from 'antd-mobile'
 
 @observer
 class Book extends Component {
-
   static navigationOptions = {
-    title: '圣墟',
+    title: '圣墟'
   };
 
   dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
 
   book = new BookModel('http://www.biquge.com/43_43821/')
 
-  componentDidMount() {
-    this.book.get();
+  componentDidMount () {
+    this.book.get()
   }
 
   renderRow = (item) => {
     const rowItemPress = () => {
       this.props.navigation.navigate('Reader', { url: item.url })
-    };
+    }
     return (
       <TouchableOpacity key={item.id} onPress={rowItemPress}>
         <View style={{ paddingVertical: 10, borderBottomWidth: 1, borderColor: '#cfcfcf', marginHorizontal: 10 }}>
@@ -33,8 +31,7 @@ class Book extends Component {
     )
   }
 
-  render() {
-
+  render () {
     return (
       <ScrollView style={{ backgroundColor: '#ffffff' }}>
         <View style={{ flexDirection: 'row', paddingLeft: 10, paddingTop: 10 }}>
@@ -50,7 +47,7 @@ class Book extends Component {
         </View>
         <Text>{this.book.desc}</Text>
         <View style={{ flex: 1, flexDirection: 'row' }}>
-          <Button style={{ flex: 1, margin: 10 }} type="primary" onClick={() => { this.props.navigation.navigate('Reader', { url: this.book.chapterList[0].url }) }}><Text>开始阅读</Text></Button>
+          <Button style={{ flex: 1, margin: 10 }} type='primary' onClick={() => { this.props.navigation.navigate('Reader', { url: this.book.chapterList[0].url }) }}><Text>开始阅读</Text></Button>
           <Button style={{ flex: 1, margin: 10 }} ><Text>收藏</Text></Button>
         </View>
         <View>
@@ -63,9 +60,8 @@ class Book extends Component {
           />
         </View>
       </ScrollView>
-    );
+    )
   }
 }
 
-export default Book;
-
+export default Book
