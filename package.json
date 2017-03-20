@@ -8,6 +8,8 @@
     "install-apk": "adb install -r ./android/app/build/outputs/apk/app-debug.apk",
     "debug-apk": "cd android && gradlew assembleDebug && npm run install-apk",
     "release-apk": "cd android && gradlew assembleRelease && adb install -r ./app/build/outputs/apk/app-release.apk",
+    "bind": "adb reverse tcp:8081 tcp:8081",
+    "menu": "adb shell input keyevent 82",
     "test": "jest"
   },
   "dependencies": {
@@ -21,7 +23,7 @@
     "react-native": "0.41.2",
     "react-native-storage": "^0.1.5",
     "react-native-vector-icons": "^4.0.0",
-    "react-navigation": "^1.0.0-beta.3"
+    "react-navigation": "^1.0.0-beta.7"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
