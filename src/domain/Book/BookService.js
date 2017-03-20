@@ -78,26 +78,26 @@ export default class BookService {
   static rules = rules;
 
   static fetchData = async (url) => {
-    throw new Error('网络异常')
-      // let headers = {
-      //   'Proxy-Connection': 'keep-alive',
-      //   // 'Cache-Control': 'max-age=0',
-      //   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-      //   // 'Origin': origin,
-      //   // 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
-      //   // 'Content-Type': 'application/x-www-form-urlencoded',
-      //   // 'Accept-Encoding': 'compress,gzip,deflate,sdch',
-      //   'Accept-Language': 'zh-CN,zh;q=0.8'
-      //   // 'Accept-Charset': 'GBK,utf-8;q=0.7,*;q=0.3'
-      // }
-      // const option = {
-      //   method: 'GET',
-      //   headers: headers
-      // }
-      // const res = await fetch(url, option)
-      // const resHtml = await res.text()
+    // let headers = {
+      // 'Proxy-Connection': 'keep-alive',
+      // 'Cache-Control': 'max-age=0',
+      // 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      // 'Origin': origin,
+      // 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+      // 'Accept-Encoding': 'compress,gzip,deflate,sdch',
+      // 'Accept-Language': 'zh-CN,zh;q=0.8'
+      // 'Accept-Charset': 'GBK,utf-8;q=0.7,*;q=0.3'
+    // }
+    // const option = {
+    //   method: 'GET',
+    //   headers: headers
+    // }
+    const res = await fetch(url)
+    console.log('res', res)
+    const resHtml = await res.text()
     // console.log(resHtml)
-    // return cheerio.load(resHtml)
+    return cheerio.load(resHtml)
   }
 
   /**
@@ -113,7 +113,7 @@ export default class BookService {
           let { id, resolve, reject, syncParams: { uri } } = params
           console.log('异步读取', params, uri)
           try {
-            const $ = await BookService.fetchData(this.uri)
+            const $ = await BookService.fetchData(uri)
             let data = translator($) || {}
             console.log(data)
             data.chapterList = translatorChapterMenu($) || []

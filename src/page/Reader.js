@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { View, Text, ScrollView, WebView, TouchableOpacity } from 'react-native';
-import { observable, computed } from 'mobx';
-import { observer } from 'mobx-react/native';
-import { ChapterModel } from '../domain/Book';
+import React, { Component } from 'react'
+import { View, Text, ScrollView, WebView, TouchableOpacity } from 'react-native'
+import { observable, computed } from 'mobx'
+import { observer } from 'mobx-react/native'
+import { ChapterModel } from '../domain/Book'
 
 @observer
 class Reader extends Component {
@@ -12,27 +12,27 @@ class Reader extends Component {
       visible: false
     }
   }
-  chapter = new ChapterModel();
+  chapter = new ChapterModel(this.props.navigation.state.params.uri);
 
-  componentDidMount() {
-    this.chapter.get(this.props.navigation.state.params.url);
+  componentDidMount () {
+    this.chapter.get()
   }
 
   handleMessage = (event) => {
     switch (event.nativeEvent.data) {
       case '-1':
-        this.chapter.prev();
-        break;
+        this.chapter.prev()
+        break
       case '1':
-        this.chapter.next();
-      break;
+        this.chapter.next()
+        break
       default:
-        alert('弹出菜单');
-        break;
+        alert('弹出菜单')
+        break
     }
   }
 
-  render() {
+  render () {
     // const html = tmpl(this.chapter.content);
     // console.log(this.htmlss);
     return (
@@ -42,15 +42,13 @@ class Reader extends Component {
             onMessage={this.handleMessage}
             source={{ html: this.chapter.htmlstring }}
             style={{ backgroundColor: '#ececec', flex: 1 }}
-            javaScriptEnabled={true}
+            javaScriptEnabled
             scrollEnabled={false}
-          >
-          </WebView>
+           />
         </TouchableOpacity>
       </View>
-    );
+    )
   }
 }
 
-
-export default Reader;
+export default Reader

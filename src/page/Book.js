@@ -20,7 +20,7 @@ class Book extends Component {
 
   renderRow = (item) => {
     const rowItemPress = () => {
-      this.props.navigation.navigate('Reader', { url: item.url })
+      this.props.navigation.navigate('Reader', { uri: item.uri })
     }
     return (
       <TouchableOpacity key={item.id} onPress={rowItemPress}>
@@ -47,7 +47,7 @@ class Book extends Component {
         </View>
         <Text>{this.book.desc}</Text>
         <View style={{ flex: 1, flexDirection: 'row' }}>
-          <Button style={{ flex: 1, margin: 10 }} type='primary' onClick={() => { this.props.navigation.navigate('Reader', { url: this.book.chapterList[0].url }) }}><Text>开始阅读</Text></Button>
+          <Button style={{ flex: 1, margin: 10 }} type='primary' onClick={() => { this.props.navigation.navigate('Reader', { uri: this.book.chapterList[0].uri }) }}><Text>开始阅读</Text></Button>
           <Button style={{ flex: 1, margin: 10 }} ><Text>收藏</Text></Button>
         </View>
         <View>

@@ -1,7 +1,8 @@
+import validate from 'mobx-form-validate'
 
 function test (target, rules) {
   for (let rule of rules) {
-    const {message, ...other} = rule
+    const { message, ...other } = rule
     for (let reg in other) {
       if (regRules[reg](target, rule[reg])) {
         return message || tips[reg]

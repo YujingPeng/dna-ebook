@@ -1,9 +1,17 @@
-import React, { Component } from 'react';
-import { TouchableOpacity, Text, View } from 'react-native';
-import { InputItem, List } from 'antd-mobile';
-import { observable } from 'mobx';
-import { observer } from 'mobx-react/native';
-import validate from 'mobx-form-validate';
+import React, { Component } from 'react'
+import { View } from 'react-native'
+import { observable } from 'mobx'
+import { observer } from 'mobx-react/native'
+import { FormProvider, FormItem } from '../components/form'
+import { List } from 'antd-mobile'
+class TestModel {
+  @observable
+  name = ''
+
+  constructor (name) {
+    this.name = name
+  }
+}
 
 @observer
 class Search extends Component {
@@ -11,18 +19,19 @@ class Search extends Component {
     title: `搜索`
   };
 
-  @observable
-  query = ''
+  form = new TestModel('名字')
 
-  render() {
+  render () {
     return (
       <View>
         <List>
-          <InputItem value={this.query}></InputItem>
+          <FormProvider form={this.form}>
+            <FormItem name='name' />
+          </FormProvider>
         </List>
       </View>
-    );
+    )
   }
 }
 
-export default Search;
+export default Search
