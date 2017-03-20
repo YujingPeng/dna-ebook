@@ -3,5 +3,8 @@
   "parser": "babel-eslint",
   "globals": {
     "fetch":true,"__DEV__":true
+  },
+  "rules": {
+    "jsx-quotes":"off"
   }
 }

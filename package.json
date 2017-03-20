@@ -8,20 +8,23 @@
     "install-apk": "adb install -r ./android/app/build/outputs/apk/app-debug.apk",
     "debug-apk": "cd android && gradlew assembleDebug && npm run install-apk",
     "release-apk": "cd android && gradlew assembleRelease && adb install -r ./app/build/outputs/apk/app-release.apk",
+    "bind": "adb reverse tcp:8081 tcp:8081",
+    "menu": "adb shell input keyevent 82",
     "test": "jest"
   },
   "dependencies": {
-    "antd-mobile": "^1.0.0",
+    "antd-mobile": "^1.0.5",
     "camelcase": "^4.0.0",
     "cheerio-without-node-native": "^0.20.2",
     "mobx": "^3.1.0",
     "mobx-form-validate": "^1.0.2",
+    "mobx-form-validate-rule": "git+https://github.com/manweill/mobx-form-validate-rule.git",
     "mobx-react": "^4.1.0",
     "react": "~15.4.0",
     "react-native": "0.41.2",
     "react-native-storage": "^0.1.5",
     "react-native-vector-icons": "^4.0.0",
-    "react-navigation": "^1.0.0-beta.3"
+    "react-navigation": "^1.0.0-beta.7"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",

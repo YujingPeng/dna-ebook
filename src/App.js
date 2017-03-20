@@ -1,17 +1,20 @@
 import { StackNavigator, TabNavigator } from 'react-navigation'
-import Search from './page/Search'
-import Reader from './page/Reader'
-import Book from './page/Book'
+import SearchPage from './page/Search'
+import ReaderPage from './page/Reader'
+import BookPage from './page/Book'
 import { enableLogging } from 'mobx-logger'
 
 const HomeTabBar = TabNavigator({
-  BookInfo: { screen: Book },
-  Search: { screen: Search }
+  BookInfo: { screen: BookPage },
+  Search: { screen: SearchPage }
 }, { tabBarPosition: 'bottom' })
 
 const Screen = StackNavigator({
   Home: { screen: HomeTabBar },
-  Reader: { screen: Reader }
+  Reader: { screen: ReaderPage }
+}, {
+  initialRouteName: 'Reader',
+  headerMode: 'screen'
 })
 const config = {
   predicate: () => __DEV__ && Boolean(window.navigator.userAgent),
