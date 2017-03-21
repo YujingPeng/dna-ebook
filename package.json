@@ -21,7 +21,7 @@
     "mobx-form-validate-rule": "git+https://github.com/manweill/mobx-form-validate-rule.git",
     "mobx-react": "^4.1.0",
     "react": "~15.4.0",
-    "react-native": "0.41.2",
+    "react-native": "0.42.3",
     "react-native-storage": "^0.1.5",
     "react-native-vector-icons": "^4.0.0",
     "react-navigation": "^1.0.0-beta.7"
