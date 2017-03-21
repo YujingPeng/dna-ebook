@@ -1,6 +1,4 @@
-// import { observable, action, computed } from 'mobx'
-// import html from './html'
-// import html2 from './html2'
+
 import cheerio from 'cheerio-without-node-native'
 
 // https://www.baidu.com/s?q1=%E9%AD%94%E5%A4%A9%E8%AE%B0&q2=&q3=&q4=&rn=10&lm=0&ct=0&ft=&q5=&q6=biquge.com&tn=baidulocal

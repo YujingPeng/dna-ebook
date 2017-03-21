@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { View, Text, ScrollView, WebView, TouchableOpacity } from 'react-native'
-import { observable, computed } from 'mobx'
+import { observable, computed, autorunAsync } from 'mobx'
 import { observer } from 'mobx-react/native'
 import { ChapterModel } from '../domain/Book'
+import HtmlView from '../components/HtmlView';
 
 @observer
 class Reader extends Component {
@@ -14,7 +15,7 @@ class Reader extends Component {
   }
   chapter = new ChapterModel(this.props.navigation.state.params.uri);
 
-  componentDidMount () {
+  componentDidMount() {
     this.chapter.get()
   }
 
@@ -32,23 +33,17 @@ class Reader extends Component {
     }
   }
 
-  render () {
-    // const html = tmpl(this.chapter.content);
-    // console.log(this.htmlss);
+  render() {
     return (
       <View style={{ flex: 1, flexDirection: 'row' }}>
         <TouchableOpacity onPress={this.handlePress} style={{ flex: 1 }}>
-          <WebView
-            onMessage={this.handleMessage}
-            source={{ html: this.chapter.htmlstring }}
-            style={{ backgroundColor: '#ececec', flex: 1 }}
-            javaScriptEnabled
-            scrollEnabled={false}
-           />
+          <HtmlView content={this.chapter.content} onMessage={this.handleMessage} />
         </TouchableOpacity>
       </View>
     )
   }
 }
+
+
 
 export default Reader

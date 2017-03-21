@@ -13,7 +13,7 @@ const Screen = StackNavigator({
   Home: { screen: HomeTabBar },
   Reader: { screen: ReaderPage }
 }, {
-  initialRouteName: 'Reader',
+  initialRouteName: 'Home',
   headerMode: 'screen'
 })
 const config = {

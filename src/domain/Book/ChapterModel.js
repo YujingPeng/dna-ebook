@@ -1,8 +1,5 @@
-import { observable, action, computed } from 'mobx'
-import html from './html'
-import html2 from './html2'
+import { observable, action, computed, runInAction } from 'mobx'
 import cheerio from 'cheerio-without-node-native'
-import tmpl from './tmpl'
 import BookService from './BookService'
 
 export default class ChapterModel {
@@ -26,31 +23,35 @@ export default class ChapterModel {
   @observable
   htmlstring = ''
 
-  constructor (uri) {
+  constructor(uri) {
     this.uri = uri
   }
 
   @action
-  async get () {
+  async get() {
     const $ = await BookService.fetchData(this.uri)
     // const $ = cheerio.load(html2);
     const rule = BookService.rules.biquge
-    this.content = $(rule.content).html()
-    this.htmlstring = tmpl(this.content)
+    runInAction(() => {
+      this.content = $(rule.content).html();
+    })
   }
 
   /**
    * 获取下一页
    */
   @action
-  async next () {
+  async next() {
     // todo
     // alert('下一页')
     const uri = this.uri
     const book = await BookService.getBookInfo(this.bookId, this.uri)
     const index = book.chapterList.findIndex(item => item.uri === uri)
+    if((index+1)===book.chapterList.length){
+      alert('已经是最后一页了')
+      return;
+    }
     const data = book.chapterList[index + 1]
-    console.log(uri, index, data)
     if (data) {
       this.uri = data.uri
       this.get()
@@ -60,8 +61,19 @@ export default class ChapterModel {
   /**
    * 获取上一页
    */
-  async prev () {
+  async prev() {
     // todo
-    alert('上一页')
+   const uri = this.uri
+    const book = await BookService.getBookInfo(this.bookId, this.uri)
+    const index = book.chapterList.findIndex(item => item.uri === uri)
+    if(index===0){
+      alert('已经是第一页了')
+      return;
+    }
+    const data = book.chapterList[index - 1]
+    if (data) {
+      this.uri = data.uri
+      this.get()
+    }
   }
 }
