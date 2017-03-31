@@ -12,7 +12,8 @@ class Book extends Component {
 
   dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
 
-  book = new BookModel('http://www.biquge.com/43_43821/')
+  // 'http://www.biquge.com/43_43821/'
+  book = new BookModel(this.props.navigation.state.params.id, this.props.navigation.state.params.uri)
 
   componentDidMount () {
     this.book.get()
@@ -20,7 +21,7 @@ class Book extends Component {
 
   renderRow = (item) => {
     const rowItemPress = () => {
-      this.props.navigation.navigate('Reader', { uri: item.uri })
+      this.props.navigation.navigate('reader', { uri: item.uri, title: item.text })
     }
     return (
       <TouchableOpacity key={item.id} onPress={rowItemPress}>

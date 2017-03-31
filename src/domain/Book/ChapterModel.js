@@ -1,5 +1,5 @@
-import { observable, action, computed, runInAction } from 'mobx'
-import cheerio from 'cheerio-without-node-native'
+import { observable, action, runInAction } from 'mobx'
+import {Toast} from 'antd-mobile'
 import BookService from './BookService'
 
 export default class ChapterModel {
@@ -23,17 +23,18 @@ export default class ChapterModel {
   @observable
   htmlstring = ''
 
-  constructor(uri) {
+  constructor (uri, title) {
     this.uri = uri
+    this.name = title
   }
 
   @action
-  async get() {
+  async get () {
     const $ = await BookService.fetchData(this.uri)
     // const $ = cheerio.load(html2);
     const rule = BookService.rules.biquge
     runInAction(() => {
-      this.content = $(rule.content).html();
+      this.content = $(rule.content).html()
     })
   }
 
@@ -41,19 +42,22 @@ export default class ChapterModel {
    * 获取下一页
    */
   @action
-  async next() {
+  async next () {
     // todo
     // alert('下一页')
     const uri = this.uri
     const book = await BookService.getBookInfo(this.bookId, this.uri)
     const index = book.chapterList.findIndex(item => item.uri === uri)
-    if((index+1)===book.chapterList.length){
-      alert('已经是最后一页了')
-      return;
+    if ((index + 1) === book.chapterList.length) {
+      Toast.info('已经是最后一页了')
+      return
     }
     const data = book.chapterList[index + 1]
     if (data) {
-      this.uri = data.uri
+      runInAction(() => {
+        this.uri = data.uri
+        this.name = data.text
+      })
       this.get()
     }
   }
@@ -61,14 +65,14 @@ export default class ChapterModel {
   /**
    * 获取上一页
    */
-  async prev() {
+  async prev () {
     // todo
-   const uri = this.uri
+    const uri = this.uri
     const book = await BookService.getBookInfo(this.bookId, this.uri)
     const index = book.chapterList.findIndex(item => item.uri === uri)
-    if(index===0){
-      alert('已经是第一页了')
-      return;
+    if (index === 0) {
+      Toast.info('已经是第一页了', 1)
+      return
     }
     const data = book.chapterList[index - 1]
     if (data) {
