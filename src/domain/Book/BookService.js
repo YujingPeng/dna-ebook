@@ -1,5 +1,6 @@
 
 import cheerio from 'cheerio-without-node-native'
+import uuid from 'react-native-uuid'
 
 // https://www.baidu.com/s?q1=%E9%AD%94%E5%A4%A9%E8%AE%B0&q2=&q3=&q4=&rn=10&lm=0&ct=0&ft=&q5=&q6=biquge.com&tn=baidulocal
 
@@ -65,10 +66,10 @@ function translatorChapterMenu ($) {
         let temp = list[i]
         list[i] = list[j]
         list[j] = temp
-        list[i].seq = i
       }
     }
   }
+
   return list
 }
 
@@ -91,24 +92,30 @@ export default class BookService {
     //   method: 'GET',
     //   headers: headers
     // }
-    const res = await fetch(url)
-    console.log('res', res)
-    const resHtml = await res.text()
-    // console.log(resHtml)
-    return cheerio.load(resHtml)
+    try {
+      const res = await fetch(url)
+      const resHtml = await res.text()
+      return cheerio.load(resHtml)
+    } catch (error) {
+      throw new Error({message: '抓去失败'})
+    }
   }
 
+  /**
+   * 获取全部小说
+   */
   static getList = async () => {
     try {
       const storage = global.storage
-      const books = storage.getAllDataForKey('book')
+      const books = await storage.getAllDataForKey('book')
+
+      console.log(books)
       if (books) {
         return books
       } else {
         return []
       }
     } catch (error) {
-      console.log(error)
       return []
     }
   }
@@ -127,7 +134,8 @@ export default class BookService {
           try {
             const $ = await BookService.fetchData(uri)
             let data = translator($) || {}
-            console.log(data)
+            data.id = id
+            data.uri = uri
             data.chapterList = translatorChapterMenu($) || []
             storage.save({
               key: 'book',  // 注意:请不要在key中使用_下划线符号!
@@ -136,7 +144,6 @@ export default class BookService {
             })
             resolve && resolve(data)
           } catch (error) {
-            console.log(error)
             reject && reject(error)
           }
         }
@@ -144,7 +151,7 @@ export default class BookService {
       let book = await storage.load({
         id,
         key: 'book',
-        autoSync: true,
+        autoSync: false,
         syncInBackground: true,
         syncParams: {
           uri
@@ -156,7 +163,7 @@ export default class BookService {
         throw new Error('获取数据失败!')
       }
     } catch (error) {
-      throw new Error('获取数据失败:', error.message)
+      throw new Error('获取数据失败:' + error.message)
     }
   }
 
@@ -180,5 +187,26 @@ export default class BookService {
    */
   static getNextChapter = async (bookId, chapterId) => {
     // todo
+  }
+
+  /**
+   * 搜索
+   * @param {String} name
+   */
+  static search = async (name, site) => {
+    let uri = `http://zhannei.baidu.com/cse/site?q=${name}&cc=${site}&stp=1`
+    const $ = await BookService.fetchData(uri)
+    let result = []
+    $('#results>div').each((i, item) => {
+      const $name = $(item).find('h3>a')
+      const $img = $(item).find('img')
+      result.push({
+        id: uuid.v4(),
+        name: $name.text(),
+        uri: $name.attr('href'),
+        thumbImage: $img.attr('src')
+      })
+    })
+    return result
   }
 }

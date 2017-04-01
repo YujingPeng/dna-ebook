@@ -22,7 +22,6 @@ class Home extends Component {
   @action
   init = async () => {
     let result = await BookService.getList()
-    result.push(result[0])
     runInAction(() => {
       this.bookList = this.dataSource.cloneWithRows(result)
     })
@@ -30,7 +29,7 @@ class Home extends Component {
 
   renderRow = (item) => {
     const rowItemPress = () => {
-      this.props.navigation.navigate('book', { id: '1001', uri: item.uri })
+      this.props.navigation.navigate('book', { id: item.id, uri: item.uri })
     }
 
     return (
