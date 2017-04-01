@@ -7,11 +7,16 @@ import HtmlView from '../components/HtmlView'
 @observer
 class Reader extends Component {
   static navigationOptions = {
-
     header: ({state}) => {
       return {
         visible: state.params.visible || false,
-        title: state.params.title
+        title: state.params.title,
+        style: {
+          position: 'absolute',
+          top: 0,
+          zIndex: 100,
+          width: '100%'
+        }
       }
     }
   }
