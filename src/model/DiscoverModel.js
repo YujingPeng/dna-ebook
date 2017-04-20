@@ -6,6 +6,10 @@
  */
 import {observable} from 'mobx'
 
+ /**
+  * 当前阅读的书
+  * @class DiscoverModel
+  */
 class DiscoverModel {
   /**
    * 当前阅读的书ID

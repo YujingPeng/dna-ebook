@@ -3,9 +3,11 @@ import { observable, action, extendObservable } from 'mobx'
 import BookService from './BookService'
 
 export default class BookModel {
-  uri = ''
-
+  @observable
   id=''
+
+  @observable
+  uri = ''
 
   @observable
   name = '';

@@ -4,9 +4,9 @@
  * @flow
  */
 
-import React, { Component } from 'react';
-import {  AppRegistry} from 'react-native';
-import App from './src/App';
-import './src/global';
+import React, { Component } from 'react'
+import { AppRegistry } from 'react-native'
+import './src/global'
+import App from './src/App'
 
-AppRegistry.registerComponent('dnaebook', () => App);
+AppRegistry.registerComponent('dnaebook', () => App)

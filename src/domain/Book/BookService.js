@@ -97,7 +97,7 @@ export default class BookService {
       const resHtml = await res.text()
       return cheerio.load(resHtml)
     } catch (error) {
-      throw new Error({message: '抓去失败'})
+      throw new Error({ message: '抓取失败' })
     }
   }
 
@@ -119,10 +119,24 @@ export default class BookService {
       return []
     }
   }
+
+  static newBook = async (id, uri) => {
+    console.log('爬取页面', uri)
+    const $ = await BookService.fetchData(uri)
+    let data = translator($) || {}
+    data.id = id
+    data.uri = uri
+    data.chapterList = translatorChapterMenu($) || []
+    BookService.saveBook(data)
+    return data
+  }
+
   /**
-   * @param {String} id
-   * @param {Number} uri
-   * @returns BookModel
+   * 获取Book详细
+   *
+   * @param {String} id - bookId
+   * @param {Number} uri - new book uri
+   * @returns {BookModel} a BookModel object
    */
   static getBookInfo = async (id, uri) => {
     try {
@@ -151,7 +165,7 @@ export default class BookService {
       let book = await storage.load({
         id,
         key: 'book',
-        autoSync: false,
+        autoSync: true,
         syncInBackground: true,
         syncParams: {
           uri
@@ -169,23 +183,35 @@ export default class BookService {
 
   /**
    * 保存小说信息及目录
-   * @param {BookModel} model
+   * @param {BookModel}  model
    */
   static saveBook = async (model) => {
     const storage = global.storage
     storage.save({
       key: 'book',  // 注意:请不要在key中使用_下划线符号!
-      id: '1001',   // 注意:请不要在id中使用_下划线符号!
+      id: model.id,   // 注意:请不要在id中使用_下划线符号!
       rawData: model
     })
   }
 
   /**
-   * 获取下一个章节
+   * 移除book
+   * @param {string} bookId bookid
+   */
+  static removeBook = async (bookId) => {
+    const storage = global.storage
+    storage.remove({
+      key: 'book',
+      id: bookId
+    })
+  }
+
+  /**
+   * 获取章节
    * @param {string} 小说id
    * @param {Number} 章节id
    */
-  static getNextChapter = async (bookId, chapterId) => {
+  static getChapter = async (bookId, chapterId) => {
     // todo
   }
 

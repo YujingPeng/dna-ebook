@@ -5,11 +5,9 @@ import BookService from './BookService'
 export default class ChapterModel {
   bookId = '1001';
 
-  id = 0;
+  id = 0
 
-  uri = '';
-
-  seq = 0;
+  uri = ''
 
   @observable
   name = '屠海龙'
@@ -31,7 +29,6 @@ export default class ChapterModel {
   @action
   async get () {
     const $ = await BookService.fetchData(this.uri)
-    // const $ = cheerio.load(html2);
     const rule = BookService.rules.biquge
     runInAction(() => {
       this.content = $(rule.content).html()

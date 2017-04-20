@@ -14,10 +14,6 @@ class Book extends Component {
   // 'http://www.biquge.com/43_43821/'
   book = new BookModel(this.props.navigation.state.params.id, this.props.navigation.state.params.uri)
 
-  componentDidMount () {
-    this.book.get()
-  }
-
   renderRow = (item) => {
     const rowItemPress = () => {
       this.props.navigation.navigate('reader', { uri: item.uri, title: item.text })
@@ -36,7 +32,7 @@ class Book extends Component {
       <ScrollView style={{ backgroundColor: '#ffffff' }}>
         <View style={{ flexDirection: 'row', paddingLeft: 10, paddingTop: 10 }}>
           <View style={{ width: 120, height: 150 }}>
-            {this.book.thumbImage != '' ? <Image source={{ uri: this.book.thumbImage }} style={{ width: 120, height: 150 }} /> : null}
+            {this.book.thumbImage !== '' ? <Image source={{ uri: this.book.thumbImage }} style={{ width: 120, height: 150 }} /> : null}
           </View>
           <View style={{ padding: 10 }}>
             <Text>名字：<Text>{this.book.name}</Text> </Text>

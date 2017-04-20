@@ -8,7 +8,10 @@ import { enableLogging } from 'mobx-logger'
 const HomeTabBar = TabNavigator({
   BookInfo: { screen: HomePage },
   Search: { screen: SearchPage }
-}, { tabBarPosition: 'bottom' })
+}, {
+  tabBarPosition: 'bottom',
+  swipeEnabled: false
+})
 
 const Screen = StackNavigator({
   home: { screen: HomeTabBar },
