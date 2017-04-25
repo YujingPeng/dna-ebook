@@ -15,73 +15,47 @@ export default class BookModel {
     this.init(id, uri)
   }
 
-  /**
-   * 主键
-   * @memberOf BookModel
-   */
+  /** 主键   */
   @observable
   id = ''
 
-  /**
-   * 网页地址
-   * @memberOf BookModel
-   */
+  /** 网页地址   */
   @observable
   uri = ''
 
-  /**
-   * 书名
-   */
+  /** 书名   */
   @observable
   name = '';
 
-  /**
-   * 描述
-   */
+  /** 描述   */
   @observable
   desc = '';
 
-  /**
-   * 作者
-   */
+  /** 作者   */
   @observable
   author = ''
 
-  /**
-   * 更新时间
-   */
+  /** 更新时间   */
   @observable
   updateAt = ''
 
-  /**
-   * 最后章节
-   */
+  /** 最后章节   */
   @observable
   latestChapter = ''
 
-  /**
-   * 图片
-   */
+  /** 图片   */
   @observable
   thumbImage = ''
 
-  /**
-   * 把图片保存成Base64
-   * todo
-   * @memberOf BookModel
-   */
+  /** 把图片保存成Base64   */
   @observable
   thumbImageBase64 = ''
 
-  /**
-   * 当前阅读
-   */
+  /** 当前阅读   */
   @observable
   discover = new DiscoverModel()
 
-  /**
-   * 章节列表
-   */
+  /** 章节列表   */
   @observable
   chapterList = []
 

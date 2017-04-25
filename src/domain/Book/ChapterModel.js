@@ -1,5 +1,5 @@
 import { observable, action, runInAction } from 'mobx'
-import {Toast} from 'antd-mobile'
+import { Toast } from 'antd-mobile'
 import BookService from './BookService'
 
 export default class ChapterModel {
@@ -10,10 +10,10 @@ export default class ChapterModel {
   uri = ''
 
   @observable
-  name = '屠海龙'
+  name = ''
 
   @observable
-  numbers = '第二百一十四章'
+  numbers = ''
 
   @observable
   content = ''

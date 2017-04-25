@@ -24,6 +24,7 @@ const rules = {
       desc: '#intro'
     },
     thumbImage: '#fmimg > img',
+    searchThumbImage: '/files/article/image',
     chapterMenu: '#list > dl > dd > a',
     content: '#content'
   }
@@ -73,10 +74,20 @@ function translatorChapterMenu ($) {
   return list
 }
 
+/** 获取搜索列表预览图片 */
+function getSearchThumbUri (host, bookUri) {
+  const rule = rules[host]
+  let params = bookUri.split('/')
+  let bookHostId = params.slice(-1) === '' ? params.slice(-2) : params.slice(-1)
+  let bookParams = bookHostId.split('_')
+  let uri = `${rule.host}${rule.searchThumbImage}/${bookParams[0] + 1}/${bookParams[1]}/${bookParams[1]}.jpg`
+  return uri
+}
+
 export default class BookService {
   static rules = rules;
 
-  static fetchData = async (url) => {
+  static async fetchData (url) {
     // let headers = {
     // 'Proxy-Connection': 'keep-alive',
     // 'Cache-Control': 'max-age=0',
@@ -104,7 +115,7 @@ export default class BookService {
   /**
    * 获取全部小说
    */
-  static getList = async () => {
+  static async getList () {
     try {
       const storage = global.storage
       const books = await storage.getAllDataForKey('book')
@@ -120,7 +131,7 @@ export default class BookService {
     }
   }
 
-  static newBook = async (id, uri) => {
+  static async newBook (id, uri) {
     console.log('爬取页面', uri)
     const $ = await BookService.fetchData(uri)
     let data = translator($) || {}
@@ -138,7 +149,7 @@ export default class BookService {
    * @param {Number} uri - new book uri
    * @returns {BookModel} a BookModel object
    */
-  static getBookInfo = async (id, uri) => {
+  static async getBookInfo (id, uri) {
     try {
       const storage = global.storage
       storage.sync = {
@@ -185,7 +196,7 @@ export default class BookService {
    * 保存小说信息及目录
    * @param {BookModel}  model
    */
-  static saveBook = async (model) => {
+  static async saveBook (model) {
     const storage = global.storage
     storage.save({
       key: 'book',  // 注意:请不要在key中使用_下划线符号!
@@ -198,7 +209,7 @@ export default class BookService {
    * 移除book
    * @param {string} bookId bookid
    */
-  static removeBook = async (bookId) => {
+  static async removeBook (bookId) {
     const storage = global.storage
     storage.remove({
       key: 'book',
@@ -211,7 +222,7 @@ export default class BookService {
    * @param {string} 小说id
    * @param {Number} 章节id
    */
-  static getChapter = async (bookId, chapterId) => {
+  static async getChapter (bookId, chapterId) {
     // todo
   }
 
@@ -219,18 +230,19 @@ export default class BookService {
    * 搜索
    * @param {String} name
    */
-  static search = async (name, site) => {
+  static async search (name, site) {
     let uri = `http://zhannei.baidu.com/cse/site?q=${name}&cc=${site}&stp=1`
     const $ = await BookService.fetchData(uri)
     let result = []
     $('#results>div').each((i, item) => {
       const $name = $(item).find('h3>a')
-      const $img = $(item).find('img')
+      // const $img = $(item).find('img')
+      const uri = $name.attr('href')
       result.push({
         id: uuid.v4(),
         name: $name.text(),
-        uri: $name.attr('href'),
-        thumbImage: $img.attr('src')
+        uri: uri,
+        thumbImage: getSearchThumbUri('biquge', uri)
       })
     })
     return result

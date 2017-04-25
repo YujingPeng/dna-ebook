@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, Image, ScrollView, ListView, TouchableOpacity } from 'react-native'
 import { observer } from 'mobx-react/native'
-import { BookModel } from '../domain/Book'
+import BookModel from '../model/BookModel'
 import { Button } from 'antd-mobile'
 
 @observer
