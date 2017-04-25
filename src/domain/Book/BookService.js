@@ -78,9 +78,9 @@ function translatorChapterMenu ($) {
 function getSearchThumbUri (host, bookUri) {
   const rule = rules[host]
   let params = bookUri.split('/')
-  let bookHostId = params.slice(-1) === '' ? params.slice(-2) : params.slice(-1)
+  let bookHostId = params[params.length - 2]
   let bookParams = bookHostId.split('_')
-  let uri = `${rule.host}${rule.searchThumbImage}/${bookParams[0] + 1}/${bookParams[1]}/${bookParams[1]}.jpg`
+  let uri = `${rule.host}${rule.searchThumbImage}/${parseInt(bookParams[0]) + 1}/${bookParams[1]}/${bookParams[1]}.jpg`
   return uri
 }
 

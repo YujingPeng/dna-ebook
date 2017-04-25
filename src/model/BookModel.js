@@ -6,7 +6,7 @@
  */
 
 import { observable, action, extendObservable, runInAction } from 'mobx'
-import BookService from './BookService'
+import BookService from '../domain/Book/BookService'
 import DiscoverModel from './DiscoverModel'
 import personStore from '../store/personStore'
 

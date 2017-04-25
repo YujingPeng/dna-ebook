@@ -64,7 +64,7 @@ class PersonStore {
     }
   }
 
-  @action``
+  @action
   addBook (book) {
     this.books.unshift(book)
   }
@@ -84,8 +84,6 @@ class PersonStore {
    *
    * @param {any} uri 要判断的地址
    * @returns {bool}
-   *
-   * @memberOf PersonStore
    */
   @action
   isExist (uri) {
