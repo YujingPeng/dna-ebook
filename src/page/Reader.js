@@ -3,6 +3,8 @@ import { View, TouchableOpacity } from 'react-native'
 import { observer } from 'mobx-react/native'
 import { ChapterModel } from '../domain/Book'
 import HtmlView from '../components/HtmlView'
+import personStore from '../store/personStore'
+import {action} from 'mobx'
 
 @observer
 class Reader extends Component {
@@ -26,13 +28,20 @@ class Reader extends Component {
     this.chapter.get()
   }
 
+  @action
   handleMessage = (event) => {
     switch (event.nativeEvent.data) {
       case '-1':
-        this.chapter.prev()
+        let prev = personStore.cacheBook.prev()
+        this.chapter.uri = prev.uri
+        this.chapter.name = prev.text
+        this.chapter.get()
         break
       case '1':
-        this.chapter.next()
+        let next = personStore.cacheBook.next()
+        this.chapter.uri = next.uri
+        this.chapter.name = next.text
+        this.chapter.get()
         break
       default:
         this.props.navigation.setParams({visible: !this.props.navigation.state.params.visible, title: this.chapter.name})

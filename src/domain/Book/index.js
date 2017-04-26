@@ -1,6 +1,3 @@
-import BookModel from './BookModel';
-import ChapterModel from './ChapterModel';
+import ChapterModel from './ChapterModel'
 
-export {
-  BookModel, ChapterModel
-}
+export { ChapterModel }

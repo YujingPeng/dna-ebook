@@ -3,13 +3,13 @@ import { WebView } from 'react-native'
 
 export default class HtmlView extends Component {
   static propTypes={
-    onMessage:React.PropTypes.func.isRequired,
-    content:React.PropTypes.string.isRequired
+    onMessage: React.PropTypes.func.isRequired,
+    content: React.PropTypes.string.isRequired
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.content!=this.props.content) {
-      this.webviewRef.reload();
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.content != this.props.content) {
+      this.webviewRef.reload()
     }
   }
 
@@ -17,14 +17,14 @@ export default class HtmlView extends Component {
     return `renderInit('${content}')`
   }
 
-  render() {
+  render () {
     return (
       <WebView
         ref={(ref) => this.webviewRef = ref}
         onMessage={this.props.onMessage}
         source={require('../assets/tmpl.html')}
         style={{ backgroundColor: '#ececec', flex: 1 }}
-        javaScriptEnabled={true}
+        javaScriptEnabled
         injectedJavaScript={this._renderHtmlView(this.props.content)}
       />
     )

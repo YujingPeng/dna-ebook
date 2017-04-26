@@ -16,7 +16,7 @@ export default class ChapterModel {
   numbers = ''
 
   @observable
-  content = ''
+  content = '正在加载...'
 
   @observable
   htmlstring = ''

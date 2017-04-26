@@ -5,14 +5,17 @@
  * @Last Modified time: 2017-04-06 12:51:12
  */
 
-import { observable, action, extendObservable, runInAction } from 'mobx'
+import { observable, action, extendObservable, runInAction, toJS, computed } from 'mobx'
 import BookService from '../domain/Book/BookService'
 import DiscoverModel from './DiscoverModel'
 import personStore from '../store/personStore'
+import { Toast } from 'antd-mobile'
 
 export default class BookModel {
   constructor (id, uri) {
-    this.init(id, uri)
+    if (id) {
+      this.init(id, uri)
+    }
   }
 
   /** 主键   */
@@ -52,7 +55,6 @@ export default class BookModel {
   thumbImageBase64 = ''
 
   /** 当前阅读   */
-  @observable
   discover = new DiscoverModel()
 
   /** 章节列表   */
@@ -62,15 +64,57 @@ export default class BookModel {
   @action
   async init (id, uri) {
     let book = personStore.getBook(uri)
+    console.log('cache', personStore.cacheBook)
     if (book) {
       runInAction(() => {
-        extendObservable(this, book)
+        extendObservable(this, toJS(book))
       })
     } else {
       book = await BookService.newBook(id, uri)
       runInAction(() => {
+        this.discover.bookId = book.id
+        this.discover.total = book.chapterList.length
         extendObservable(this, book)
+        personStore.cacheBook = this
       })
     }
+  }
+
+  static create (id, uri) {
+
+  }
+
+  @action
+  async save () {
+    const data = toJS(this)
+    BookService.saveBook(data)
+    personStore.addBook(data)
+  }
+
+  @action
+  next () {
+    if (this.discover.chapterIndex === this.discover.total) {
+      Toast.info('已经是最后一页了', 1)
+    } else {
+      personStore.cacheBook.discover.chapterIndex = this.discover.chapterIndex + 1
+      personStore.updateDiscover()
+      return this.chapterList[this.discover.chapterIndex + 1]
+    }
+  }
+
+  @action
+  prev () {
+    if (this.discover.chapterIndex === 0) {
+      Toast.info('已经是第一页了', 1)
+    } else {
+      personStore.cacheBook.discover.chapterIndex = this.discover.chapterIndex - 1
+      personStore.updateDiscover()
+      return this.chapterList[this.discover.chapterIndex - 1]
+    }
+  }
+
+  /** 当前章节 */
+  @computed get currChapter () {
+    return this.chapterList[this.discover.chapterIndex]
   }
 }

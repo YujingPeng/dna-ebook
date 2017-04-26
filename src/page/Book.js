@@ -3,19 +3,27 @@ import { View, Text, Image, ScrollView, ListView, TouchableOpacity } from 'react
 import { observer } from 'mobx-react/native'
 import BookModel from '../model/BookModel'
 import { Button } from 'antd-mobile'
+import {observable, action} from 'mobx'
+import personStore from '../store/personStore'
 
 @observer
 class Book extends Component {
   static navigationOptions = {
+    title: ({state}) => state.params.name
   };
+
+  @observable
+  isCollection = personStore.isExist(this.props.navigation.state.params.uri);
 
   dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
 
   // 'http://www.biquge.com/43_43821/'
   book = new BookModel(this.props.navigation.state.params.id, this.props.navigation.state.params.uri)
 
-  renderRow = (item) => {
+  _renderRow = (item, sectionID, rowID) => {
     const rowItemPress = () => {
+      personStore.cacheBook.discover.chapterIndex = parseInt(rowID)
+      personStore.updateDiscover()
       this.props.navigation.navigate('reader', { uri: item.uri, title: item.text })
     }
     return (
@@ -25,6 +33,20 @@ class Book extends Component {
         </View>
       </TouchableOpacity>
     )
+  }
+
+  @action
+  handleSave =() => {
+    this.isCollection = true
+    this.book.save()
+  }
+
+  handleRemove=() => {
+    // todo
+  }
+
+  handleRead=() => {
+    this.props.navigation.navigate('reader', { uri: this.book.currChapter.uri, title: this.book.currChapter.text })
   }
 
   render () {
@@ -43,8 +65,12 @@ class Book extends Component {
         </View>
         <Text>{this.book.desc}</Text>
         <View style={{ flex: 1, flexDirection: 'row' }}>
-          <Button style={{ flex: 1, margin: 10 }} type='primary' onClick={() => { this.props.navigation.navigate('Reader', { uri: this.book.chapterList[0].uri }) }}><Text>开始阅读</Text></Button>
-          <Button style={{ flex: 1, margin: 10 }} ><Text>收藏</Text></Button>
+          <Button style={{ flex: 1, margin: 10 }} type='primary' onClick={this.handleRead}><Text>开始阅读</Text></Button>
+          {
+            this.isCollection
+            ? (<Button style={{ flex: 1, margin: 10, borderColor: '#ff0000' }} onClick={this.handleRemove}><Text>删除</Text></Button>)
+            : (<Button style={{ flex: 1, margin: 10 }} onClick={this.handleSave}><Text>收藏</Text></Button>)
+          }
         </View>
         <View>
           <ListView
@@ -52,7 +78,7 @@ class Book extends Component {
             initialListSize={50}
             enableEmptySections
             dataSource={this.dataSource.cloneWithRows(this.book.chapterList.slice(0))}
-            renderRow={this.renderRow}
+            renderRow={this._renderRow}
           />
         </View>
       </ScrollView>

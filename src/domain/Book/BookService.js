@@ -138,7 +138,8 @@ export default class BookService {
     data.id = id
     data.uri = uri
     data.chapterList = translatorChapterMenu($) || []
-    BookService.saveBook(data)
+    // 详细页面点击收藏再保存到缓存
+    // BookService.saveBook(data)
     return data
   }
 
