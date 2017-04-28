@@ -1,6 +1,7 @@
 
 import cheerio from 'cheerio-without-node-native'
 import uuid from 'react-native-uuid'
+import {TextDecoder} from 'text-encoding'
 
 // https://www.baidu.com/s?q1=%E9%AD%94%E5%A4%A9%E8%AE%B0&q2=&q3=&q4=&rn=10&lm=0&ct=0&ft=&q5=&q6=biquge.com&tn=baidulocal
 
@@ -107,6 +108,18 @@ export default class BookService {
       const res = await fetch(url)
       const resHtml = await res.text()
       return cheerio.load(resHtml)
+    } catch (error) {
+      throw new Error({ message: '抓取失败' })
+    }
+  }
+
+  static async fetchDecode (url) {
+    try {
+      const res = await fetch(url)
+      const buffer = await res.arrayBuffer()
+      const decode = new TextDecoder('utf-8')
+      const resHtml = decode.decode(buffer)
+      return resHtml// cheerio.load(resHtml)
     } catch (error) {
       throw new Error({ message: '抓取失败' })
     }

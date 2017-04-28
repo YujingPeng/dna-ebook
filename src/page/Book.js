@@ -46,7 +46,7 @@ class Book extends Component {
   }
 
   handleRead=() => {
-    this.props.navigation.navigate('reader', { uri: this.book.currChapter.uri, title: this.book.currChapter.text })
+    this.props.navigation.navigate('viewer', { uri: this.book.currChapter.uri, title: this.book.currChapter.text })
   }
 
   render () {
