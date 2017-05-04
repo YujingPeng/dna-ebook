@@ -1,5 +1,5 @@
 # dna-ebook
-<font color="#e6e6fa" size = "3px">
+<font color="#a71d5d" size = "3px">
   个人电子阅读器，紧用于研究
 </font>
 
