@@ -52,7 +52,7 @@ class Reader extends Component {
   render () {
     return (
       <View style={{ flex: 1, flexDirection: 'row' }}>
-        <TouchableOpacity onPress={this.handlePress} style={{ flex: 1 }}>
+        <TouchableOpacity style={{ flex: 1 }}>
           <HtmlView content={this.chapter.content} onMessage={this.handleMessage} />
         </TouchableOpacity>
       </View>

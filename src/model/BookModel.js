@@ -95,10 +95,12 @@ export default class BookModel {
   next () {
     if (this.discover.chapterIndex === this.discover.total) {
       Toast.info('已经是最后一页了', 1)
+      return null
     } else {
-      personStore.cacheBook.discover.chapterIndex = this.discover.chapterIndex + 1
+      this.discover.chapterIndex ++
+      personStore.cacheBook.discover.chapterIndex = this.discover.chapterIndex
       personStore.updateDiscover()
-      return this.chapterList[this.discover.chapterIndex + 1]
+      return this.chapterList[this.discover.chapterIndex]
     }
   }
 
@@ -107,9 +109,10 @@ export default class BookModel {
     if (this.discover.chapterIndex === 0) {
       Toast.info('已经是第一页了', 1)
     } else {
-      personStore.cacheBook.discover.chapterIndex = this.discover.chapterIndex - 1
+      this.discover.chapterIndex --
+      personStore.cacheBook.discover.chapterIndex = this.discover.chapterIndex
       personStore.updateDiscover()
-      return this.chapterList[this.discover.chapterIndex - 1]
+      return this.chapterList[this.discover.chapterIndex]
     }
   }
 

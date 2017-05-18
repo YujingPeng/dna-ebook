@@ -3,6 +3,7 @@ import SearchPage from './page/Search'
 import ReaderPage from './page/Reader'
 import BookPage from './page/Book'
 import HomePage from './page/Home'
+import ViewerPage from './page/Viewer'
 import { enableLogging } from 'mobx-logger'
 
 const HomeTabBar = TabNavigator({
@@ -16,7 +17,8 @@ const HomeTabBar = TabNavigator({
 const Screen = StackNavigator({
   home: { screen: HomeTabBar },
   reader: { screen: ReaderPage },
-  book: { screen: BookPage }
+  book: { screen: BookPage },
+  viewer: {screen: ViewerPage}
 }, {
   initialRouteName: 'home',
   headerMode: 'screen'
