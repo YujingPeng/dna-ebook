@@ -1,5 +1,4 @@
 import { observable, action, runInAction } from 'mobx'
-import { Toast } from 'antd-mobile'
 import BookService from './BookService'
 import personStore from '../../store/personStore'
 var Dimensions = require('Dimensions')
@@ -13,7 +12,12 @@ let fontSize = 20
 // 取整
 // const lineEnd = parseInt(ScreenWidth / 20)
 
-function lineFeed (str: string, prefix) {
+/**
+ *  字符串换行处理
+ * @param {string} str 要拆分的字符串
+ * @param {string} prefix key的数据的前缀
+ */
+function lineFeed (str: string, keyPrefix:string) {
   let result = []
   let chars = str.split('')
   let linefeed = 0
@@ -28,14 +32,14 @@ function lineFeed (str: string, prefix) {
       i--
       if (result.length === 0) {
         result.push({
-          key: prefix + '_' + i,
+          key: keyPrefix + '_' + i,
           style: 'textFirst',
           children: chars.slice(start, i).join('')
         })
         lineEnd = ScreenWidth
       } else {
         result.push({
-          key: prefix + '_' + i,
+          key: keyPrefix + '_' + i,
           style: 'text',
           children: chars.slice(start, i).join('')
         })
@@ -47,7 +51,7 @@ function lineFeed (str: string, prefix) {
     }
   }
   result.push({
-    key: prefix + '_',
+    key: keyPrefix + '_',
     style: result.length === 0 ? 'textFirst' : 'text',
     children: chars.slice(start).join('')
   })
@@ -103,23 +107,6 @@ export default class ChapterModel {
    */
   @action
   async next () {
-    // todo
-    // alert('下一页')
-    // const uri = this.uri
-    // const book = await BookService.getBookInfo(this.bookId, this.uri)
-    // const index = book.chapterList.findIndex(item => item.uri === uri)
-    // if ((index + 1) === book.chapterList.length) {
-    //   Toast.info('已经是最后一页了')
-    //   return
-    // }
-    // const data = book.chapterList[index + 1]
-    // if (data) {
-    //   runInAction(() => {
-    //     this.uri = data.uri
-    //     this.name = data.text
-    //   })
-    //   this.get()
-    // }
     const data = personStore.cacheBook.next()
     if (data) {
       this.uri = data.uri
@@ -132,19 +119,6 @@ export default class ChapterModel {
    * 获取上一页
    */
   async prev () {
-    // todo
-    // const uri = this.uri
-    // const book = await BookService.getBookInfo(this.bookId, this.uri)
-    // const index = book.chapterList.findIndex(item => item.uri === uri)
-    // if (index === 0) {
-    //   Toast.info('已经是第一页了', 1)
-    //   return
-    // }
-    // const data = book.chapterList[index - 1]
-    // if (data) {
-    //   this.uri = data.uri
-    //   this.get()
-    // }
     const data = personStore.cacheBook.prev()
     if (data) {
       this.uri = data.uri
