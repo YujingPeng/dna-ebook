@@ -1,6 +1,6 @@
 import { observable, action, runInAction } from 'mobx'
-import BookService from './BookService'
-import personStore from '../../store/personStore'
+import BookService from '../service/BookService'
+import personStore from '../store/personStore'
 var Dimensions = require('Dimensions')
 var ScreenWidth = Dimensions.get('window').width
 
@@ -58,7 +58,7 @@ function lineFeed (str: string, keyPrefix:string) {
   return result
 }
 
-export default class ChapterModel {
+class ChapterModel {
   bookId = '1001';
 
   id = 0
@@ -127,3 +127,5 @@ export default class ChapterModel {
     }
   }
 }
+
+export default ChapterModel

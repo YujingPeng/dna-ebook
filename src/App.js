@@ -1,6 +1,5 @@
 import { StackNavigator, TabNavigator } from 'react-navigation'
 import SearchPage from './page/Search'
-import ReaderPage from './page/Reader'
 import BookPage from './page/Book'
 import HomePage from './page/Home'
 import ViewerPage from './page/Viewer'
@@ -16,7 +15,6 @@ const HomeTabBar = TabNavigator({
 
 const Screen = StackNavigator({
   home: { screen: HomeTabBar },
-  reader: { screen: ReaderPage },
   book: { screen: BookPage },
   viewer: {screen: ViewerPage}
 }, {

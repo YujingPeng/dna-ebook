@@ -1,61 +1,15 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-var Dimensions = require('Dimensions')
-var ScreenWidth = Dimensions.get('window').width
-var ScreenHeight = Dimensions.get('window').height
-import ChapterModel from '../domain/Book/ChapterModel'
+const Dimensions = require('Dimensions')
+const ScreenHeight = Dimensions.get('window').height
+import ChapterModel from '../model/ChapterModel'
 import { computed, observable, action } from 'mobx'
-// import Viewer from '../components/Viewer'
 import { observer } from 'mobx-react/native'
-
-function splitHtml (s): string[] {
-  if (s) {
-    return s.match && s.match(/([\W\w]+?)<br\/>/g)
-  } else {
-    return []
-  }
-}
-
-function zhcnCode (s) {
-  return /[^\x00-\xff]/.test(s)
-}
 
 const lineHeight = 30
 let fontSize = 20
 // 进一
 const lineMax = Math.ceil((ScreenHeight - 100) / lineHeight)
-// 取整
-// const lineEnd = parseInt(ScreenWidth / 20)
-
-function lineFeed (str: string, prefix) {
-  let result = []
-  let chars = str.split('')
-  let linefeed = 0
-  // 第一次转换需要进行首航缩进
-  let lineEnd = ScreenWidth - (fontSize * 2)
-  if (!str && str === '') return result
-  let start = 0
-  let size = 0
-  for (let i = 0, length = chars.length; i < length; i++) {
-    size = zhcnCode(chars[i]) ? fontSize : fontSize / 2
-    if ((linefeed + size) > lineEnd) {
-      i--
-      if (result.length === 0) {
-        result.push(<Text key={prefix + '_' + i} style={styles.textFirst}>{chars.slice(start, i)}</Text>)
-        lineEnd = ScreenWidth
-      } else {
-        result.push(<Text key={prefix + '_' + i} style={styles.text}>{chars.slice(start, i)}</Text>)
-      }
-      start = i
-      linefeed = size
-    } else {
-      linefeed += size
-    }
-  }
-  result.push(<Text key={prefix + '_'} style={styles.text}>{chars.slice(start)}</Text>)
-
-  return result
-}
 
 @observer
 class Viewer extends Component {

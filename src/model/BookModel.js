@@ -6,7 +6,7 @@
  */
 
 import { observable, action, extendObservable, runInAction, toJS, computed } from 'mobx'
-import BookService from '../domain/Book/BookService'
+import BookService from '../service/BookService'
 import DiscoverModel from './DiscoverModel'
 import personStore from '../store/personStore'
 import { Toast } from 'antd-mobile'

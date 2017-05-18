@@ -6,7 +6,7 @@
  */
 import DiscoverModel from '../model/DiscoverModel'
 import { action, runInAction, observable, toJS, extendObservable } from 'mobx'
-import BookService from '../domain/Book/BookService'
+import BookService from '../service/BookService'
 import BookModel from '../model/BookModel'
 
 /** 当前用户仓储 */

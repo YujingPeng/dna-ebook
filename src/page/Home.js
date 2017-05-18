@@ -4,7 +4,7 @@ import { observer } from 'mobx-react/native'
 import { SwipeAction } from 'antd-mobile'
 import personStore from '../store/personStore'
 import { action, observable, runInAction } from 'mobx'
-import BookService from '../domain/Book/BookService'
+import BookService from '../service/BookService'
 
 @observer
 class Home extends Component {

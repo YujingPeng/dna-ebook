@@ -1,6 +1,6 @@
 {
   "name": "dnaebook",
-  "version": "0.0.1",
+  "version": "0.1.2",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
@@ -13,7 +13,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "antd-mobile": "^1.0.5",
+    "antd-mobile": "^1.1.3",
     "camelcase": "^4.0.0",
     "cheerio-without-node-native": "^0.20.2",
     "iconv-lite": "^0.4.16",
@@ -26,6 +26,7 @@
     "react-native-storage": "^0.1.5",
     "react-native-uuid": "^1.4.9",
     "react-navigation": "^1.0.0-beta.9",
+    "realm": "^1.3.0",
     "text-encoding": "^0.6.4"
   },
   "devDependencies": {

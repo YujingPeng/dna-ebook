@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { View, ListView, TouchableOpacity, Image, Text } from 'react-native'
 import { observer } from 'mobx-react/native'
 import { action, observable, runInAction } from 'mobx'
-import BookService from '../domain/Book/BookService'
+import BookService from '../service/BookService'
 import { List, InputItem, Button } from 'antd-mobile'
 
 @observer
