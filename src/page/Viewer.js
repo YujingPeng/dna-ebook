@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 var Dimensions = require('Dimensions')
 var ScreenWidth = Dimensions.get('window').width
 var ScreenHeight = Dimensions.get('window').height
 import ChapterModel from '../domain/Book/ChapterModel'
-import { computed, observable, action, autorunAsync} from 'mobx'
+import { computed, observable, action } from 'mobx'
 // import Viewer from '../components/Viewer'
 import { observer } from 'mobx-react/native'
 
@@ -59,19 +59,10 @@ function lineFeed (str: string, prefix) {
 
 @observer
 class Viewer extends Component {
-  static navigationOptions = {
-    header: ({ state }) => {
-      return {
-        visible: state.params.visible || false,
-        title: state.params.title,
-        style: {
-          position: 'absolute',
-          top: 0,
-          zIndex: 100,
-          width: '100%'
-        }
-      }
-    }
+  static navigationOptions = ({ navigation }) => {
+    const { state = {} } = navigation
+    const { visible = false, title } = state.params || {}
+    return visible ? { title, headerStyle: { position: 'absolute', top: 0, zIndex: 100, width: '100%' } } : { header: null }
   }
 
   @observable
@@ -96,7 +87,7 @@ class Viewer extends Component {
     this.chapter.get()
   }
   @action
-  handlePrev =() => {
+  handlePrev = () => {
     if (this.pageIndex > 1) {
       this.pageIndex--
     } else {
@@ -105,7 +96,7 @@ class Viewer extends Component {
     }
   }
   @action
-  handleNext =() => {
+  handleNext = () => {
     if (this.pageIndex < this.total) {
       this.pageIndex++
     } else {
@@ -113,8 +104,8 @@ class Viewer extends Component {
       this.pageIndex = 1
     }
   }
-  handleMenu =() => {
-    this.props.navigation.setParams({visible: !this.props.navigation.state.params.visible, title: this.chapter.name})
+  handleMenu = () => {
+    this.props.navigation.setParams({ visible: !this.props.navigation.state.params.visible, title: this.chapter.name })
   }
 
   render () {

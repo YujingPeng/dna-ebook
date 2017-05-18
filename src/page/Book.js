@@ -3,13 +3,17 @@ import { View, Text, Image, ScrollView, ListView, TouchableOpacity } from 'react
 import { observer } from 'mobx-react/native'
 import BookModel from '../model/BookModel'
 import { Button } from 'antd-mobile'
-import {observable, action} from 'mobx'
+import { observable, action } from 'mobx'
 import personStore from '../store/personStore'
 
 @observer
 class Book extends Component {
-  static navigationOptions = {
-    title: ({state}) => state.params.name
+  static navigationOptions = ({ navigation }) => {
+    const {state = {}} = navigation
+    const { name } = state.params || {}
+    return {
+      title: name
+    }
   };
 
   @observable
@@ -24,7 +28,7 @@ class Book extends Component {
     const rowItemPress = () => {
       personStore.cacheBook.discover.chapterIndex = parseInt(rowID)
       personStore.updateDiscover()
-      this.props.navigation.navigate('reader', { uri: item.uri, title: item.text })
+      this.props.navigation.navigate('viewer', { uri: item.uri, title: item.text })
     }
     return (
       <TouchableOpacity key={item.id} onPress={rowItemPress}>
@@ -36,16 +40,16 @@ class Book extends Component {
   }
 
   @action
-  handleSave =() => {
+  handleSave = () => {
     this.isCollection = true
     this.book.save()
   }
 
-  handleRemove=() => {
+  handleRemove = () => {
     // todo
   }
 
-  handleRead=() => {
+  handleRead = () => {
     this.props.navigation.navigate('viewer', { uri: this.book.currChapter.uri, title: this.book.currChapter.text })
   }
 
@@ -68,8 +72,8 @@ class Book extends Component {
           <Button style={{ flex: 1, margin: 10 }} type='primary' onClick={this.handleRead}><Text>开始阅读</Text></Button>
           {
             this.isCollection
-            ? (<Button style={{ flex: 1, margin: 10, borderColor: '#ff0000' }} onClick={this.handleRemove}><Text>删除</Text></Button>)
-            : (<Button style={{ flex: 1, margin: 10 }} onClick={this.handleSave}><Text>收藏</Text></Button>)
+              ? (<Button style={{ flex: 1, margin: 10, borderColor: '#ff0000' }} onClick={this.handleRemove}><Text>删除</Text></Button>)
+              : (<Button style={{ flex: 1, margin: 10 }} onClick={this.handleSave}><Text>收藏</Text></Button>)
           }
         </View>
         <View>
