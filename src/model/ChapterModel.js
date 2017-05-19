@@ -118,6 +118,7 @@ class ChapterModel {
   /**
    * 获取上一页
    */
+  @action
   async prev () {
     const data = personStore.cacheBook.prev()
     if (data) {
