@@ -1,7 +1,8 @@
 
 import cheerio from 'cheerio-without-node-native'
 import uuid from 'react-native-uuid'
-import {TextDecoder} from 'text-encoding'
+import { TextDecoder } from 'text-encoding'
+import axios from 'axios'
 
 // https://www.baidu.com/s?q1=%E9%AD%94%E5%A4%A9%E8%AE%B0&q2=&q3=&q4=&rn=10&lm=0&ct=0&ft=&q5=&q6=biquge.com&tn=baidulocal
 
@@ -89,24 +90,24 @@ export default class BookService {
   static rules = rules;
 
   static async fetchData (url) {
-    // let headers = {
-    // 'Proxy-Connection': 'keep-alive',
-    // 'Cache-Control': 'max-age=0',
-    // 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    // 'Origin': origin,
-    // 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
-    // 'Content-Type': 'application/x-www-form-urlencoded',
-    // 'Accept-Encoding': 'compress,gzip,deflate,sdch',
-    // 'Accept-Language': 'zh-CN,zh;q=0.8'
-    // 'Accept-Charset': 'GBK,utf-8;q=0.7,*;q=0.3'
-    // }
-    // const option = {
-    //   method: 'GET',
-    //   headers: headers
-    // }
+    let headers = {
+      // 'Proxy-Connection': 'keep-alive',
+      // 'Cache-Control': 'max-age=0',
+      // 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      // 'Origin': origin,
+      'User-Agent:': 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50'
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+      // 'Accept-Encoding': 'compress,gzip,deflate,sdch',
+      // 'Accept-Language': 'zh-CN,zh;q=0.8'
+      // 'Accept-Charset': 'GBK,utf-8;q=0.7,*;q=0.3'
+    }
     try {
-      const res = await fetch(url)
-      const resHtml = await res.text()
+      // const res = await fetch(url, option)
+      // const resHtml = await res.text()
+      // console.log('fetchData', url, resHtml)
+
+      const resHtml = await axios.get(url, {headers})
+      console.log('fetchData', url, resHtml)
       return cheerio.load(resHtml)
     } catch (error) {
       throw new Error({ message: '抓取失败' })
@@ -245,7 +246,8 @@ export default class BookService {
    * @param {String} name
    */
   static async search (name, site) {
-    let uri = `http://zhannei.baidu.com/cse/site?q=${name}&cc=${site}&stp=1`
+    // let uri = `http://zhannei.baidu.com/cse/site?q=${name}&cc=${site}&stp=1`
+    let uri = `http://zhannei.baidu.com/cse/site?q=魔天记&cc=booktxt.net&stp=1`
     const $ = await BookService.fetchData(uri)
     let result = []
     $('#results>div').each((i, item) => {
@@ -255,8 +257,8 @@ export default class BookService {
       result.push({
         id: uuid.v4(),
         name: $name.text(),
-        uri: uri,
-        thumbImage: getSearchThumbUri('biquge', uri)
+        uri: uri
+        // thumbImage: getSearchThumbUri('biquge', uri)
       })
     })
     return result
