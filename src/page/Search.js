@@ -3,7 +3,7 @@ import { View, ListView, TouchableOpacity, Image, Text } from 'react-native'
 import { observer } from 'mobx-react/native'
 import { action, observable, runInAction } from 'mobx'
 import BookService from '../service/BookService'
-import { List, InputItem, Button } from 'antd-mobile'
+import { SearchBar } from 'antd-mobile'
 
 @observer
 class Search extends Component {
@@ -23,15 +23,21 @@ class Search extends Component {
   }
 
   @action
-  handlePress = async () => {
-    let result = await BookService.search(this.bookName, 'biquge.com')
+  handleSearch = async () => {
+    let result = await BookService.search(this.bookName, 'biqudu.com')
     runInAction(() => {
       this.bookList = this.dataSource.cloneWithRows(result)
     })
   }
 
+  @action
   handleChange = (v) => {
     this.bookName = v
+  }
+
+  @action
+  handeCencel = () => {
+    this.bookName = ''
   }
 
   renderRow = (item) => {
@@ -56,12 +62,7 @@ class Search extends Component {
   render () {
     return (
       <View style={{ flex: 1 }}>
-        <List >
-          <InputItem value={this.bookName} onChange={this.handleChange} />
-          <List.Item>
-            <Button onClick={this.handlePress}>搜索</Button>
-          </List.Item>
-        </List>
+        <SearchBar ref={(ref) => { this.searchbar = ref }} value={this.bookName} onChange={this.handleChange} onSubmit={this.handleSearch} onCancel={this.handeCencel} />
         <ListView
           style={{ flex: 1 }}
           initialListSize={50}
