@@ -1,22 +1,22 @@
-import { StackNavigator, TabNavigator } from 'react-navigation'
+import { StackNavigator } from 'react-navigation'
 import SearchPage from './page/Search'
 import BookPage from './page/Book'
 import HomePage from './page/Home'
 import ViewerPage from './page/Viewer'
 import { enableLogging } from 'mobx-logger'
 
-const HomeTabBar = TabNavigator({
-  BookInfo: { screen: HomePage },
-  Search: { screen: SearchPage }
-}, {
-  tabBarPosition: 'bottom',
-  swipeEnabled: false
-})
+// const HomeTabBar = TabNavigator({
+//   BookInfo: { screen: HomePage },
+// }, {
+//   tabBarPosition: 'bottom',
+//   swipeEnabled: false
+// })
 
 const Screen = StackNavigator({
-  home: { screen: HomeTabBar },
+  home: { screen: HomePage },
+  search: { screen: SearchPage },
   book: { screen: BookPage },
-  viewer: {screen: ViewerPage}
+  viewer: { screen: ViewerPage }
 }, {
   initialRouteName: 'home',
   headerMode: 'screen'

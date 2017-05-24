@@ -8,17 +8,20 @@ import { observable } from 'mobx'
 
 /** 当前阅读的书  */
 class DiscoverModel {
+  @observable id=''
   /** 当前阅读的书ID   */
   @observable
   bookId = ''
 
+  @observable
+  chapterId=''
   /** 当前阅读的章节索引   */
   @observable
   chapterIndex = 0
 
   /** 当前阅读章节的页码   */
   @observable
-  pageIndex = 0
+  page = 0
 
   /** 总页数 */
   @observable

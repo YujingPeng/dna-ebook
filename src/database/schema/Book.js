@@ -7,14 +7,14 @@ Book.schema = {
     id: { type: 'string', indexed: true },
     uri: 'string',
     name: 'string',
-    createAt: 'date',
     desc: 'string',
     author: 'string',
-    updateAt: 'date',
+    updateAt: 'string',
     latestChapter: 'string',
     thumbImage: 'string',
     thumbImageBase64: 'string',
-    discover: { type: '<ObjectType>', objectType: 'Discover' }
+    chapterList: { type: 'list', objectType: 'Chapter' },
+    discover: { type: 'Discover' }
   }
 }
 

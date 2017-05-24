@@ -5,11 +5,15 @@ import { SwipeAction } from 'antd-mobile'
 import personStore from '../store/personStore'
 import { action, observable, runInAction } from 'mobx'
 import BookService from '../service/BookService'
+import db from '../database'
 
 @observer
 class Home extends Component {
-  static navigationOptions = {
-    title: '书架'
+  static navigationOptions =({navigation}) => {
+    return {
+      title: '书架',
+      headerRight: <TouchableOpacity style={{paddingHorizontal: 15}} onPress={() => { navigation.navigate('search') }}><Text>🔍搜索</Text></TouchableOpacity>
+    }
   };
 
   dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
@@ -50,7 +54,7 @@ class Home extends Component {
         style: { backgroundColor: '#F4333C', color: '#F5F5F5' }
       }]
     }
-
+    // console.warn(JSON.stringify(item.discover))
     return (
       <SwipeAction {...SwipeActionConfig} >
         <TouchableOpacity key={item.id} onPress={rowItemPress}>
@@ -73,6 +77,7 @@ class Home extends Component {
   render () {
     return (
       <View style={{ flex: 1 }}>
+        {/* <Text>{db.objects('Chapter').length}{db.objects('Book').length}</Text> */}
         <ListView
           style={{ flex: 1 }}
           initialListSize={50}

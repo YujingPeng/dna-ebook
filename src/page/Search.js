@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 import { View, ListView, TouchableOpacity, Image, Text } from 'react-native'
 import { observer } from 'mobx-react/native'
 import { action, observable, runInAction } from 'mobx'
-import BookService from '../service/BookService'
+import {search} from '../service'
 import { SearchBar } from 'antd-mobile'
 
 @observer
 class Search extends Component {
   static navigationOptions = {
-    title: `搜索`
+    header: null
   };
 
   dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
@@ -24,7 +24,7 @@ class Search extends Component {
 
   @action
   handleSearch = async () => {
-    let result = await BookService.search(this.bookName, 'biqudu.com')
+    let result = await search(this.bookName, 'booktxt.net')
     runInAction(() => {
       this.bookList = this.dataSource.cloneWithRows(result)
     })

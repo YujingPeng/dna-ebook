@@ -108,7 +108,7 @@ export default class BookService {
 
       const resHtml = await axios.get(url, {headers})
       console.log('fetchData', url, resHtml)
-      return cheerio.load(resHtml)
+      return cheerio.load(resHtml.data)
     } catch (error) {
       throw new Error({ message: '抓取失败' })
     }
@@ -246,8 +246,7 @@ export default class BookService {
    * @param {String} name
    */
   static async search (name, site) {
-    // let uri = `http://zhannei.baidu.com/cse/site?q=${name}&cc=${site}&stp=1`
-    let uri = `http://zhannei.baidu.com/cse/site?q=魔天记&cc=booktxt.net&stp=1`
+    let uri = `http://zhannei.baidu.com/cse/site?q=${name}&cc=${site}&stp=1`
     const $ = await BookService.fetchData(uri)
     let result = []
     $('#results>div').each((i, item) => {
@@ -257,8 +256,8 @@ export default class BookService {
       result.push({
         id: uuid.v4(),
         name: $name.text(),
-        uri: uri
-        // thumbImage: getSearchThumbUri('biquge', uri)
+        uri: uri,
+        thumbImage: getSearchThumbUri('biquge', uri)
       })
     })
     return result

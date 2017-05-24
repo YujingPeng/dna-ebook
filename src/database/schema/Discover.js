@@ -2,12 +2,14 @@ class Discover {}
 
 Discover.schema = {
   name: 'Discover',
-  primaryKey: 'bookId',
+  primaryKey: 'id',
   properties: {
+    id: {type: 'string', indexed: true},
     bookId: {type: 'string', indexed: true},
     chapterId: 'string',
-    page: 0,
-    total: 1
+    chapterIndex: 'int',
+    page: 'int',
+    total: 'int'
   }
 }
 

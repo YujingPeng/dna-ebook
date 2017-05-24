@@ -6,7 +6,7 @@
  */
 import DiscoverModel from '../model/DiscoverModel'
 import { action, runInAction, observable, toJS, extendObservable } from 'mobx'
-import BookService from '../service/BookService'
+import {getBookList} from '../service'
 import BookModel from '../model/BookModel'
 
 /** 当前用户仓储 */
@@ -30,7 +30,7 @@ class PersonStore {
 
   @action
   async init () {
-    const result = await BookService.getList()
+    const result = await getBookList()
     runInAction(() => {
       this.books.replace(result)
     })
@@ -42,10 +42,10 @@ class PersonStore {
    */
   @action
   async refresh (bookList) {
-    const result = await BookService.getList()
-    runInAction(() => {
-      this.books.replace(result)
-    })
+    // const result = await BookService.getList()
+    // runInAction(() => {
+    //   this.books.replace(result)
+    // })
   }
 
   /**
@@ -99,8 +99,8 @@ class PersonStore {
   @action
   async updateDiscover () {
     if (this.cacheBook) {
-      await BookService.saveBook(toJS(this.cacheBook))
-      await this.refresh()
+      // await BookService.saveBook(toJS(this.cacheBook))
+      // await this.refresh()
     }
   }
 

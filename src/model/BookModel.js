@@ -6,10 +6,11 @@
  */
 
 import { observable, action, extendObservable, runInAction, toJS, computed } from 'mobx'
-import BookService from '../service/BookService'
+import {newBook, saveBook} from '../service'
 import DiscoverModel from './DiscoverModel'
 import personStore from '../store/personStore'
 import { Toast } from 'antd-mobile'
+import uuid from 'react-native-uuid'
 
 export default class BookModel {
   constructor (id, uri) {
@@ -63,20 +64,27 @@ export default class BookModel {
 
   @action
   async init (id, uri) {
-    let book = personStore.getBook(uri)
-    console.log('cache', personStore.cacheBook)
-    if (book) {
-      runInAction(() => {
-        extendObservable(this, toJS(book))
-      })
-    } else {
-      book = await BookService.newBook(id, uri)
-      runInAction(() => {
-        this.discover.bookId = book.id
-        this.discover.total = book.chapterList.length
-        extendObservable(this, book)
-        personStore.cacheBook = this
-      })
+    try {
+      let book = personStore.getBook(uri)
+      console.log('cache', personStore.cacheBook)
+      if (book) {
+        runInAction(() => {
+          extendObservable(this, toJS(book))
+        })
+      } else {
+        book = await newBook(id, uri)
+        if (!book) return
+        runInAction(() => {
+          this.discover.id = uuid.v1()
+          this.discover.bookId = book.id
+          this.discover.total = book.chapterList.length
+          extendObservable(this, book)
+          personStore.cacheBook = this
+        })
+      }
+    } catch (error) {
+      // Toast.fail('加载失败！！！', 0.7)
+      // console.warn(JSON.stringify(error))
     }
   }
 
@@ -87,7 +95,8 @@ export default class BookModel {
   @action
   async save () {
     const data = toJS(this)
-    BookService.saveBook(data)
+    // BookService.saveBook(data)
+    saveBook(data)
     personStore.addBook(data)
   }
 
