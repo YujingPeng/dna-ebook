@@ -11,16 +11,14 @@ let fontSize = 20
 // 进一
 const lineMax = Math.ceil((ScreenHeight - 100) / lineHeight)
 
-@observer
-class Viewer extends Component {
+@observer class Viewer extends Component {
   static navigationOptions = ({ navigation }) => {
     const { state = {} } = navigation
     const { visible = false, title } = state.params || {}
     return visible ? { title, headerStyle: { position: 'absolute', top: 0, zIndex: 100, width: '100%' } } : { header: null }
   }
 
-  @observable
-  pageIndex = 1
+  @observable pageIndex = 1
 
   @computed get start () {
     return lineMax * (this.pageIndex - 1)
@@ -68,9 +66,7 @@ class Viewer extends Component {
       <View style={{ flex: 1, position: 'relative' }} >
         <View style={{ flex: 1, zIndex: -1, position: 'absolute' }}>
           <View style={{ paddingLeft: 10 }}>
-            {ds.map(item => (
-              <Text key={item.key} style={styles[item.style]} children={item.children} />
-            ))}
+            {ds.map(item => (<Text key={item.key} style={styles[item.style]} children={item.children} />))}
           </View>
         </View>
         <View style={{ padding: 10, flex: 1, position: 'absolute', bottom: 0, right: 0 }} >

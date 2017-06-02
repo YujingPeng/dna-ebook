@@ -1,48 +1,75 @@
 import React, { Component } from 'react'
 import { View, Text, Image, ScrollView, ListView, TouchableOpacity } from 'react-native'
 import { observer } from 'mobx-react/native'
-import BookModel from '../model/BookModel'
-import { Button } from 'antd-mobile'
-import { observable, action } from 'mobx'
+// import BookModel from '../model/BookModel'
+import { Button, Toast } from 'antd-mobile'
+import { observable, action, runInAction, computed, toJS } from 'mobx'
+import { newBook, saveBook, getBookById } from '../service'
 import personStore from '../store/personStore'
 
 @observer
 class Book extends Component {
   static navigationOptions = ({ navigation }) => {
-    const {state = {}} = navigation
+    const { state = {} } = navigation
     const { name } = state.params || {}
     return {
       title: name
     }
   };
 
-  @observable
-  isCollection = personStore.isExist(this.props.navigation.state.params.uri);
-
   dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
 
-  // 'http://www.biquge.com/43_43821/'
-  book = new BookModel(this.props.navigation.state.params.id, this.props.navigation.state.params.uri)
+  @observable
+  isExist = personStore.isExist(this.props.navigation.state.params.uri);
 
-  _renderRow = (item, sectionID, rowID) => {
-    const rowItemPress = () => {
-      personStore.cacheBook.discover.chapterIndex = parseInt(rowID)
-      personStore.updateDiscover()
-      this.props.navigation.navigate('viewer', { uri: item.uri, title: item.text })
-    }
-    return (
-      <TouchableOpacity key={item.id} onPress={rowItemPress}>
-        <View style={{ paddingVertical: 10, borderBottomWidth: 1, borderColor: '#cfcfcf', marginHorizontal: 10 }}>
-          <Text>{item.text}</Text>
-        </View>
-      </TouchableOpacity>
-    )
+  @computed get DataSource () {
+    return this.dataSource.cloneWithRows(this.chapterList.slice(0))
+  }
+
+  params = this.props.navigation.state.params
+  // 'http://www.biquge.com/43_43821/'
+  // book = new BookModel(this.props.navigation.state.params.id, this.props.navigation.state.params.uri)
+  @observable
+  book = {}
+
+  @observable
+  chapterList = []
+
+  componentWillMount () {
+    this.init()
   }
 
   @action
-  handleSave = () => {
-    this.isCollection = true
-    this.book.save()
+  init = async () => {
+    if (this.isExist) {
+      const result = await getBookById(this.params.id)
+      runInAction(() => {
+        // console.time('2')
+        // const bookJSON = result.book.toJSON()
+        // // const list = result.chapterList.map(item => item.toJSON())
+        // console.timeEnd('2')
+        this.book = result.book
+        this.chapterList.replace(result.chapterList)
+      })
+    } else {
+      const result = await newBook(this.params.id, this.params.uri)
+      runInAction(() => {
+        this.book = result.book
+        this.chapterList.replace(result.chapterList)
+      })
+    }
+  }
+
+  // @action
+  handleSave =async () => {
+    // Toast.loading('正在保存...', 0, () => {})
+
+    // this.book.save()
+    await saveBook(toJS(this.book), toJS(this.chapterList))
+    runInAction(() => {
+      this.isExist = true
+    })
+    // Toast.hide()
   }
 
   handleRemove = () => {
@@ -51,6 +78,21 @@ class Book extends Component {
 
   handleRead = () => {
     this.props.navigation.navigate('viewer', { uri: this.book.currChapter.uri, title: this.book.currChapter.text })
+  }
+
+  _renderRow = (item, sectionID, rowID) => {
+    const rowItemPress = () => {
+      // personStore.cacheBook.discover.chapterIndex = parseInt(rowID)
+      // personStore.updateDiscover()
+      this.props.navigation.navigate('viewer', { uri: item.uri, title: item.text })
+    }
+    return (
+      <TouchableOpacity key={item.id} onPress={rowItemPress}>
+        <View style={{ paddingVertical: 10, borderBottomWidth: 1, borderColor: '#cfcfcf', marginHorizontal: 10 }}>
+          <Text>{item.text}:{item.uri}</Text>
+        </View>
+      </TouchableOpacity>
+    )
   }
 
   render () {
@@ -71,7 +113,7 @@ class Book extends Component {
         <View style={{ flex: 1, flexDirection: 'row' }}>
           <Button style={{ flex: 1, margin: 10 }} type='primary' onClick={this.handleRead}><Text>开始阅读</Text></Button>
           {
-            this.isCollection
+            this.isExist
               ? (<Button style={{ flex: 1, margin: 10, borderColor: '#ff0000' }} onClick={this.handleRemove}><Text>删除</Text></Button>)
               : (<Button style={{ flex: 1, margin: 10 }} onClick={this.handleSave}><Text>收藏</Text></Button>)
           }
@@ -81,7 +123,7 @@ class Book extends Component {
             style={{ flex: 1 }}
             initialListSize={50}
             enableEmptySections
-            dataSource={this.dataSource.cloneWithRows(this.book.chapterList.slice(0))}
+            dataSource={this.DataSource}
             renderRow={this._renderRow}
           />
         </View>

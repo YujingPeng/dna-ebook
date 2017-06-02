@@ -6,7 +6,7 @@
  */
 import DiscoverModel from '../model/DiscoverModel'
 import { action, runInAction, observable, toJS, extendObservable } from 'mobx'
-import {getBookList} from '../service'
+import { getBookList } from '../service'
 import BookModel from '../model/BookModel'
 
 /** 当前用户仓储 */
@@ -19,17 +19,14 @@ class PersonStore {
   discover = new DiscoverModel()
 
   /**   书本列表   */
-  @observable
-  books = []
+  @observable books = []
 
   /**
    * @type {BookModel}
    */
-  @observable
-  cacheBook = null
+  @observable cacheBook = null
 
-  @action
-  async init () {
+  @action async init () {
     const result = await getBookList()
     runInAction(() => {
       this.books.replace(result)
@@ -40,12 +37,11 @@ class PersonStore {
    * 更新书架
    * @param {Array} bookList
    */
-  @action
-  async refresh (bookList) {
-    // const result = await BookService.getList()
-    // runInAction(() => {
-    //   this.books.replace(result)
-    // })
+  @action async refresh (bookList) {
+    const result = await getBookList()
+    runInAction(() => {
+      this.books.replace(result)
+    })
   }
 
   /**
@@ -53,23 +49,20 @@ class PersonStore {
    *
    * @param {UUID} bookId
    */
-  @action
-  removeBook (bookId) {
+  @action removeBook (bookId) {
     const index = this.books.findIndex(item => item.id === bookId)
     if (index >= 0) {
       this.books.splice(index, 1)
     }
   }
 
-  @action
-  addBook (book) {
-    this.books.unshift(book)
+  @action addBook (book) {
+    // this.books.unshift(book)
   }
 
   /** 直接搜索取缓存列表中的内容 */
-  @action
-  getBook (uri) {
-    return this.books.find(item => item.uri === uri)
+  @action getBook (uri) {
+    // return this.books.find(item => item.uri === uri)
   }
 
   /**
@@ -77,9 +70,8 @@ class PersonStore {
    * @param {string} bookId
    * @returns {BookModel} 返回Book对象
    */
-  @action
-  getBookById (bookId) {
-    return this.books.find(item => item.id === bookId)
+  @action getBookById (bookId) {
+    // return this.books.find(item => item.id === bookId)
   }
 
   /**
@@ -88,26 +80,23 @@ class PersonStore {
     * @param {any} uri 要判断的地址
     * @returns {bool}
     */
-  @action
-  isExist (uri) {
+  @action isExist (uri) {
     return this.books.findIndex(item => item.uri === uri) >= 0
   }
 
   /**
    * 更新阅读信息
    */
-  @action
-  async updateDiscover () {
+  @action async updateDiscover () {
     if (this.cacheBook) {
       // await BookService.saveBook(toJS(this.cacheBook))
       // await this.refresh()
     }
   }
 
-  @action
-  initCacheBook (book) {
-    this.cacheBook = new BookModel()
-    extendObservable(this.cacheBook, toJS(book))
+  @action initCacheBook (book) {
+    // this.cacheBook = new BookModel()
+    // extendObservable(this.cacheBook, toJS(book))
   }
 }
 

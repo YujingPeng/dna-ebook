@@ -3,7 +3,7 @@ import { View, ListView, TouchableOpacity, Image, Text } from 'react-native'
 import { observer } from 'mobx-react/native'
 import { action, observable, runInAction } from 'mobx'
 import {search} from '../service'
-import { SearchBar } from 'antd-mobile'
+import { SearchBar, Toast } from 'antd-mobile'
 
 @observer
 class Search extends Component {
@@ -42,7 +42,7 @@ class Search extends Component {
 
   renderRow = (item) => {
     const rowItemPress = () => {
-      this.props.navigation.navigate('book', { id: item.id, uri: item.uri })
+      this.props.navigation.navigate('book', { id: item.id, uri: item.uri, name: item.name })
     }
 
     return (

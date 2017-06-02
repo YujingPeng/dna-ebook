@@ -4,14 +4,13 @@ import { observer } from 'mobx-react/native'
 import { SwipeAction } from 'antd-mobile'
 import personStore from '../store/personStore'
 import { action, observable, runInAction } from 'mobx'
-import BookService from '../service/BookService'
-import db from '../database'
+import {removeBook} from '../service'
 
 @observer
 class Home extends Component {
   static navigationOptions =({navigation}) => {
     return {
-      title: '书架',
+      title: '📖书架',
       headerRight: <TouchableOpacity style={{paddingHorizontal: 15}} onPress={() => { navigation.navigate('search') }}><Text>🔍搜索</Text></TouchableOpacity>
     }
   };
@@ -23,8 +22,8 @@ class Home extends Component {
 
   @action
   removeItem = async (bookId) => {
-    await BookService.removeBook(bookId)
     personStore.removeBook(bookId)
+    await removeBook(bookId)
   }
 
   @action
@@ -66,7 +65,7 @@ class Home extends Component {
               <Text>书名：{item.name}</Text>
               <Text>作者：{item.author}</Text>
               <Text>最后章节：{item.latestChapter}</Text>
-              <Text>进度：{Math.ceil(item.discover.chapterIndex / item.discover.total)}%</Text>
+              <Text>进度：{item.discoverChapterIndex + 1} / {item.totalChapter}</Text>
             </View>
           </View>
         </TouchableOpacity>

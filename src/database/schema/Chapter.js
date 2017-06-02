@@ -1,4 +1,14 @@
-class Chapter { }
+
+class Chapter {
+  // toJSON () {
+  //   return {
+  //     id: this.id,
+  //     bookId: this.bookId,
+  //     text: this.text,
+  //     uri: this.uri
+  //   }
+  // }
+}
 
 Chapter.schema = {
   name: 'Chapter',

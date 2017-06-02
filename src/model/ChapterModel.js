@@ -1,5 +1,6 @@
 import { observable, action, runInAction } from 'mobx'
 import BookService from '../service/BookService'
+import { load, matchHost } from '../service'
 import personStore from '../store/personStore'
 var Dimensions = require('Dimensions')
 var ScreenWidth = Dimensions.get('window').width
@@ -17,7 +18,7 @@ let fontSize = 20
  * @param {string} str 要拆分的字符串
  * @param {string} prefix key的数据的前缀
  */
-function lineFeed (str: string, keyPrefix:string) {
+function lineFeed (str: string, keyPrefix: string) {
   let result = []
   let chars = str.split('')
   let linefeed = 0
@@ -87,8 +88,9 @@ class ChapterModel {
 
   @action
   async get () {
-    const $ = await BookService.fetchData(this.uri)
-    const rule = BookService.rules.biquge
+    const $ = await load(this.uri)
+    console.warn($.text())
+    const rule = matchHost(this.uri)
     runInAction(() => {
       // const $ = cheerio.load(resHtml)
       let text = $(rule.content).text()

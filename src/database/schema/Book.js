@@ -1,4 +1,23 @@
-class Book { }
+
+class Book {
+  // toJSON () {
+  //   return {
+  //     id: this.id,
+  //     uri: this.uri,
+  //     name: this.name,
+  //     desc: this.desc,
+  //     author: this.author,
+  //     updateAt: this.updateAt,
+  //     latestChapter: this.latestChapter,
+  //     thumbImage: this.thumbImage,
+  //     thumbImageBase64: this.thumbImageBase64,
+  //     totalChapter: this.totalChapter,
+  //     discoverChapterId: this.discoverChapterId,
+  //     discoverChapterIndex: this.discoverChapterIndex,
+  //     discoverPage: this.discoverPage
+  //   }
+  // }
+}
 
 Book.schema = {
   name: 'Book',
@@ -13,8 +32,10 @@ Book.schema = {
     latestChapter: 'string',
     thumbImage: 'string',
     thumbImageBase64: 'string',
-    chapterList: { type: 'list', objectType: 'Chapter' },
-    discover: { type: 'Discover' }
+    totalChapter: 'int',
+    discoverChapterId: 'string',
+    discoverChapterIndex: 'int',
+    discoverPage: 'int'
   }
 }
 

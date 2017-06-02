@@ -19,12 +19,14 @@ async function fetchData (uri) {
   }
 }
 
-async function load (uri) {
+export async function load (uri) {
   try {
     const rule = matchHost(uri) || {}
     const encode = rule.encode || 'utf-8'
     const res = await axios({ ...config, url: uri })
     const buffer = res.data
+    // const res = await fetch(uri)
+    // const buffer = await res.arrayBuffer()
     const decode = new TextDecoder(encode)
     const resHtml = decode.decode(buffer)
     return cheerio.load(resHtml)
@@ -55,24 +57,58 @@ export async function newBook (id, uri) {
   // console.warn('爬取页面', rule)
   if (!rule) return null
   const $ = await load(uri)
-  let data = translator(rule, $) || {}
-  data.id = id
-  data.uri = uri
-  data.chapterList = translatorChapterMenu(rule, $, data.id) || []
+  let book = translator(rule, $) || {}
+  book.id = id
+  book.uri = uri
+  const chapterList = translatorChapterMenu(rule, $, book.id) || []
+  book.totalChapter = chapterList.length
+  book.thumbImageBase64 = ''
+  book.discoverChapterId = ''
+  book.discoverChapterIndex = 0
+  book.discoverPage = 0
   // 详细页面点击收藏再保存到缓存
-  return data
+  return { book, chapterList }
 }
 
-export function saveBook (model) {
-  const { ...book } = model
-
-  db.write(() => {
-    db.create('Book', book)
+export function saveBook (book, chapterList) {
+  return new Promise((resolve, reject) => {
+    // const { ...book } = model
+    console.log('saveBook', book, chapterList)
+    db.write(() => {
+      db.create('Book', book)
+      chapterList.forEach(item => {
+        db.create('Chapter', item)
+      })
+      resolve(true)
+    })
   })
 }
 
 export async function getBookList (params) {
   return db.objects('Book')
+}
+export async function getBookById (bookId) {
+  return new Promise((resolve, reject) => {
+    db.write(() => {
+      console.time('1')
+      const book = db.objectForPrimaryKey('Book', bookId)
+      const chapterList = db.objects('Chapter')
+      console.timeEnd('1')
+      resolve({ book, chapterList })
+    })
+  })
+}
+
+export function removeBook (bookId) {
+  return new Promise((resolve, reject) => {
+    db.write(() => {
+      const result = db.objectForPrimaryKey('Book', bookId)
+      const chapterList = db.objects('Chapter').filtered(`bookId = "${bookId}"`)
+      db.delete(chapterList)
+      db.delete(result)
+      resolve(true)
+    })
+  })
 }
 
 const rules = {
@@ -154,7 +190,7 @@ const rules = {
   }
 }
 
-function matchHost (uri) {
+export function matchHost (uri) {
   return Object.values(rules).find(item => uri.indexOf(item.host) >= 0)
 }
 
