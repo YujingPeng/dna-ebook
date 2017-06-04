@@ -18,6 +18,10 @@ const lineMax = Math.ceil((ScreenHeight - 100) / lineHeight)
     return visible ? { title, headerStyle: { position: 'absolute', top: 0, zIndex: 100, width: '100%' } } : { header: null }
   }
 
+  params = this.props.navigation.state.params
+
+  chapter = new ChapterModel(this.params.id, this.params.title);
+
   @observable pageIndex = 1
 
   @computed get start () {
@@ -33,11 +37,6 @@ const lineMax = Math.ceil((ScreenHeight - 100) / lineHeight)
     return total === 0 ? 1 : total
   }
 
-  chapter = new ChapterModel(this.props.navigation.state.params.uri, this.props.navigation.state.params.title);
-
-  componentWilMount () {
-    this.chapter.get()
-  }
   @action
   handlePrev = () => {
     if (this.pageIndex > 1) {
@@ -57,7 +56,7 @@ const lineMax = Math.ceil((ScreenHeight - 100) / lineHeight)
     }
   }
   handleMenu = () => {
-    this.props.navigation.setParams({ visible: !this.props.navigation.state.params.visible, title: this.chapter.name })
+    this.props.navigation.setParams({ visible: !this.params.visible, title: this.chapter.name })
   }
 
   render () {

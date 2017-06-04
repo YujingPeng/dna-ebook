@@ -35,7 +35,8 @@ Book.schema = {
     totalChapter: 'int',
     discoverChapterId: 'string',
     discoverChapterIndex: 'int',
-    discoverPage: 'int'
+    discoverPage: 'int',
+    chapters: { type: 'list', objectType: 'Chapter' }
   }
 }
 

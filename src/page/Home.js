@@ -37,8 +37,9 @@ class Home extends Component {
 
   _renderRow = (item) => {
     const rowItemPress = () => {
-      personStore.initCacheBook(item)
-      this.props.navigation.navigate('viewer', { uri: personStore.cacheBook.currChapter.uri, title: personStore.cacheBook.currChapter.text })
+      // personStore.initCacheBook(item)
+      // this.props.navigation.navigate('viewer', { uri: personStore.cacheBook.currChapter.uri, title: personStore.cacheBook.currChapter.text })
+      this.props.navigation.navigate('viewer', { id: item.discoverChapterId, title: '' })
     }
 
     const SwipeActionConfig = {

@@ -1,6 +1,5 @@
 import { observable, action, runInAction } from 'mobx'
-import BookService from '../service/BookService'
-import { load, matchHost } from '../service'
+import { load, matchRule, getChapter } from '../service'
 import personStore from '../store/personStore'
 var Dimensions = require('Dimensions')
 var ScreenWidth = Dimensions.get('window').width
@@ -62,40 +61,35 @@ function lineFeed (str: string, keyPrefix: string) {
 class ChapterModel {
   bookId = '1001';
 
-  id = 0
+  @observable
+  id = ''
 
+  @observable
   uri = ''
 
   @observable
   name = ''
 
   @observable
-  numbers = ''
-
-  @observable
-  content = null
-
-  @observable
-  htmlstring = ''
-
-  @observable
   lines = []
 
-  constructor (uri, title) {
-    this.uri = uri
+  constructor (id, title) {
+    this.id = id
     this.name = title
+    if (id) {
+      this.get()
+    }
   }
 
   @action
   async get () {
-    const $ = await load(this.uri)
-    console.warn($.text())
-    const rule = matchHost(this.uri)
+    const chapter = await getChapter(this.id)
+    // const rule = matchRule(this.uri)
     runInAction(() => {
       // const $ = cheerio.load(resHtml)
-      let text = $(rule.content).text()
-      this.content = text
-      let content = text.split('    ')
+      // let text = $(rule.content).text()
+      this.content = chapter.content
+      let content = chapter.content.split('    ')
       let result = []
       for (let i = 0; i < content.length; i++) {
         result = result.concat(lineFeed(content[i], 'row_' + i))

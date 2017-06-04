@@ -21,7 +21,7 @@ async function fetchData (uri) {
 
 export async function load (uri) {
   try {
-    const rule = matchHost(uri) || {}
+    const rule = matchRule(uri) || {}
     const encode = rule.encode || 'utf-8'
     const res = await axios({ ...config, url: uri })
     const buffer = res.data
@@ -53,32 +53,33 @@ export async function search (name, site) {
 
 export async function newBook (id, uri) {
   // console.warn('爬取页面', uri)
-  const rule = matchHost(uri)
+  const rule = matchRule(uri)
   // console.warn('爬取页面', rule)
   if (!rule) return null
   const $ = await load(uri)
-  let book = translator(rule, $) || {}
+  let book = translator(rule, $, uri) || {}
   book.id = id
   book.uri = uri
   const chapterList = translatorChapterMenu(rule, $, book.id) || []
   book.totalChapter = chapterList.length
   book.thumbImageBase64 = ''
-  book.discoverChapterId = ''
+  book.discoverChapterId = chapterList[0].id
   book.discoverChapterIndex = 0
   book.discoverPage = 0
+  book.chapters = chapterList
   // 详细页面点击收藏再保存到缓存
-  return { book, chapterList }
+  return book
 }
 
-export function saveBook (book, chapterList) {
+export function saveBook (book) {
   return new Promise((resolve, reject) => {
     // const { ...book } = model
-    console.log('saveBook', book, chapterList)
+    // console.warn('saveBook', book)
     db.write(() => {
       db.create('Book', book)
-      chapterList.forEach(item => {
-        db.create('Chapter', item)
-      })
+      // chapterList.forEach(item => {
+      //   db.create('Chapter', item)
+      // })
       resolve(true)
     })
   })
@@ -90,11 +91,11 @@ export async function getBookList (params) {
 export async function getBookById (bookId) {
   return new Promise((resolve, reject) => {
     db.write(() => {
-      console.time('1')
+      // console.time('1')
       const book = db.objectForPrimaryKey('Book', bookId)
-      const chapterList = db.objects('Chapter')
-      console.timeEnd('1')
-      resolve({ book, chapterList })
+      // const chapterList = db.objects('Chapter')
+      // console.timeEnd('1')
+      resolve(book)
     })
   })
 }
@@ -103,11 +104,34 @@ export function removeBook (bookId) {
   return new Promise((resolve, reject) => {
     db.write(() => {
       const result = db.objectForPrimaryKey('Book', bookId)
-      const chapterList = db.objects('Chapter').filtered(`bookId = "${bookId}"`)
-      db.delete(chapterList)
+      // const chapterList = db.objects('Chapter').filtered(`bookId = "${bookId}"`)
+      // db.delete(chapterList)
       db.delete(result)
       resolve(true)
     })
+  })
+}
+
+export async function getChapter (chapterId) {
+  return new Promise((resolve, reject) => {
+    try {
+      let chapter = db.objectForPrimaryKey('Chapter', chapterId)
+      let chapterContent = db.objectForPrimaryKey('ChapterContent', chapterId)
+      if (chapterContent) {
+        resolve({ name: chapter.text, content: chapterContent.content })
+      } else {
+        const rule = matchRule(chapter.uri)
+        load(chapter.uri).then($ => {
+          const content = $(rule.content).text()
+          db.write(() => {
+            db.create('ChapterContent', { id: chapterId, bookId: chapter.bookId, content })
+          })
+          resolve({ name: chapter.text, content })
+        })
+      }
+    } catch (error) {
+      reject(error)
+    }
   })
 }
 
@@ -136,8 +160,9 @@ const rules = {
       desc: '#intro'
     },
     thumbImage: '#fmimg > img',
-    searchThumbImage: (host, parm1, parm2) => `${host}/files/article/image/${parm1}/${parm2}/${parm2}.jpg`,
+    searchThumbImage: (host, parm1, parm2) => `${host}/files/article/image/${Number(parm1) + 1}/${parm2}/${parm2}.jpg`,
     chapterMenu: '#list > dl > dd > a',
+    firstChapterIndex: 9,
     content: '#content'
   },
   'biqudu.com': {
@@ -160,8 +185,9 @@ const rules = {
       desc: '#intro'
     },
     thumbImage: '#fmimg > img',
-    searchThumbImage: (host, parm1, parm2) => `${host}/files/article/image/${parm1}/${parm2}/${parm2}.jpg`,
+    searchThumbImage: (host, parm1, parm2) => `${host}/files/article/image/${Number(parm1) + 1}/${parm2}/${parm2}.jpg`,
     chapterMenu: '#list > dl > dd > a',
+    firstChapterIndex: 9,
     content: '#content'
   },
   'booktxt.net': {
@@ -183,18 +209,19 @@ const rules = {
       },
       desc: '#intro'
     },
-    thumbImage: '#fmimg > img',
+    thumbImage: '#fmimg img',
     searchThumbImage: (host, parm1, parm2) => `${host}/files/article/image/${parm1}/${parm2}/${parm2}s.jpg`,
     chapterMenu: '#list > dl > dd > a',
+    firstChapterIndex: 9,
     content: '#content'
   }
 }
 
-export function matchHost (uri) {
+export function matchRule (uri) {
   return Object.values(rules).find(item => uri.indexOf(item.host) >= 0)
 }
 
-function translator (rule, $) {
+function translator (rule, $, uri) {
   const self = {}
   const { info, thumbImage, host } = rule
   for (let [k, v] of Object.entries(info)) {
@@ -205,47 +232,55 @@ function translator (rule, $) {
       self[k] = $(v).text()
     }
   }
-  self.thumbImage = `${host}${$(thumbImage).attr('src')}`
+  let thumbImageUri = $(thumbImage).attr('src')
+  if (!thumbImageUri) {
+    self.thumbImage = getSearchThumbUri(host, uri)
+  } else {
+    self.thumbImage = `${host}${thumbImageUri}`
+  }
+
   return self
 }
 
 function translatorChapterMenu (rule, $, bookId) {
-  const { host } = rule
+  const { host, firstChapterIndex } = rule
   let list = []
   $('#list>dl>dd>a').each((i, item) => {
-    const $elem = $(item)
-    let uri = host + $elem.attr('href')
-    let text = $elem.text()
-    const index = list.findIndex(item => item.uri === uri)
-    if (!!text && !!uri && index < 0) {
-      list.push({
-        id: uuid.v4(), uri, text, bookId
-      })
+    if (i >= firstChapterIndex) {
+      const $elem = $(item)
+      let uri = host + $elem.attr('href')
+      let text = $elem.text()
+      const index = list.findIndex(item => item.uri === uri)
+      if (!!text && !!uri && index < 0) {
+        list.push({
+          id: uuid.v4(), uri, text, bookId
+        })
+      }
     }
   })
 
-  const len = list.length
-  for (let i = 0; i < len; i++) {
-    for (let j = 0; j < len; j++) {
-      if (list[i].uri < list[j].uri) {
-        let temp = list[i]
-        list[i] = list[j]
-        list[j] = temp
-      }
-    }
-  }
+  // const len = list.length
+  // for (let i = 0; i < len; i++) {
+  //   for (let j = 0; j < len; j++) {
+  //     if (list[i].uri < list[j].uri) {
+  //       let temp = list[i]
+  //       list[i] = list[j]
+  //       list[j] = temp
+  //     }
+  //   }
+  // }
 
   return list
 }
 
 /** 获取搜索列表预览图片 */
 function getSearchThumbUri (site, bookUri) {
-  const rule = rules[site]
   if (!bookUri) return ''
+  const rule = matchRule(bookUri)
   let params = bookUri.split('/')
-  let bookHostId = params[params.length - 2]
+  let bookHostId = params[params.length] === '/' ? params[params.length - 2] : params[params.length - 1]
   let bookParams = bookHostId.split('_')
   // let uri = `${rule.host}${rule.searchThumbImage}/${parseInt(bookParams[0]) + 1}/${bookParams[1]}/${bookParams[1]}.jpg`
-  let uri = rule.searchThumbImage(rule.host, (parseInt(bookParams[0]) + 1), bookParams[1])
+  let uri = rule.searchThumbImage(rule.host, bookParams[0], bookParams[1])
   return uri
 }
