@@ -88,6 +88,7 @@ export function saveBook (book) {
 export async function getBookList (params) {
   return db.objects('Book')
 }
+
 export async function getBookById (bookId) {
   return new Promise((resolve, reject) => {
     db.write(() => {
@@ -118,7 +119,7 @@ export async function getChapter (chapterId) {
       let chapter = db.objectForPrimaryKey('Chapter', chapterId)
       let chapterContent = db.objectForPrimaryKey('ChapterContent', chapterId)
       if (chapterContent) {
-        resolve({ name: chapter.text, content: chapterContent.content })
+        resolve({ name: chapter.text, bookId: chapter.bookId, content: chapterContent.content })
       } else {
         const rule = matchRule(chapter.uri)
         load(chapter.uri).then($ => {
@@ -126,9 +127,36 @@ export async function getChapter (chapterId) {
           db.write(() => {
             db.create('ChapterContent', { id: chapterId, bookId: chapter.bookId, content })
           })
-          resolve({ name: chapter.text, content })
+          resolve({ name: chapter.text, bookId: chapter.bookId, content })
         })
       }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+export async function getChapterByIndex (bookId, chapterId, index) {
+  return new Promise((resolve, reject) => {
+    try {
+      const chapters = db.objects('Chapter').filtered(`bookId = "${bookId}"`)
+      const currentIndex = chapters.findIndex(item => chapterId === item.id)
+      const result = chapters[currentIndex + index]
+      updateDiscover({id: bookId, discoverChapterId: result.id, discoverChapterIndex: currentIndex + 1, discoverPage: 0})
+      resolve(result)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+export async function updateDiscover (book) {
+  return new Promise((resolve, reject) => {
+    try {
+      db.write(() => {
+        db.create('Book', book, true)
+      })
+      resolve(true)
     } catch (error) {
       reject(error)
     }

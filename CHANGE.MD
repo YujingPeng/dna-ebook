@@ -10,16 +10,23 @@ ChangeLog
 ## Features
 {changes}
 ```
-# version
+# 0.2.2
 ## Breakin Change
 {changes}
 ## Bug Fixes
 {changes}
 ## Features
-- modify directory structure  -- todo
-- abstract text utils models  -- todo
-- use realm database          -- todo
+- modify directory structure
+- abstract text utils models
+- use realm database
 - upgrade antd-mobile 1.0.5 to 1.1.3
+- Viewer page add loading animation
+- rewrite Book and Viewwer page load logic
+- Separation of the `Books` pages and `Search` pages
+
+## Bug Fixes
+- fix crawl `gbk` encoding of pages
+- fix book discover
 
 # 0.1.0
 ## Breakin Change

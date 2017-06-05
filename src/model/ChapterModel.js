@@ -1,6 +1,6 @@
 import { observable, action, runInAction } from 'mobx'
-import { load, matchRule, getChapter } from '../service'
-import personStore from '../store/personStore'
+import { getChapter, getChapterByIndex, updateDiscover } from '../service'
+import {Toast} from 'antd-mobile'
 var Dimensions = require('Dimensions')
 var ScreenWidth = Dimensions.get('window').width
 
@@ -28,8 +28,8 @@ function lineFeed (str: string, keyPrefix: string) {
   let size = 0
   for (let i = 0, length = chars.length; i < length; i++) {
     size = zhcnCode(chars[i]) ? fontSize : fontSize / 2
-    if ((linefeed + size) > lineEnd) {
-      i--
+    if ((linefeed + size) >= lineEnd) {
+      // i--
       if (result.length === 0) {
         result.push({
           key: keyPrefix + '_' + i,
@@ -59,7 +59,8 @@ function lineFeed (str: string, keyPrefix: string) {
 }
 
 class ChapterModel {
-  bookId = '1001';
+  @observable
+  bookId = '';
 
   @observable
   id = ''
@@ -83,18 +84,20 @@ class ChapterModel {
 
   @action
   async get () {
-    const chapter = await getChapter(this.id)
-    // const rule = matchRule(this.uri)
+    Toast.loading('正在加载...', 0)
+    const result = await getChapter(this.id)
     runInAction(() => {
-      // const $ = cheerio.load(resHtml)
-      // let text = $(rule.content).text()
-      this.content = chapter.content
-      let content = chapter.content.split('    ')
-      let result = []
+      this.name = result.name
+      this.bookId = result.bookId
+      this.content = result.content.replace(/\r\n/g, '')
+      let content = this.content.split('    ')
+      let lines = []
       for (let i = 0; i < content.length; i++) {
-        result = result.concat(lineFeed(content[i], 'row_' + i))
+        // console.warn(JSON.stringify(content[i]))
+        lines = lines.concat(lineFeed(content[i], 'row_' + i))
       }
-      this.lines = result
+      this.lines = lines
+      Toast.hide()
     })
   }
 
@@ -103,11 +106,14 @@ class ChapterModel {
    */
   @action
   async next () {
-    const data = personStore.cacheBook.next()
-    if (data) {
-      this.uri = data.uri
-      this.name = data.text
-      this.get()
+    const result = await getChapterByIndex(this.bookId, this.id, 1)
+    if (result) {
+      runInAction(() => {
+        this.id = result.id
+        this.get()
+      })
+    } else {
+      Toast.info('已经是最后一章了', 0.7)
     }
   }
 
@@ -116,12 +122,33 @@ class ChapterModel {
    */
   @action
   async prev () {
-    const data = personStore.cacheBook.prev()
-    if (data) {
-      this.uri = data.uri
-      this.name = data.text
-      this.get()
+    const result = await getChapterByIndex(this.bookId, this.id, -1)
+    if (result) {
+      runInAction(() => {
+        this.id = result.id
+        this.get()
+      })
+    } else {
+      Toast.info('已经是第一章了', 0.7)
     }
+  }
+
+  @action
+  async jump (index) {
+    const result = await getChapterByIndex(this.bookId, this.id, index)
+    if (result) {
+      runInAction(async() => {
+        this.id = result.id
+        await this.get()
+      })
+    } else {
+      Toast.info(index > 0 ? '已经是最后一章了' : '已经是第一章了', 0.7)
+    }
+  }
+
+  @action
+  discover (page) {
+    updateDiscover({id: this.bookId, discoverPage: page})
   }
 }
 

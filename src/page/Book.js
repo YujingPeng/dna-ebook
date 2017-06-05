@@ -4,7 +4,7 @@ import { observer } from 'mobx-react/native'
 // import BookModel from '../model/BookModel'
 import { Button } from 'antd-mobile'
 import { observable, action, runInAction, computed, toJS } from 'mobx'
-import { newBook, saveBook, getBookById } from '../service'
+import { newBook, saveBook, getBookById, updateDiscover} from '../service'
 import personStore from '../store/personStore'
 
 @observer
@@ -56,7 +56,7 @@ class Book extends Component {
   }
 
   // @action
-  handleSave =async () => {
+  handleSave = async () => {
     // Toast.loading('正在保存...', 0, () => {})
 
     // this.book.save()
@@ -72,19 +72,20 @@ class Book extends Component {
   }
 
   handleRead = () => {
-    this.props.navigation.navigate('viewer', { uri: this.book.currChapter.uri, title: this.book.currChapter.text })
+    this.props.navigation.navigate('viewer', { id: this.book.discoverChapterId, title: '', pageIndex: this.book.discoverPage })
   }
 
   _renderRow = (item, sectionID, rowID) => {
     const rowItemPress = () => {
       // personStore.cacheBook.discover.chapterIndex = parseInt(rowID)
       // personStore.updateDiscover()
-      this.props.navigation.navigate('viewer', { uri: item.uri, title: item.text })
+      updateDiscover({id: item.bookId, discoverChapterId: item.id, discoverPage: 0, discoverChapterIndex: Number(rowID)})
+      this.props.navigation.navigate('viewer', { id: item.id, pageIndex: 0, title: item.text })
     }
     return (
       <TouchableOpacity key={item.id} onPress={rowItemPress}>
         <View style={{ paddingVertical: 10, borderBottomWidth: 1, borderColor: '#cfcfcf', marginHorizontal: 10 }}>
-          <Text>{item.text}:{item.uri}</Text>
+          <Text>{item.text}</Text>
         </View>
       </TouchableOpacity>
     )

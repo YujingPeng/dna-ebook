@@ -39,7 +39,7 @@ class Home extends Component {
     const rowItemPress = () => {
       // personStore.initCacheBook(item)
       // this.props.navigation.navigate('viewer', { uri: personStore.cacheBook.currChapter.uri, title: personStore.cacheBook.currChapter.text })
-      this.props.navigation.navigate('viewer', { id: item.discoverChapterId, title: '' })
+      this.props.navigation.navigate('viewer', { id: item.discoverChapterId, title: '', pageIndex: item.discoverPage })
     }
 
     const SwipeActionConfig = {
@@ -66,7 +66,7 @@ class Home extends Component {
               <Text>书名：{item.name}</Text>
               <Text>作者：{item.author}</Text>
               <Text>最后章节：{item.latestChapter}</Text>
-              <Text>进度：{item.discoverChapterIndex + 1} / {item.totalChapter}</Text>
+              <Text>进度：{((item.discoverChapterIndex + 1) / item.totalChapter).toFixed(2)}%</Text>
             </View>
           </View>
         </TouchableOpacity>
