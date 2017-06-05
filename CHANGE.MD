@@ -7,15 +7,20 @@ ChangeLog
 {changes}
 ## Bug Fixes
 {changes}
-## Features
+## New features and enhancements
 {changes}
 ```
+
+## TODO LIST
+- [ ] bulk cache chapter
+- [ ] upgrade `antd-mobild` to 1.2.0
+- [ ] upgrade `react-native` to 0.45.x
+- [ ] add choice source options in search page
+- [ ] add bottom bar and it can change `backgroundColor` `choice chapter` `cache chapter` `settings` in viewer page
+- [ ] design UI
+
 # 0.2.2
-## Breakin Change
-{changes}
-## Bug Fixes
-{changes}
-## Features
+## New features and enhancements
 - modify directory structure
 - abstract text utils models
 - use realm database
@@ -29,8 +34,6 @@ ChangeLog
 - fix book discover
 
 # 0.1.0
-## Breakin Change
-## Bug Fixes
 ## New features and enhancements
 - use ReactNative 0.42.2
 - upgrade react-navigation 1.0.0-beta9
