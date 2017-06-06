@@ -18,6 +18,14 @@ CHANGES
 - [ ] add choice source options in search page
 - [ ] add bottom bar and it can change `backgroundColor` `choice chapter` `cache chapter` `settings` in viewer page
 - [ ] design UI
+- [ ] optimize loading component
+
+# nextversion
+## Bu Fixes
+- fix set discovertPage with the last pager when jump previous chapter
+## New features and enhancements
+- upgrade `antd-mobild` to 1.2.0
+- optimize loading component in viewer component
 
 # 0.2.2
 ## New features and enhancements

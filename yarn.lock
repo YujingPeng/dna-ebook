@@ -111,9 +111,9 @@ ansicolors@~0.2.1:
   version "0.2.1"
   resolved "http://r.cnpmjs.org/ansicolors/download/ansicolors-0.2.1.tgz#be089599097b74a5c9c4a84a0cdbcdb62bd87aef"
 
-antd-mobile@^1.1.3:
-  version "1.1.3"
-  resolved "http://r.cnpmjs.org/antd-mobile/download/antd-mobile-1.1.3.tgz#37fe301cc8c1ec8c6e73850a55f3cb1abd575197"
+antd-mobile@^1.2.0:
+  version "1.2.0"
+  resolved "http://r.cnpmjs.org/antd-mobile/download/antd-mobile-1.2.0.tgz#3bbc2fe13bf7d9f9b1c7ee10cfd9ce2b90214d45"
   dependencies:
     array-tree-filter "~1.0.0"
     babel-runtime "6.x"
@@ -121,7 +121,6 @@ antd-mobile@^1.1.3:
     create-react-class "^15.5.2"
     moment "~2.18.1"
     normalize.css "^7.0.0"
-    nuka-carousel "~2.0.4"
     object-assign "~4.1.0"
     omit.js "~0.1.0"
     prop-types "^15.5.8"
@@ -130,14 +129,14 @@ antd-mobile@^1.1.3:
     rc-dialog "~6.5.7"
     rc-drawer "~0.4.9"
     rc-input-number "~3.4.13"
-    rc-notification "~1.4.1"
+    rc-notification "~2.0.0"
     rc-slider "~7.0.1"
     rc-steps "~2.5.1"
     rc-swipeout "~1.3.0"
     rc-table "~5.3.1"
-    rc-tabs "~7.5.0"
+    rc-tabs "~8.0.0"
     rc-tooltip "~3.4.3"
-    rc-touchable "~1.1.0"
+    rc-touchable "~1.2.2"
     react-native-camera-roll-picker "~1.1.6"
     react-native-collapsible "^0.8.0"
     react-native-drawer-layout "~1.3.0"
@@ -145,9 +144,11 @@ antd-mobile@^1.1.3:
     react-native-scrollable-tab-view "^0.7.2"
     rmc-cascader "^4.1.1"
     rmc-date-picker "^5.3.1"
-    rmc-list-view "^0.7.4"
+    rmc-list-view "^0.8.0"
+    rmc-nuka-carousel "^2.2.0"
     rmc-picker "^3.8.0"
     rn-topview "~0.1.0"
+    warning "^3.0.0"
 
 append-transform@^0.4.0:
   version "0.4.0"
@@ -1311,7 +1312,7 @@ crc@3.3.0:
   version "3.3.0"
   resolved "http://r.cnpmjs.org/crc/download/crc-3.3.0.tgz#fa622e1bc388bf257309082d6b65200ce67090ba"
 
-create-react-class@15.x, create-react-class@^15.5.2:
+create-react-class@15.x, create-react-class@^15.5.2, create-react-class@^15.5.3:
   version "15.5.3"
   resolved "http://r.cnpmjs.org/create-react-class/download/create-react-class-15.5.3.tgz#fb0f7cae79339e9a179e194ef466efa3923820fe"
   dependencies:
@@ -3621,14 +3622,6 @@ nth-check@~1.0.1:
   dependencies:
     boolbase "~1.0.0"
 
-nuka-carousel@~2.0.4:
-  version "2.0.4"
-  resolved "http://r.cnpmjs.org/nuka-carousel/download/nuka-carousel-2.0.4.tgz#eabd24f2785b6d07503542af64155ee5ceccd7ad"
-  dependencies:
-    exenv "^1.2.0"
-    kw-react-tween-state "^0.1.5"
-    object-assign "^4.1.0"
-
 number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "http://r.cnpmjs.org/number-is-nan/download/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
@@ -4053,10 +4046,11 @@ rc-input-number@~3.4.13:
     prop-types "^15.5.7"
     rc-touchable "^1.0.0"
 
-rc-notification@~1.4.1:
-  version "1.4.2"
-  resolved "http://r.cnpmjs.org/rc-notification/download/rc-notification-1.4.2.tgz#98c592026bacdba791b096614553d5d88d7bc133"
+rc-notification@~2.0.0:
+  version "2.0.0"
+  resolved "http://r.cnpmjs.org/rc-notification/download/rc-notification-2.0.0.tgz#367b09ffc827fb1b003e99b38d56b8edad30137f"
   dependencies:
+    babel-runtime "^6.23.0"
     classnames "2.x"
     prop-types "^15.5.8"
     rc-animate "2.x"
@@ -4103,9 +4097,9 @@ rc-table@~5.3.1:
     shallowequal "^0.2.2"
     warning "^3.0.0"
 
-rc-tabs@~7.5.0:
-  version "7.5.0"
-  resolved "http://r.cnpmjs.org/rc-tabs/download/rc-tabs-7.5.0.tgz#16d6194cb99a50f295c8df785f65805bc409e7ce"
+rc-tabs@~8.0.0:
+  version "8.0.0"
+  resolved "http://r.cnpmjs.org/rc-tabs/download/rc-tabs-8.0.0.tgz#24519e7bafd43b0440e9c651a0d3ef0312bcfcac"
   dependencies:
     babel-runtime "6.x"
     classnames "2.x"
@@ -4121,9 +4115,16 @@ rc-tooltip@^3.4.2, rc-tooltip@~3.4.3:
     prop-types "^15.5.8"
     rc-trigger "1.x"
 
-rc-touchable@^1.0.0, rc-touchable@^1.0.2, rc-touchable@~1.1.0:
+rc-touchable@^1.0.0, rc-touchable@^1.0.2:
   version "1.1.4"
   resolved "http://r.cnpmjs.org/rc-touchable/download/rc-touchable-1.1.4.tgz#8ce0c7abb7e4c6560e3be5b5f84df51b9b3addcd"
+  dependencies:
+    babel-runtime "6.x"
+    object-assign "^4.1.0"
+
+rc-touchable@~1.2.2:
+  version "1.2.2"
+  resolved "http://r.cnpmjs.org/rc-touchable/download/rc-touchable-1.2.2.tgz#e0936ca0069b455cba728e54d4c10c0fa13558fe"
   dependencies:
     babel-runtime "6.x"
     object-assign "^4.1.0"
@@ -4628,9 +4629,9 @@ rmc-date-picker@^5.3.1:
     moment "2.x"
     rmc-picker "^3.8.0"
 
-rmc-list-view@^0.7.4:
-  version "0.7.6"
-  resolved "http://r.cnpmjs.org/rmc-list-view/download/rmc-list-view-0.7.6.tgz#057d42ec39419e5ba3c1302fbfcbe1c7c8699845"
+rmc-list-view@^0.8.0:
+  version "0.8.1"
+  resolved "http://r.cnpmjs.org/rmc-list-view/download/rmc-list-view-0.8.1.tgz#cc0279f66e0ecd9846fb0afd36579889e97b629c"
   dependencies:
     autobind-decorator "^1.3.3"
     babel-runtime "6.x"
@@ -4641,7 +4642,16 @@ rmc-list-view@^0.7.4:
     react-mixin "^3.0.5"
     react-sticky "^5.0.2"
     react-timer-mixin "^0.13.3"
-    zscroller "~0.2.2"
+    zscroller "~0.3.0"
+
+rmc-nuka-carousel@^2.2.0:
+  version "2.2.1"
+  resolved "http://r.cnpmjs.org/rmc-nuka-carousel/download/rmc-nuka-carousel-2.2.1.tgz#c4238193a298be128a2f13ecb5c26fd77ad00ccd"
+  dependencies:
+    create-react-class "^15.5.3"
+    exenv "^1.2.0"
+    kw-react-tween-state "^0.1.5"
+    object-assign "^4.1.0"
 
 rmc-picker@^3.8.0, rmc-picker@^3.9.3:
   version "3.9.3"
@@ -5455,8 +5465,15 @@ yauzl@2.4.1:
   dependencies:
     fd-slicer "~1.0.1"
 
-zscroller@~0.2.0, zscroller@~0.2.2:
+zscroller@~0.2.0:
   version "0.2.5"
   resolved "http://r.cnpmjs.org/zscroller/download/zscroller-0.2.5.tgz#b8a4f541e3f1337e89037c4a7ec5130460fad35c"
   dependencies:
+    raf "^3.3.0"
+
+zscroller@~0.3.0:
+  version "0.3.0"
+  resolved "http://r.cnpmjs.org/zscroller/download/zscroller-0.3.0.tgz#dd993e70e5e394ddf04b6e1215e0c5d8190d48b0"
+  dependencies:
+    babel-runtime "6.x"
     raf "^3.3.0"

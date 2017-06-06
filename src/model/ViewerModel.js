@@ -1,16 +1,25 @@
-import { observable, action, runInAction } from 'mobx'
+import { observable, action, runInAction, computed } from 'mobx'
 import { getChapter, getChapterByIndex, updateDiscover } from '../service'
-import {Toast} from 'antd-mobile'
+import { Toast } from 'antd-mobile'
 var Dimensions = require('Dimensions')
 var ScreenWidth = Dimensions.get('window').width
-
+const ScreenHeight = Dimensions.get('window').height
 function zhcnCode (s) {
   return /[^\x00-\xff]/.test(s)
 }
 
+const lineHeight = 30
 let fontSize = 20
 // 取整
 // const lineEnd = parseInt(ScreenWidth / 20)
+const lineMax = Math.round((ScreenHeight - 100) / lineHeight)
+
+const textStyles = {
+  fontSize, lineHeight
+}
+const textFirstStyles = {
+  fontSize, lineHeight, paddingLeft: fontSize * 2
+}
 
 /**
  *  字符串换行处理
@@ -33,14 +42,14 @@ function lineFeed (str: string, keyPrefix: string) {
       if (result.length === 0) {
         result.push({
           key: keyPrefix + '_' + i,
-          style: 'textFirst',
+          style: textFirstStyles,
           children: chars.slice(start, i).join('')
         })
         lineEnd = ScreenWidth
       } else {
         result.push({
           key: keyPrefix + '_' + i,
-          style: 'text',
+          style: textStyles,
           children: chars.slice(start, i).join('')
         })
       }
@@ -52,7 +61,7 @@ function lineFeed (str: string, keyPrefix: string) {
   }
   result.push({
     key: keyPrefix + '_',
-    style: result.length === 0 ? 'textFirst' : 'text',
+    style: result.length === 0 ? textFirstStyles : textStyles,
     children: chars.slice(start).join('')
   })
   return result
@@ -74,17 +83,34 @@ class ChapterModel {
   @observable
   lines = []
 
-  constructor (id, title) {
+  @observable
+  pageIndex = 0
+
+  constructor (id, title, pageIndex) {
+    console.log('dsdasd')
     this.id = id
     this.name = title
+    this.pageIndex = pageIndex
     if (id) {
       this.get()
     }
   }
 
+  @computed get total () {
+    const length = Math.ceil(this.lines.length / lineMax)
+    return length === 0 ? 1 : length
+  }
+
+  @computed get nextIndex () {
+    return this.pageIndex + 1
+  }
+
+  @computed get dataSource () {
+    return this.lines.slice(lineMax * this.pageIndex, lineMax * (this.pageIndex + 1))
+  }
+
   @action
   async get () {
-    Toast.loading('正在加载...', 0)
     const result = await getChapter(this.id)
     runInAction(() => {
       this.name = result.name
@@ -137,9 +163,18 @@ class ChapterModel {
   async jump (index) {
     const result = await getChapterByIndex(this.bookId, this.id, index)
     if (result) {
-      runInAction(async() => {
-        this.id = result.id
+      runInAction(async () => {
+        this.id = result.chapterId
         await this.get()
+        runInAction(() => {
+          this.pageIndex = index < 0 ? (this.total - 1) : 0
+          updateDiscover({
+            id: this.bookId,
+            discoverPage: this.pageIndex,
+            discoverChapterId: result.chapterId,
+            discoverChapterIndex: result.index
+          })
+        })
       })
     } else {
       Toast.info(index > 0 ? '已经是最后一章了' : '已经是第一章了', 0.7)
@@ -148,7 +183,8 @@ class ChapterModel {
 
   @action
   discover (page) {
-    updateDiscover({id: this.bookId, discoverPage: page})
+    this.pageIndex = page
+    updateDiscover({ id: this.bookId, discoverPage: page })
   }
 }
 

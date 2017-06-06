@@ -142,8 +142,12 @@ export async function getChapterByIndex (bookId, chapterId, index) {
       const chapters = db.objects('Chapter').filtered(`bookId = "${bookId}"`)
       const currentIndex = chapters.findIndex(item => chapterId === item.id)
       const result = chapters[currentIndex + index]
-      updateDiscover({id: bookId, discoverChapterId: result.id, discoverChapterIndex: currentIndex + 1, discoverPage: 0})
-      resolve(result)
+      if (result) {
+        resolve({ chapterId: result.id, index: currentIndex + index })
+      } else {
+        resolve(null)
+      }
+      // updateDiscover({id: bookId, discoverChapterId: result.id, discoverChapterIndex: currentIndex + 1, discoverPage: 0})
     } catch (error) {
       reject(error)
     }
