@@ -13,12 +13,12 @@ CHANGES
 
 ## TODO LIST
 - [ ] bulk cache chapter
-- [ ] upgrade `antd-mobild` to 1.2.0
+- [x] upgrade `antd-mobild` to 1.2.0
 - [ ] upgrade `react-native` to 0.45.x
 - [ ] add choice source options in search page
 - [ ] add bottom bar and it can change `backgroundColor` `choice chapter` `cache chapter` `settings` in viewer page
 - [ ] design UI
-- [ ] optimize loading component
+- [x] optimize loading component
 
 # nextversion
 ## Bu Fixes
