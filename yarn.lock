@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@types/realm@^1.0.3":
+  version "1.0.3"
+  resolved "http://r.cnpmjs.org/@types/realm/download/@types/realm-1.0.3.tgz#894454acfe7cdcfd6805636dd150b8ac508487d2"
+
 abab@^1.0.0, abab@^1.0.3:
   version "1.0.3"
   resolved "http://r.cnpmjs.org/abab/download/abab-1.0.3.tgz#b81de5f7274ec4e756d797cd834f303642724e5d"
@@ -4115,14 +4119,7 @@ rc-tooltip@^3.4.2, rc-tooltip@~3.4.3:
     prop-types "^15.5.8"
     rc-trigger "1.x"
 
-rc-touchable@^1.0.0, rc-touchable@^1.0.2:
-  version "1.1.4"
-  resolved "http://r.cnpmjs.org/rc-touchable/download/rc-touchable-1.1.4.tgz#8ce0c7abb7e4c6560e3be5b5f84df51b9b3addcd"
-  dependencies:
-    babel-runtime "6.x"
-    object-assign "^4.1.0"
-
-rc-touchable@~1.2.2:
+rc-touchable@^1.0.0, rc-touchable@^1.0.2, rc-touchable@~1.2.2:
   version "1.2.2"
   resolved "http://r.cnpmjs.org/rc-touchable/download/rc-touchable-1.2.2.tgz#e0936ca0069b455cba728e54d4c10c0fa13558fe"
   dependencies:
