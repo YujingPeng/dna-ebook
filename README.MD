@@ -7,5 +7,10 @@
 ### 只在android下测试了，暂时没有在ios下测试过
 
 ```js
-  npm i && react-native run-android
+  yarn && react-native run-android
 ```
+
+## Getting Started
+https://facebook.github.io/react-native/docs/getting-started.html
+### 中文
+http://reactnative.cn/docs/0.44/getting-started.html
