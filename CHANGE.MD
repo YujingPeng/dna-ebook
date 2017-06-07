@@ -24,6 +24,7 @@ CHANGES
 ## Bu Fixes
 - fix set discovertPage with the last pager when jump previous chapter
 ## New features and enhancements
+- new app logo
 - upgrade `antd-mobild` to 1.2.0
 - optimize loading component in viewer component
 
