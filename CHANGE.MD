@@ -19,6 +19,7 @@ CHANGES
 - [ ] add bottom bar and it can change `backgroundColor` `choice chapter` `cache chapter` `settings` in viewer page
 - [ ] design UI
 - [x] optimize loading component
+- [ ] search history and last search result
 
 # nextversion
 ## Bu Fixes

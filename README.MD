@@ -14,3 +14,6 @@
 https://facebook.github.io/react-native/docs/getting-started.html
 ### 中文
 http://reactnative.cn/docs/0.44/getting-started.html
+
+## CHANGE LOG
+https://github.com/Manweill/dna-ebook/blob/develop/CHANGE.MD
