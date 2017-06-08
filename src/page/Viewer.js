@@ -1,9 +1,13 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, StatusBar, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, StatusBar, StyleSheet, DrawerLayoutAndroid} from 'react-native'
 import ViewerModel from '../model/ViewerModel'
 import { observer } from 'mobx-react/native'
+import { observable } from 'mobx'
 import { loading } from '../components/loading'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import DrawerLayout from 'react-native-drawer-layout'
+import {bulkCacheChapterContent} from '../service'
+import {Toast} from 'antd-mobile'
 
 @observer
 class Viewer extends Component {
@@ -50,13 +54,22 @@ class Viewer extends Component {
   }
 
   handleDockPress = () => {
+  }
 
+  handleDownload = () => {
+    Toast.info('开始缓存！', 0.5)
+    bulkCacheChapterContent(this.chapter.bookId, this.chapter.id, 2)
+  }
+
+  handleOpen = () => {
+    this.drawer.openDrawer()
+    this.props.navigation.setParams({ visible: false })
   }
 
   _renderDock = () => {
     return this.props.navigation.state.params.visible ? (
       <View style={styles.dock}>
-        <TouchableOpacity onPress={this.handleDockPress} style={styles.dockItem} >
+        <TouchableOpacity onPress={this.handleOpen} style={styles.dockItem} >
           <Icon name="list" size={18} style={styles.dockText} />
           <Text style={styles.dockText}>目录</Text>
         </TouchableOpacity>
@@ -68,7 +81,7 @@ class Viewer extends Component {
           <Icon name="gear" size={18} style={styles.dockText} />
           <Text style={styles.dockText}>设置</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={this.handleDockPress} style={styles.dockItem}>
+        <TouchableOpacity onPress={this.handleDownload} style={styles.dockItem}>
           <Icon name="download" size={18} style={styles.dockText} />
           <Text style={styles.dockText}>缓存</Text>
         </TouchableOpacity>
@@ -77,31 +90,42 @@ class Viewer extends Component {
   }
 
   render () {
+    var navigationView = (
+      <View style={{flex: 1, backgroundColor: '#fff'}}>
+        <Text style={{margin: 10, fontSize: 15, textAlign: 'left'}}>I'm in the Drawer!</Text>
+      </View>
+  )
     return (
-      <View style={{ flex: 1, position: 'relative', backgroundColor: '#f5deb3' }} >
-        <StatusBar animated hidden showHideTransition="slide" />
-        <View style={{ flex: 1, zIndex: -1, position: 'absolute', height: '100%', width: '100%' }}>
-          <View style={{ padding: 5, height: 30 }} >
-            <Text>{this.chapter.name}</Text>
+      <DrawerLayout
+        ref={ref => { this.drawer = ref }}
+        drawerWidth={300}
+        renderNavigationView={() => navigationView}>
+        <View style={{ flex: 1, position: 'relative', backgroundColor: '#f5deb3' }} >
+          {/* <StatusBar animated hidden showHideTransition="slide" /> */}
+          <View style={{ flex: 1, zIndex: -1, position: 'absolute', height: '100%', width: '100%' }}>
+            <View style={{ padding: 5, height: 30 }} >
+              <Text>{this.chapter.name}</Text>
+            </View>
+            <View style={{ paddingLeft: 10, flex: 1 }}>
+              {this.chapter.dataSource.map(item => (<Text key={item.key} style={item.style} children={item.children} />))}
+            </View>
+            <View style={{ padding: 5, height: 30 }} >
+              <Text style={{ alignSelf: 'flex-end' }}>{this.chapter.nextIndex}/{this.chapter.total}</Text>
+            </View>
           </View>
-          <View style={{ paddingLeft: 10, flex: 1 }}>
-            {this.chapter.dataSource.map(item => (<Text key={item.key} style={item.style} children={item.children} />))}
-          </View>
-          <View style={{ padding: 5, height: 30 }} >
-            <Text style={{ alignSelf: 'flex-end' }}>{this.chapter.nextIndex}/{this.chapter.total}</Text>
-          </View>
-        </View>
-        <View style={{ flex: 1, opacity: 0.3, height: '100%', width: '100%', flexDirection: 'row' }} key="mode" >
-          <TouchableOpacity style={{ flex: 1 }} onPress={this.handlePrev} />
-          <View style={{ flex: 1 }} >
-            <TouchableOpacity onPress={this.handlePrev} style={{ flex: 1 }} />
-            <TouchableOpacity onPress={this.handleMenu} style={{ flex: 1 }} />
+          <View style={{ flex: 1, opacity: 0.3, height: '100%', width: '100%', flexDirection: 'row' }} key="mode" >
+            <TouchableOpacity style={{ flex: 1 }} onPress={this.handlePrev} />
+            <View style={{ flex: 1 }} >
+              <TouchableOpacity onPress={this.handlePrev} style={{ flex: 1 }} />
+              <TouchableOpacity onPress={this.handleMenu} style={{ flex: 1 }} />
+              <TouchableOpacity onPress={this.handleNext} style={{ flex: 1 }} />
+            </View>
             <TouchableOpacity onPress={this.handleNext} style={{ flex: 1 }} />
           </View>
-          <TouchableOpacity onPress={this.handleNext} style={{ flex: 1 }} />
+          {this._renderDock()}
         </View>
-        {this._renderDock()}
-      </View>
+      </DrawerLayout>
+
     )
   }
 }

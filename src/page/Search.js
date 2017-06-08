@@ -24,7 +24,7 @@ class Search extends Component {
 
   @action
   handleSearch = async () => {
-    let result = await search(this.bookName, 'biqudu.com')
+    let result = await search(this.bookName, 'booktxt.net')
     runInAction(() => {
       this.bookList = this.dataSource.cloneWithRows(result)
     })

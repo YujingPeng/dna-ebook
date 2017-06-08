@@ -170,6 +170,28 @@ export async function updateDiscover (book) {
   })
 }
 
+export function bulkCacheChapterContent (bookId, chapterId, count) {
+  return new Promise(async(resolve, reject) => {
+    try {
+      const index = db.objects('Chapter').findIndex(item => chapterId === item.id)
+      const chapters = db.objects('Chapter').filtered(`bookId = "${bookId}"`).slice(index + 1, index + 1 + count)
+      for (var i = 0; i < chapters.length; i++) {
+        const chapter = chapters[i]
+        const rule = matchRule(chapter.uri)
+        const $ = await load(chapter.uri)
+        const content = $(rule.content).text()
+        db.write(() => {
+          // console.warn(chapter.id)
+          db.create('ChapterContent', { id: chapter.id, bookId, content }, true)
+        })
+        // resolve(true)
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
 const rules = {
   'baidu.com': {
     host: 'http://zhannei.baidu.com',
@@ -319,7 +341,7 @@ function getSearchThumbUri (site, bookUri) {
     let params = bookUri.split('/')
     let bookHostId = params[params.length - 1] === '' ? params[params.length - 2] : params[params.length - 1]
     let bookParams = bookHostId.split('_')
-  // let uri = `${rule.host}${rule.searchThumbImage}/${parseInt(bookParams[0]) + 1}/${bookParams[1]}/${bookParams[1]}.jpg`
+    // let uri = `${rule.host}${rule.searchThumbImage}/${parseInt(bookParams[0]) + 1}/${bookParams[1]}/${bookParams[1]}.jpg`
     let uri = rule.searchThumbImage(rule.host, bookParams[0], bookParams[1])
     return uri
   } else {
