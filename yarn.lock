@@ -2057,7 +2057,7 @@ fbjs-scripts@^0.7.0:
     semver "^5.1.0"
     through2 "^2.0.0"
 
-fbjs@0.8.12, fbjs@^0.8.3, fbjs@^0.8.4, fbjs@^0.8.5, fbjs@^0.8.9:
+fbjs@0.8.12, fbjs@^0.8.12, fbjs@^0.8.3, fbjs@^0.8.4, fbjs@^0.8.9:
   version "0.8.12"
   resolved "http://r.cnpmjs.org/fbjs/download/fbjs-0.8.12.tgz#10b5d92f76d45575fd63a217d4ea02bea2f8ed04"
   dependencies:
@@ -4223,15 +4223,15 @@ react-native-dismiss-keyboard@1.0.0:
   version "1.0.0"
   resolved "http://r.cnpmjs.org/react-native-dismiss-keyboard/download/react-native-dismiss-keyboard-1.0.0.tgz#32886242b3f2317e121f3aeb9b0a585e2b879b49"
 
-react-native-drawer-layout-polyfill@1.2.0:
-  version "1.2.0"
-  resolved "http://r.cnpmjs.org/react-native-drawer-layout-polyfill/download/react-native-drawer-layout-polyfill-1.2.0.tgz#0d77bd3af8964ffe7fd0f1f6550d6be328a5b567"
+react-native-drawer-layout-polyfill@^1.3.0:
+  version "1.3.1"
+  resolved "http://r.cnpmjs.org/react-native-drawer-layout-polyfill/download/react-native-drawer-layout-polyfill-1.3.1.tgz#b514e34dec22c856b1e9e7253162e0af7d0eb4f0"
   dependencies:
-    react-native-drawer-layout "1.2.0"
+    react-native-drawer-layout "1.3.1"
 
-react-native-drawer-layout@1.2.0:
-  version "1.2.0"
-  resolved "http://r.cnpmjs.org/react-native-drawer-layout/download/react-native-drawer-layout-1.2.0.tgz#ae274ee17fadce58d9d7ecef4797d9fad672af74"
+react-native-drawer-layout@1.3.1:
+  version "1.3.1"
+  resolved "http://r.cnpmjs.org/react-native-drawer-layout/download/react-native-drawer-layout-1.3.1.tgz#eb976df8fc43844811acebeed109029395406fe9"
   dependencies:
     react-native-dismiss-keyboard "1.0.0"
 
@@ -4254,10 +4254,6 @@ react-native-scrollable-tab-view@^0.7.2:
     react-static-container "^1.0.1"
     react-timer-mixin "^0.13.3"
 
-react-native-spinkit@^1.0.2:
-  version "1.0.2"
-  resolved "http://r.cnpmjs.org/react-native-spinkit/download/react-native-spinkit-1.0.2.tgz#0d31b019556e038aa8e953038562550cb0ead8d2"
-
 react-native-storage@^0.1.5:
   version "0.1.5"
   resolved "http://r.cnpmjs.org/react-native-storage/download/react-native-storage-0.1.5.tgz#91d77560e41cc9e62d587b55a21b3d6ebaba5599"
@@ -4268,9 +4264,9 @@ react-native-swipeout@~2.1.1:
   dependencies:
     react-tween-state "^0.1.5"
 
-react-native-tab-view@^0.0.61:
-  version "0.0.61"
-  resolved "http://r.cnpmjs.org/react-native-tab-view/download/react-native-tab-view-0.0.61.tgz#9f5446c9ad33158b87f0bccf5004fbff79ca1f92"
+react-native-tab-view@^0.0.65:
+  version "0.0.65"
+  resolved "http://r.cnpmjs.org/react-native-tab-view/download/react-native-tab-view-0.0.65.tgz#b685ea3081ff7c96486cd997361026c407302c59"
   dependencies:
     prop-types "^15.5.8"
 
@@ -4279,6 +4275,14 @@ react-native-uuid@^1.4.9:
   resolved "http://r.cnpmjs.org/react-native-uuid/download/react-native-uuid-1.4.9.tgz#a526742f8fddfe6414500655212ca8d109c40229"
   dependencies:
     randombytes "^2.0.3"
+
+react-native-vector-icons@^4.2.0:
+  version "4.2.0"
+  resolved "http://r.cnpmjs.org/react-native-vector-icons/download/react-native-vector-icons-4.2.0.tgz#0594b68debdd758dce4c565bf02e2d64d7004d82"
+  dependencies:
+    lodash "^4.0.0"
+    prop-types "^15.5.8"
+    yargs "^6.3.0"
 
 react-native@0.45.0:
   version "0.45.0"
@@ -4368,17 +4372,17 @@ react-native@0.45.0:
     xtend ">=4.0.0 <4.1.0-0"
     yargs "^6.4.0"
 
-react-navigation@^1.0.0-beta.9:
-  version "1.0.0-beta.9"
-  resolved "http://r.cnpmjs.org/react-navigation/download/react-navigation-1.0.0-beta.9.tgz#9fb1f8e4d15cee70cc8b5d58719a986ca443664d"
+react-navigation@^1.0.0-beta.11:
+  version "1.0.0-beta.11"
+  resolved "http://r.cnpmjs.org/react-navigation/download/react-navigation-1.0.0-beta.11.tgz#4271edb23cdbcc6eb88602f7fde0a77f0ef7a160"
   dependencies:
     clamp "^1.0.1"
-    fbjs "^0.8.5"
+    fbjs "^0.8.12"
     hoist-non-react-statics "^1.2.0"
     path-to-regexp "^1.7.0"
-    prop-types "^15.5.8"
-    react-native-drawer-layout-polyfill "1.2.0"
-    react-native-tab-view "^0.0.61"
+    prop-types "^15.5.10"
+    react-native-drawer-layout-polyfill "^1.3.0"
+    react-native-tab-view "^0.0.65"
 
 react-proxy@^1.1.7:
   version "1.1.8"

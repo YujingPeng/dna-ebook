@@ -4,19 +4,14 @@
  * @Last Modified by: manweill
  * @Last Modified time: 2017-04-01 16:52:37
  */
-import DiscoverModel from '../model/DiscoverModel'
-import { action, runInAction, observable, toJS, extendObservable } from 'mobx'
+import { action, runInAction, observable } from 'mobx'
 import { getBookList } from '../service'
-import BookModel from '../model/BookModel'
 
 /** 当前用户仓储 */
 class PersonStore {
   constructor () {
     this.init()
   }
-
-  /**   当前阅读   */
-  discover = new DiscoverModel()
 
   /**   书本列表   */
   @observable books = []

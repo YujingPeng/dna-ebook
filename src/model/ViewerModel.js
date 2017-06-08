@@ -15,10 +15,10 @@ let fontSize = 20
 const lineMax = Math.round((ScreenHeight - 100) / lineHeight)
 
 const textStyles = {
-  fontSize, lineHeight
+  color: '#161418', fontSize, lineHeight
 }
 const textFirstStyles = {
-  fontSize, lineHeight, paddingLeft: fontSize * 2
+  ...textStyles, paddingLeft: fontSize * 2
 }
 
 /**
@@ -115,6 +115,7 @@ class ChapterModel {
     runInAction(() => {
       this.name = result.name
       this.bookId = result.bookId
+      console.log(result.content)
       this.content = result.content.replace(/\r\n/g, '')
       let content = this.content.split('    ')
       let lines = []

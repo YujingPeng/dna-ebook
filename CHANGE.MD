@@ -16,7 +16,8 @@ CHANGES
 - [x] upgrade `antd-mobild` to 1.2.0
 - [x] upgrade `react-native` to 0.45.x
 - [ ] add choice source options in search page
-- [ ] add bottom bar and it can change `NightMode` `choice chapter` `cache chapter` `settings` in viewer page
+- [ ] viewer page bottom dock
+      add bottom bar and it has `NightMode` `choice chapter` `cache chapter` `settings`
 - [ ] design UI
 - [x] optimize loading component
 - [ ] search history and last search result
@@ -29,7 +30,8 @@ CHANGES
 - upgrade `antd-mobild` to 1.2.0
 - upgrade `react-native` to 0.45.0
   if building happens, see in https://github.com/facebook/react-native/issues/14366
-- optimize loading component in viewer component
+- optimize loading component in viewer page
+- add `react-native-vector-icons` module
 
 # 0.2.2
 ## New features and enhancements

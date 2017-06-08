@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { View, Text, Image, ScrollView, ListView, TouchableOpacity } from 'react-native'
+import { View, Text, Image, ScrollView, ListView, TouchableOpacity, StatusBar } from 'react-native'
 import { observer } from 'mobx-react/native'
 // import BookModel from '../model/BookModel'
-import { Button } from 'antd-mobile'
+import { Button, Toast } from 'antd-mobile'
 import { observable, action, runInAction, computed, toJS } from 'mobx'
-import { newBook, saveBook, getBookById, updateDiscover} from '../service'
+import { newBook, saveBook, getBookById, updateDiscover } from '../service'
 import personStore from '../store/personStore'
 
 @observer
@@ -72,15 +72,21 @@ class Book extends Component {
   }
 
   handleRead = () => {
-    this.props.navigation.navigate('viewer', { id: this.book.discoverChapterId, title: '', pageIndex: this.book.discoverPage })
+    if (this.isExist) {
+      this.props.navigation.navigate('viewer', { id: this.book.discoverChapterId, title: this.book.name, pageIndex: this.book.discoverPage })
+    } else {
+      Toast.info('请收藏后再阅读', 0.7)
+    }
   }
 
   _renderRow = (item, sectionID, rowID) => {
     const rowItemPress = () => {
-      // personStore.cacheBook.discover.chapterIndex = parseInt(rowID)
-      // personStore.updateDiscover()
-      updateDiscover({id: item.bookId, discoverChapterId: item.id, discoverPage: 0, discoverChapterIndex: Number(rowID)})
-      this.props.navigation.navigate('viewer', { id: item.id, pageIndex: 0, title: item.text })
+      if (this.isExist) {
+        updateDiscover({ id: item.bookId, discoverChapterId: item.id, discoverPage: 0, discoverChapterIndex: Number(rowID) })
+        this.props.navigation.navigate('viewer', { id: item.id, pageIndex: 0, title: item.text,title: this.book.name, })
+      } else {
+        Toast.info('请收藏后再阅读', 0.7)
+      }
     }
     return (
       <TouchableOpacity key={item.id} onPress={rowItemPress}>
@@ -94,6 +100,7 @@ class Book extends Component {
   render () {
     return (
       <ScrollView style={{ backgroundColor: '#ffffff' }}>
+        <StatusBar hidden={false} />
         <View style={{ flexDirection: 'row', paddingLeft: 10, paddingTop: 10 }}>
           <View style={{ width: 120, height: 150 }}>
             {this.book.thumbImage !== '' ? <Image source={{ uri: this.book.thumbImage }} style={{ width: 120, height: 150 }} /> : null}

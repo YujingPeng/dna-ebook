@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, ListView, TouchableOpacity, Image, Text } from 'react-native'
+import { View, ListView, TouchableOpacity, Image, Text, StatusBar } from 'react-native'
 import { observer } from 'mobx-react/native'
 import { action, observable, runInAction } from 'mobx'
 import {search} from '../service'
@@ -62,6 +62,7 @@ class Search extends Component {
   render () {
     return (
       <View style={{ flex: 1 }}>
+        <StatusBar hidden={false} />
         <SearchBar ref={(ref) => { this.searchbar = ref }} value={this.bookName} onChange={this.handleChange} onSubmit={this.handleSearch} onCancel={this.handeCencel} />
         <ListView
           style={{ flex: 1 }}

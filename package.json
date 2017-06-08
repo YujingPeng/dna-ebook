@@ -25,7 +25,8 @@
     "react-native": "0.45.0",
     "react-native-storage": "^0.1.5",
     "react-native-uuid": "^1.4.9",
-    "react-navigation": "^1.0.0-beta.9",
+    "react-native-vector-icons": "^4.2.0",
+    "react-navigation": "^1.0.0-beta.11",
     "realm": "^1.3.1",
     "text-encoding": "^0.6.4"
   },

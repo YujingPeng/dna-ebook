@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, TouchableOpacity, Text, ListView, Image, RefreshControl } from 'react-native'
+import { View, TouchableOpacity, Text, ListView, Image, RefreshControl, StatusBar } from 'react-native'
 import { observer } from 'mobx-react/native'
 import { SwipeAction } from 'antd-mobile'
 import personStore from '../store/personStore'
@@ -39,7 +39,7 @@ class Home extends Component {
     const rowItemPress = () => {
       // personStore.initCacheBook(item)
       // this.props.navigation.navigate('viewer', { uri: personStore.cacheBook.currChapter.uri, title: personStore.cacheBook.currChapter.text })
-      this.props.navigation.navigate('viewer', { id: item.discoverChapterId, title: '', pageIndex: item.discoverPage })
+      this.props.navigation.navigate('viewer', { id: item.discoverChapterId, title: item.name, pageIndex: item.discoverPage })
     }
 
     const SwipeActionConfig = {
@@ -77,6 +77,7 @@ class Home extends Component {
   render () {
     return (
       <View style={{ flex: 1 }}>
+        <StatusBar hidden={false} />
         {/* <Text>{db.objects('Chapter').length}{db.objects('Book').length}</Text> */}
         <ListView
           style={{ flex: 1 }}
