@@ -16,7 +16,7 @@ CHANGES
 - [x] upgrade `antd-mobild` to 1.2.0
 - [x] upgrade `react-native` to 0.45.x
 - [ ] add choice source options in search page
-- [ ] add bottom bar and it can change `backgroundColor` `choice chapter` `cache chapter` `settings` in viewer page
+- [ ] add bottom bar and it can change `NightMode` `choice chapter` `cache chapter` `settings` in viewer page
 - [ ] design UI
 - [x] optimize loading component
 - [ ] search history and last search result

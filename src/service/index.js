@@ -40,10 +40,13 @@ export async function search (name, site) {
   let result = []
   $('#results>div.result').each((i, item) => {
     const $name = $(item).find('h3>a')
+    const names = $name.text().split('_')
+    const name = names[0].replace('最新章节', '')
     const uri = $name.attr('href')
     result.push({
       id: uuid.v4(),
-      name: $name.text(),
+      name,
+      siteName: names[names.length - 1],
       uri: uri,
       thumbImage: getSearchThumbUri(site, uri)
     })
@@ -175,6 +178,7 @@ const rules = {
   'biquge.com': {
     host: 'http://www.biquge.com',
     encode: 'utf-8',
+    name: '笔趣阁',
     info: {
       name: '#info > h1',
       author: {
@@ -200,6 +204,7 @@ const rules = {
   'biqudu.com': {
     host: 'http://www.biqudu.com',
     encode: 'utf-8',
+    name: '笔趣阁',
     info: {
       name: '#info > h1',
       author: {
@@ -224,6 +229,7 @@ const rules = {
   },
   'booktxt.net': {
     host: 'http://www.booktxt.net',
+    name: '顶点文学',
     encode: 'gbk',
     info: {
       name: '#info > h1',
