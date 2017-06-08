@@ -315,10 +315,14 @@ function translatorChapterMenu (rule, $, bookId) {
 function getSearchThumbUri (site, bookUri) {
   if (!bookUri) return ''
   const rule = matchRule(bookUri)
-  let params = bookUri.split('/')
-  let bookHostId = params[params.length] === '/' ? params[params.length - 2] : params[params.length - 1]
-  let bookParams = bookHostId.split('_')
+  if (rule) {
+    let params = bookUri.split('/')
+    let bookHostId = params[params.length - 1] === '' ? params[params.length - 2] : params[params.length - 1]
+    let bookParams = bookHostId.split('_')
   // let uri = `${rule.host}${rule.searchThumbImage}/${parseInt(bookParams[0]) + 1}/${bookParams[1]}/${bookParams[1]}.jpg`
-  let uri = rule.searchThumbImage(rule.host, bookParams[0], bookParams[1])
-  return uri
+    let uri = rule.searchThumbImage(rule.host, bookParams[0], bookParams[1])
+    return uri
+  } else {
+    return ''
+  }
 }
