@@ -3,6 +3,7 @@ import uuid from 'react-native-uuid'
 import { TextDecoder } from 'text-encoding'
 import axios from 'axios'
 import db from '../database'
+import { rules } from '../env'
 
 const config = {
   headers: {
@@ -35,6 +36,7 @@ export async function load (uri) {
   }
 }
 export async function search (name, site) {
+  // http://zhannei.baidu.com/cse/search?q=&click=1&s=5334330359795686106&nsid=
   let uri = `http://zhannei.baidu.com/cse/site?q=${name}&cc=${site}&stp=1`
   const $ = await load(uri)
   let result = []
@@ -63,10 +65,13 @@ export async function newBook (id, uri) {
   let book = translator(rule, $, uri) || {}
   book.id = id
   book.uri = uri
+  // book.updateAt =
   const chapterList = translatorChapterMenu(rule, $, book.id) || []
   book.totalChapter = chapterList.length
   book.thumbImageBase64 = ''
   book.discoverChapterId = chapterList[0].id
+  book.latestChapter = chapterList[chapterList.length - 1].text
+  book.discoverChapterName = chapterList[0].text
   book.discoverChapterIndex = 0
   book.discoverPage = 0
   book.chapters = chapterList
@@ -90,6 +95,24 @@ export function saveBook (book) {
 
 export async function getBookList (params) {
   return db.objects('Book')
+}
+
+export function getChapterList (bookId, chapterId) {
+  const chapters = db.objects('Chapter').filtered(`bookId = "${bookId}"`)
+  const currentIndex = chapters.findIndex(item => chapterId === item.id)
+  let end = 0
+  let start = 0
+  if ((currentIndex + 10) > chapters.length) {
+    start = currentIndex - 20
+    end = chapters.length
+  } else if ((currentIndex - 10) <= 0) {
+    start = 0
+    end = 20
+  } else {
+    start = currentIndex - 10
+    end = currentIndex + 10
+  }
+  return chapters.slice(start, end)
 }
 
 export async function getBookById (bookId) {
@@ -146,7 +169,7 @@ export async function getChapterByIndex (bookId, chapterId, index) {
       const currentIndex = chapters.findIndex(item => chapterId === item.id)
       const result = chapters[currentIndex + index]
       if (result) {
-        resolve({ chapterId: result.id, index: currentIndex + index })
+        resolve({ chapterId: result.id, index: currentIndex + index, text: result.text })
       } else {
         resolve(null)
       }
@@ -171,7 +194,7 @@ export async function updateDiscover (book) {
 }
 
 export function bulkCacheChapterContent (bookId, chapterId, count) {
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     try {
       const index = db.objects('Chapter').findIndex(item => chapterId === item.id)
       const chapters = db.objects('Chapter').filtered(`bookId = "${bookId}"`).slice(index + 1, index + 1 + count)
@@ -190,91 +213,6 @@ export function bulkCacheChapterContent (bookId, chapterId, count) {
       reject(error)
     }
   })
-}
-
-const rules = {
-  'baidu.com': {
-    host: 'http://zhannei.baidu.com',
-    encode: 'utf-8'
-  },
-  'biquge.com': {
-    host: 'http://www.biquge.com',
-    encode: 'utf-8',
-    name: '笔趣阁',
-    info: {
-      name: '#info > h1',
-      author: {
-        selector: '#info > p:nth-child(2)',
-        pattern: '作    者：'
-      },
-      updateAt: {
-        selector: '#info > p:nth-child(4)',
-        pattern: '最后更新：'
-      },
-      latestChapter: {
-        selector: '#info > p:nth-child(5) > a',
-        pattern: '最新章节：'
-      },
-      desc: '#intro'
-    },
-    thumbImage: '#fmimg > img',
-    searchThumbImage: (host, parm1, parm2) => `${host}/files/article/image/${Number(parm1) + 1}/${parm2}/${parm2}.jpg`,
-    chapterMenu: '#list > dl > dd > a',
-    firstChapterIndex: 9,
-    content: '#content'
-  },
-  'biqudu.com': {
-    host: 'http://www.biqudu.com',
-    encode: 'utf-8',
-    name: '笔趣阁',
-    info: {
-      name: '#info > h1',
-      author: {
-        selector: '#info > p:nth-child(2)',
-        pattern: '作    者：'
-      },
-      updateAt: {
-        selector: '#info > p:nth-child(4)',
-        pattern: '最后更新：'
-      },
-      latestChapter: {
-        selector: '#info > p:nth-child(5) > a',
-        pattern: '最新章节：'
-      },
-      desc: '#intro'
-    },
-    thumbImage: '#fmimg > img',
-    searchThumbImage: (host, parm1, parm2) => `${host}/files/article/image/${Number(parm1) + 1}/${parm2}/${parm2}.jpg`,
-    chapterMenu: '#list > dl > dd > a',
-    firstChapterIndex: 9,
-    content: '#content'
-  },
-  'booktxt.net': {
-    host: 'http://www.booktxt.net',
-    name: '顶点文学',
-    encode: 'gbk',
-    info: {
-      name: '#info > h1',
-      author: {
-        selector: '#info > p:nth-child(2)',
-        pattern: '作    者：'
-      },
-      updateAt: {
-        selector: '#info > p:nth-child(4)',
-        pattern: '最后更新：'
-      },
-      latestChapter: {
-        selector: '#info > p:nth-child(5) > a',
-        pattern: '最新章节：'
-      },
-      desc: '#intro'
-    },
-    thumbImage: '#fmimg img',
-    searchThumbImage: (host, parm1, parm2) => `${host}/files/article/image/${parm1}/${parm2}/${parm2}s.jpg`,
-    chapterMenu: '#list > dl > dd > a',
-    firstChapterIndex: 9,
-    content: '#content'
-  }
 }
 
 export function matchRule (uri) {

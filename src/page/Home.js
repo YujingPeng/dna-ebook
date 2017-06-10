@@ -4,21 +4,34 @@ import { observer } from 'mobx-react/native'
 import { SwipeAction } from 'antd-mobile'
 import personStore from '../store/personStore'
 import { action, observable, runInAction } from 'mobx'
-import {removeBook} from '../service'
+import { removeBook } from '../service'
+import Icon from 'react-native-vector-icons/FontAwesome'
+import { color } from '../env'
 
 @observer
 class Home extends Component {
-  static navigationOptions =({navigation}) => {
+  static navigationOptions = ({ navigation }) => {
     return {
-      title: '📖书架',
-      headerRight: <TouchableOpacity style={{paddingHorizontal: 15}} onPress={() => { navigation.navigate('search') }}><Text>🔍搜索</Text></TouchableOpacity>
+      title: '阅来客栈',
+      headerStyle: { width: '100%', backgroundColor: color },
+      headerTintColor: '#ffffff',
+      headerRight: (
+        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+          <TouchableOpacity style={{ paddingHorizontal: 15 }} onPress={() => { navigation.navigate('search') }}>
+            <Icon name="refresh" size={20} color="#ffffff" />
+          </TouchableOpacity>
+          <TouchableOpacity style={{ paddingHorizontal: 15 }} onPress={() => { navigation.navigate('search') }}>
+            <Icon name="search" size={20} color="#ffffff" />
+          </TouchableOpacity>
+        </View>
+      )
     }
   };
 
   dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
 
   @observable
-  isRefreshing=false
+  isRefreshing = false
 
   @action
   removeItem = async (bookId) => {
@@ -27,7 +40,7 @@ class Home extends Component {
   }
 
   @action
-  handleRefresh=() => {
+  handleRefresh = () => {
     this.isRefreshing = true
     runInAction(async () => {
       await personStore.refresh()
@@ -39,12 +52,12 @@ class Home extends Component {
     const rowItemPress = () => {
       // personStore.initCacheBook(item)
       // this.props.navigation.navigate('viewer', { uri: personStore.cacheBook.currChapter.uri, title: personStore.cacheBook.currChapter.text })
-      this.props.navigation.navigate('viewer', { id: item.discoverChapterId, title: item.name, pageIndex: item.discoverPage })
+      this.props.navigation.navigate('viewer', { id: item.discoverChapterId, title: item.name, pageIndex: item.discoverPage, bookId: item.id })
     }
 
     const SwipeActionConfig = {
       autoClose: true,
-      right: [ {
+      right: [{
         text: '详细',
         onPress: () => this.props.navigation.navigate('book', { id: item.id, uri: item.uri, name: item.name })
       },
@@ -54,19 +67,19 @@ class Home extends Component {
         style: { backgroundColor: '#F4333C', color: '#F5F5F5' }
       }]
     }
-    // console.warn(JSON.stringify(item.discover))
     return (
       <SwipeAction {...SwipeActionConfig} >
-        <TouchableOpacity key={item.id} onPress={rowItemPress}>
-          <View style={{ flex: 1, flexDirection: 'row', padding: 5, borderBottomWidth: 1, borderColor: '#f0ffff', backgroundColor: '#F5F5F5' }}>
-            <View style={{ width: 72, height: 90 }}>
-              {item.thumbImage !== '' ? <Image source={{ uri: item.thumbImage }} style={{ width: 72, height: 90 }} /> : null}
+        <TouchableOpacity key={item.id} onPress={rowItemPress} style={{ backgroundColor: '#F5F5F5' }}>
+          <View style={{ flex: 1, marginLeft: 15, flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, borderColor: '#e3e3e3' }}>
+            <View style={{ width: 40, height: 50 }}>
+              {item.thumbImage !== '' ? <Image source={{ uri: item.thumbImage }} style={{ width: 40, height: 50 }} /> : null}
             </View>
             <View style={{ marginHorizontal: 10 }}>
-              <Text>书名：{item.name}</Text>
-              <Text>作者：{item.author}</Text>
-              <Text>最后章节：{item.latestChapter}</Text>
-              <Text>进度：{((item.discoverChapterIndex + 1) / item.totalChapter).toFixed(2)}%</Text>
+              <Text style={{ color: '#802A2A', fontSize: 18 }}>
+                {item.name}
+                <Text style={{ color: '#696969', fontSize: 12 }}> {item.author} {((item.discoverChapterIndex + 1) / item.totalChapter * 100).toFixed(2)}%</Text>
+              </Text>
+              <Text>2017-06-10 {item.latestChapter}</Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -76,8 +89,8 @@ class Home extends Component {
 
   render () {
     return (
-      <View style={{ flex: 1 }}>
-        <StatusBar hidden={false} />
+      <View style={{ flex: 1, backgroundColor: '#F5F5F5' }}>
+        <StatusBar hidden={false} backgroundColor={color} />
         {/* <Text>{db.objects('Chapter').length}{db.objects('Book').length}</Text> */}
         <ListView
           style={{ flex: 1 }}
@@ -94,8 +107,8 @@ class Home extends Component {
               titleColor="#00ff00"
               colors={['#ff0000', '#00ff00', '#0000ff']}
               progressBackgroundColor="#ffffff"
-          />
-        }
+            />
+          }
         />
       </View>
     )

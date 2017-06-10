@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { View, Text, Image, ScrollView, ListView, TouchableOpacity, StatusBar } from 'react-native'
 import { observer } from 'mobx-react/native'
-// import BookModel from '../model/BookModel'
 import { Button, Toast } from 'antd-mobile'
 import { observable, action, runInAction, computed, toJS } from 'mobx'
 import { newBook, saveBook, getBookById, updateDiscover } from '../service'
 import personStore from '../store/personStore'
+import { color } from '../env'
 
 @observer
 class Book extends Component {
@@ -13,7 +13,9 @@ class Book extends Component {
     const { state = {} } = navigation
     const { name } = state.params || {}
     return {
-      title: name
+      title: name,
+      headerStyle: { width: '100%', backgroundColor: color },
+      headerTintColor: '#ffffff'
     }
   };
 
@@ -73,7 +75,7 @@ class Book extends Component {
 
   handleRead = () => {
     if (this.isExist) {
-      this.props.navigation.navigate('viewer', { id: this.book.discoverChapterId, title: this.book.name, pageIndex: this.book.discoverPage })
+      this.props.navigation.navigate('viewer', { id: this.book.discoverChapterId, title: this.book.name, pageIndex: this.book.discoverPage, bookId: this.book.id })
     } else {
       Toast.info('请收藏后再阅读', 0.7)
     }
@@ -82,8 +84,8 @@ class Book extends Component {
   _renderRow = (item, sectionID, rowID) => {
     const rowItemPress = () => {
       if (this.isExist) {
-        updateDiscover({ id: item.bookId, discoverChapterId: item.id, discoverPage: 0, discoverChapterIndex: Number(rowID) })
-        this.props.navigation.navigate('viewer', { id: item.id, pageIndex: 0, title: item.text,title: this.book.name, })
+        updateDiscover({ id: item.bookId, discoverChapterId: item.id, discoverPage: 0, discoverChapterIndex: Number(rowID), discoverChapterName: item.text })
+        this.props.navigation.navigate('viewer', { id: item.id, pageIndex: 0, title: this.book.name, bookId: item.bookId })
       } else {
         Toast.info('请收藏后再阅读', 0.7)
       }
@@ -100,7 +102,7 @@ class Book extends Component {
   render () {
     return (
       <ScrollView style={{ backgroundColor: '#ffffff' }}>
-        <StatusBar hidden={false} />
+        <StatusBar hidden={false} backgroundColor={color} />
         <View style={{ flexDirection: 'row', paddingLeft: 10, paddingTop: 10 }}>
           <View style={{ width: 120, height: 150 }}>
             {this.book.thumbImage !== '' ? <Image source={{ uri: this.book.thumbImage }} style={{ width: 120, height: 150 }} /> : null}

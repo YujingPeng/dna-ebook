@@ -6,7 +6,6 @@
 
 import React from 'react'
 import { AppRegistry } from 'react-native'
-import './src/global'
-import App from './src/App'
+import App from './src/app'
 
 AppRegistry.registerComponent('dnaebook', () => App)
