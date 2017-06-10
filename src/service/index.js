@@ -193,11 +193,15 @@ export async function updateDiscover (book) {
   })
 }
 
-export function bulkCacheChapterContent (bookId, chapterId, count) {
+export function bulkCacheChapterContent (bookId, chapterId, start, count) {
   return new Promise(async (resolve, reject) => {
     try {
       const index = db.objects('Chapter').findIndex(item => chapterId === item.id)
-      const chapters = db.objects('Chapter').filtered(`bookId = "${bookId}"`).slice(index + 1, index + 1 + count)
+      const _start = start ? 0 : index + 1
+      const _end = count ? index + 1 + count : null
+      const chapters = db.objects('Chapter')
+        .filtered(`bookId = "${bookId}"`)
+        .slice(_start, _end)
       for (var i = 0; i < chapters.length; i++) {
         const chapter = chapters[i]
         const rule = matchRule(chapter.uri)

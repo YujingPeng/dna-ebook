@@ -4,18 +4,19 @@ import { Toast } from 'antd-mobile'
 var Dimensions = require('Dimensions')
 var ScreenWidth = Dimensions.get('window').width
 const ScreenHeight = Dimensions.get('window').height
+
 function zhcnCode (s) {
   return /[^\x00-\xff]/.test(s)
 }
 
 const lineHeight = 30
-let fontSize = 20
+let fontSize = 18
 // 取整
 // const lineEnd = parseInt(ScreenWidth / 20)
 const lineMax = Math.round((ScreenHeight - 100) / lineHeight)
-
+const lineWidth = ScreenWidth - 18
 const textStyles = {
-  color: '#161418', fontSize, lineHeight
+  fontSize, lineHeight
 }
 const textFirstStyles = {
   ...textStyles, paddingLeft: fontSize * 2
@@ -31,7 +32,7 @@ function lineFeed (str: string, keyPrefix: string) {
   let chars = str.split('')
   let linefeed = 0
   // 第一次转换需要进行首航缩进
-  let lineEnd = ScreenWidth - (fontSize * 2)
+  let lineEnd = lineWidth - (fontSize * 2)
   if (!str && str === '') return result
   let start = 0
   let size = 0
@@ -45,7 +46,7 @@ function lineFeed (str: string, keyPrefix: string) {
           style: textFirstStyles,
           children: chars.slice(start, i).join('')
         })
-        lineEnd = ScreenWidth
+        lineEnd = lineWidth
       } else {
         result.push({
           key: keyPrefix + '_' + i,
@@ -86,7 +87,13 @@ class ChapterModel {
   @observable
   pageIndex = 0
 
-  constructor (id, title, pageIndex) {
+  @observable
+  isNightMode = false
+
+  @observable
+  list = []
+
+  constructor (id, bookId, title, pageIndex) {
     console.log('dsdasd')
     this.id = id
     this.name = title
@@ -94,6 +101,9 @@ class ChapterModel {
     if (id) {
       this.get()
     }
+    // getChapterList(bookId, id).then(res => {
+    //   this.list = res
+    // })
   }
 
   @computed get total () {
@@ -111,21 +121,25 @@ class ChapterModel {
 
   @action
   async get () {
-    const result = await getChapter(this.id)
-    runInAction(() => {
-      this.name = result.name
-      this.bookId = result.bookId
-      console.log(result.content)
-      this.content = result.content.replace(/\r\n/g, '')
-      let content = this.content.split('    ')
-      let lines = []
-      for (let i = 0; i < content.length; i++) {
+    try {
+      const result = await getChapter(this.id)
+      runInAction(() => {
+        this.name = result.name
+        this.bookId = result.bookId
+        // console.log(result.content)
+        this.content = result.content.replace(/\r\n/g, '')
+        let content = this.content.split('    ')
+        let lines = []
+        for (let i = 0; i < content.length; i++) {
         // console.warn(JSON.stringify(content[i]))
-        lines = lines.concat(lineFeed(content[i], 'row_' + i))
-      }
-      this.lines = lines
-      Toast.hide()
-    })
+          lines = lines.concat(lineFeed(content[i], 'row_' + i))
+        }
+        this.lines = lines
+        Toast.hide()
+      })
+    } catch (error) {
+      Toast.fail('加载失败!!!')
+    }
   }
 
   /**
@@ -173,7 +187,8 @@ class ChapterModel {
             id: this.bookId,
             discoverPage: this.pageIndex,
             discoverChapterId: result.chapterId,
-            discoverChapterIndex: result.index
+            discoverChapterIndex: result.index,
+            discoverChapterName: result.text
           })
         })
       })

@@ -70,14 +70,14 @@ class Home extends Component {
     return (
       <SwipeAction {...SwipeActionConfig} >
         <TouchableOpacity key={item.id} onPress={rowItemPress} style={{ backgroundColor: '#F5F5F5' }}>
-          <View style={{ flex: 1, marginLeft: 15, flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, borderColor: '#e3e3e3' }}>
+          <View style={{ flex: 1, marginLeft: 15, flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, borderColor: '#e7e7e7' }}>
             <View style={{ width: 40, height: 50 }}>
               {item.thumbImage !== '' ? <Image source={{ uri: item.thumbImage }} style={{ width: 40, height: 50 }} /> : null}
             </View>
             <View style={{ marginHorizontal: 10 }}>
-              <Text style={{ color: '#802A2A', fontSize: 18 }}>
+              <Text style={{ color: '#696969', fontSize: 18 }}>
                 {item.name}
-                <Text style={{ color: '#696969', fontSize: 12 }}> {item.author} {((item.discoverChapterIndex + 1) / item.totalChapter * 100).toFixed(2)}%</Text>
+                <Text style={{ color: '#999', fontSize: 12 }}> {item.author} {((item.discoverChapterIndex + 1) / item.totalChapter * 100).toFixed(2)}%</Text>
               </Text>
               <Text>2017-06-10 {item.latestChapter}</Text>
             </View>

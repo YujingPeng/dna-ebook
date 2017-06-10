@@ -17,3 +17,15 @@ http://reactnative.cn/docs/0.44/getting-started.html
 
 ## CHANGE LOG
 https://github.com/Manweill/dna-ebook/blob/develop/CHANGE.MD
+
+## TODO LIST
+- [x] bulk cache chapter
+- [x] upgrade `antd-mobild` to 1.2.0
+- [x] upgrade `react-native` to 0.45.x
+- [ ] add choice source options in search page
+- [x] viewer page bottom dock
+      add bottom bar and it has `NightMode` `choice chapter` `cache chapter` `settings`
+- [ ] design UI
+- [x] optimize loading component
+- [ ] search history and last search result
+- [ ] add refresh chapters list
