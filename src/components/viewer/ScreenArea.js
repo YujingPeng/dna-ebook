@@ -2,18 +2,26 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { View, TouchableOpacity, StyleSheet } from 'react-native'
 
-const ScreenArea = ({onLeftPress, onRightPress, onCenterPress}) => {
-  return (
-    <View style={styles.container} >
-      <TouchableOpacity style={styles.item} onPress={onLeftPress} />
-      <View style={styles.item} >
-        <TouchableOpacity onPress={onLeftPress} style={styles.item} />
-        <TouchableOpacity onPress={onCenterPress} style={styles.item} />
+class ScreenArea extends React.PureComponent {
+  static propTypes = {
+    onLeftPress: PropTypes.func,
+    onCenterPress: PropTypes.func,
+    onRightPress: PropTypes.func
+  }
+  render () {
+    const {onLeftPress, onRightPress, onCenterPress} = this.props
+    return (
+      <View style={styles.container} >
+        <TouchableOpacity style={styles.item} onPress={onLeftPress} />
+        <View style={styles.item} >
+          <TouchableOpacity onPress={onLeftPress} style={styles.item} />
+          <TouchableOpacity onPress={onCenterPress} style={styles.item} />
+          <TouchableOpacity onPress={onRightPress} style={styles.item} />
+        </View>
         <TouchableOpacity onPress={onRightPress} style={styles.item} />
       </View>
-      <TouchableOpacity onPress={onRightPress} style={styles.item} />
-    </View>
-  )
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -24,11 +32,5 @@ const styles = StyleSheet.create({
     flex: 1
   }
 })
-
-ScreenArea.propTypes = {
-  onLeftPress: PropTypes.func,
-  onCenterPress: PropTypes.func,
-  onRightPress: PropTypes.func
-}
 
 export default ScreenArea
