@@ -4278,9 +4278,9 @@ react-native-vector-icons@^4.2.0:
     prop-types "^15.5.8"
     yargs "^6.3.0"
 
-react-native@0.45.0:
-  version "0.45.0"
-  resolved "http://r.cnpmjs.org/react-native/download/react-native-0.45.0.tgz#1d686b905e4d439bb9c31eec67ef1c1355663ea0"
+react-native@0.45.1:
+  version "0.45.1"
+  resolved "http://r.cnpmjs.org/react-native/download/react-native-0.45.1.tgz#b3283c4a88233421f9c662a2ff1a4ccc8a9f07c0"
   dependencies:
     absolute-path "^0.0.0"
     art "^0.10.0"
