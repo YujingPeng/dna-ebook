@@ -25,7 +25,8 @@ https://github.com/Manweill/dna-ebook/blob/develop/CHANGE.MD
 - [ ] add choice source options in search page
 - [x] viewer page bottom dock
       add bottom bar and it has `NightMode` `choice chapter` `cache chapter` `settings`
-- [ ] design UI
+- [x] design UI
 - [x] optimize loading component
 - [ ] search history and last search result
 - [ ] add refresh chapters list
+- [ ] upgrade ListView to FlatList

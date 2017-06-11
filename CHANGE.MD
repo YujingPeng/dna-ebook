@@ -11,7 +11,7 @@ CHANGES
 {changes}
 ```
 
-# nextversion
+# 0.3.0
 ## Bu Fixes
 - fix set discovertPage with the last pager when jump previous chapter
 ## New features and enhancements
@@ -21,6 +21,9 @@ CHANGES
   if building happens, see in https://github.com/facebook/react-native/issues/14366
 - optimize loading component in viewer page
 - add `react-native-vector-icons` module
+- separation components in viewer page
+- bulk cache chapter
+- viewer page bottom dock
 
 # 0.2.2
 ## New features and enhancements
@@ -30,7 +33,7 @@ CHANGES
 - upgrade antd-mobile 1.0.5 to 1.1.3
 - Viewer page add loading animation
 - rewrite Book and Viewwer page load logic
-- Separation of the `Books` pages and `Search` pages
+- separation of the `Books` pages and `Search` pages
 
 ## Bug Fixes
 - fix crawl `gbk` encoding of pages
