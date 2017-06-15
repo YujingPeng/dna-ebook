@@ -138,7 +138,10 @@ export function removeBook (bookId) {
     })
   })
 }
-
+/**
+ * 获取章节内容
+ * @param {UUID} chapterId
+ */
 export async function getChapter (chapterId) {
   return new Promise((resolve, reject) => {
     try {
@@ -162,6 +165,12 @@ export async function getChapter (chapterId) {
   })
 }
 
+/**
+ * 根据索引获取章节实体·
+ * @param {UUID} bookId
+ * @param {UUID} chapterId
+ * @param {Number} index
+ */
 export async function getChapterByIndex (bookId, chapterId, index) {
   return new Promise((resolve, reject) => {
     try {
@@ -180,6 +189,10 @@ export async function getChapterByIndex (bookId, chapterId, index) {
   })
 }
 
+/**
+ * 更新阅读信息
+ * @param {Book} book
+ */
 export async function updateDiscover (book) {
   return new Promise((resolve, reject) => {
     try {
@@ -193,6 +206,13 @@ export async function updateDiscover (book) {
   })
 }
 
+/**
+ *
+ * @param {UUID} bookId
+ * @param {UUID} chapterId
+ * @param {Number} start
+ * @param {Number} count
+ */
 export function bulkCacheChapterContent (bookId, chapterId, start, count) {
   return new Promise(async (resolve, reject) => {
     try {
@@ -223,6 +243,7 @@ export function matchRule (uri) {
   return Object.values(rules).find(item => uri.indexOf(item.host) >= 0)
 }
 
+// 转换详细
 function translator (rule, $, uri) {
   const self = {}
   const { info, thumbImage, host } = rule
@@ -244,6 +265,7 @@ function translator (rule, $, uri) {
   return self
 }
 
+// 转换目录
 function translatorChapterMenu (rule, $, bookId) {
   const { host, firstChapterIndex } = rule
   let list = []
@@ -260,18 +282,6 @@ function translatorChapterMenu (rule, $, bookId) {
       }
     }
   })
-
-  // const len = list.length
-  // for (let i = 0; i < len; i++) {
-  //   for (let j = 0; j < len; j++) {
-  //     if (list[i].uri < list[j].uri) {
-  //       let temp = list[i]
-  //       list[i] = list[j]
-  //       list[j] = temp
-  //     }
-  //   }
-  // }
-
   return list
 }
 
