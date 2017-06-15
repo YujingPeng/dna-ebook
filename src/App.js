@@ -5,6 +5,9 @@ import HomePage from './page/Home'
 import ViewerPage from './page/Viewer'
 import { enableLogging } from 'mobx-logger'
 
+import moment from 'moment'
+import lang from 'moment/locale/zh-cn'
+moment.locale('zh-cn')
 // const HomeTabBar = TabNavigator({
 //   BookInfo: { screen: HomePage },
 // }, {

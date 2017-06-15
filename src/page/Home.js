@@ -7,6 +7,7 @@ import { action, observable, runInAction } from 'mobx'
 import { removeBook } from '../service'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { color } from '../env'
+import moment from 'moment'
 
 @observer
 class Home extends Component {
@@ -79,7 +80,7 @@ class Home extends Component {
                 {item.name}
                 <Text style={{ color: '#999', fontSize: 12 }}> {item.author} {((item.discoverChapterIndex + 1) / item.totalChapter * 100).toFixed(2)}%</Text>
               </Text>
-              <Text>2017-06-10 {item.latestChapter}</Text>
+              <Text><Text style={{ color: '#999', fontSize: 12 }}>{moment(item.updateAt).fromNow()}更新：</Text>{item.latestChapter}</Text>
             </View>
           </View>
         </TouchableOpacity>

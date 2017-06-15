@@ -6,6 +6,7 @@ import { observable, action, runInAction, computed, toJS } from 'mobx'
 import { newBook, saveBook, getBookById, updateDiscover } from '../service'
 import personStore from '../store/personStore'
 import { color } from '../env'
+import moment from 'moment'
 
 @observer
 class Book extends Component {
@@ -103,23 +104,25 @@ class Book extends Component {
     return (
       <ScrollView style={{ backgroundColor: '#ffffff' }}>
         <StatusBar hidden={false} backgroundColor={color} />
-        <View style={{ flexDirection: 'row', paddingLeft: 10, paddingTop: 10 }}>
-          <View style={{ width: 120, height: 150 }}>
-            {this.book.thumbImage !== '' ? <Image source={{ uri: this.book.thumbImage }} style={{ width: 120, height: 150 }} /> : null}
+        <View style={{ flexDirection: 'row', paddingHorizontal: 10, paddingTop: 10 }}>
+          <View style={{ width: 72, height: 90 }}>
+            {this.book.thumbImage !== '' ? <Image source={{ uri: this.book.thumbImage }} style={{ width: '100%', height: '100%' }} /> : null}
           </View>
-          <View style={{ padding: 10 }}>
-            <Text>名字：<Text>{this.book.name}</Text> </Text>
-            <Text>作者：<Text>{this.book.author}</Text> </Text>
-            <Text>最新章节：<Text>{this.book.latestChapter}</Text> </Text>
-            <Text>最后更新时间：<Text>{this.book.updateAt}</Text> </Text>
+          <View style={{ paddingHorizontal: 10 }}>
+            <Text style={{ color: '#696969', fontSize: 22 }}>{this.book.name}</Text>
+            <Text style={{ color: '#999' }}>{this.book.author}</Text>
+            <Text style={{ color: '#696969' }}>{this.book.latestChapter}</Text>
+            <Text style={{ color: '#999' }}>{moment(this.book.updateAt).fromNow()}更新</Text>
           </View>
         </View>
-        <Text>{this.book.desc}</Text>
+        <View style={{ paddingHorizontal: 10, paddingTop: 10 }}>
+          <Text>{this.book.desc}</Text>
+        </View>
         <View style={{ flex: 1, flexDirection: 'row' }}>
           <Button style={{ flex: 1, margin: 10 }} type='primary' onClick={this.handleRead}><Text>开始阅读</Text></Button>
           {
             this.isExist
-              ? (<Button style={{ flex: 1, margin: 10, borderColor: '#ff0000' }} onClick={this.handleRemove}><Text>删除</Text></Button>)
+              ? (<Button style={{ flex: 1, margin: 10, borderColor: '#ff0000' }} onClick={this.handleRemove}><Text>取消收藏</Text></Button>)
               : (<Button style={{ flex: 1, margin: 10 }} onClick={this.handleSave}><Text>收藏</Text></Button>)
           }
         </View>

@@ -3494,6 +3494,10 @@ mobx@^3.1.0:
   version "3.1.9"
   resolved "http://r.cnpmjs.org/mobx/download/mobx-3.1.9.tgz#ed4af9d874ff6032c7af91fc1b87d9d33122a557"
 
+moment@2.16.0:
+  version "2.16.0"
+  resolved "https://registry.npm.biggersoft.com/moment/download/moment-2.16.0.tgz#f38f2c97c9889b0ee18fc6cc392e1e443ad2da8e"
+
 moment@2.x, moment@2.x.x, moment@~2.18.1:
   version "2.18.1"
   resolved "http://r.cnpmjs.org/moment/download/moment-2.18.1.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
@@ -3585,6 +3589,20 @@ node-notifier@^4.6.1:
 node-pre-gyp@^0.6.30:
   version "0.6.36"
   resolved "http://r.cnpmjs.org/node-pre-gyp/download/node-pre-gyp-0.6.36.tgz#db604112cb74e0d477554e9b505b17abddfab786"
+  dependencies:
+    mkdirp "^0.5.1"
+    nopt "^4.0.1"
+    npmlog "^4.0.2"
+    rc "^1.1.7"
+    request "^2.81.0"
+    rimraf "^2.6.1"
+    semver "^5.3.0"
+    tar "^2.2.1"
+    tar-pack "^3.4.0"
+
+node-pre-gyp@^0.6.36:
+  version "0.6.36"
+  resolved "https://registry.npm.biggersoft.com/node-pre-gyp/download/node-pre-gyp-0.6.36.tgz#db604112cb74e0d477554e9b505b17abddfab786"
   dependencies:
     mkdirp "^0.5.1"
     nopt "^4.0.1"

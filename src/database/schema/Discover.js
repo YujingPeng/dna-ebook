@@ -1,8 +1,5 @@
-import RealmModel from '../RealmModel'
-class Discover extends RealmModel {
-  constructor () {
-    super()
-  }
+
+class Discover {
 }
 
 Discover.schema = {
