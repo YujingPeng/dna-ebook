@@ -1,6 +1,6 @@
 # dna-ebook
 <font color="#a71d5d" size = "3px">
-  个人电子阅读器，紧用于研究
+  个人电子阅读器，仅用于研究
 </font>
 
 ### 基于 react-native、mobx
