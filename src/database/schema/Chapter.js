@@ -1,14 +1,5 @@
 
-class Chapter {
-  // toJSON () {
-  //   return {
-  //     id: this.id,
-  //     bookId: this.bookId,
-  //     text: this.text,
-  //     uri: this.uri
-  //   }
-  // }
-}
+class Chapter {}
 
 Chapter.schema = {
   name: 'Chapter',
@@ -17,7 +8,8 @@ Chapter.schema = {
     id: { type: 'string', indexed: true },
     bookId: { type: 'string', indexed: true },
     text: 'string',
-    uri: 'string'
+    uri: 'string',
+    cached: 'bool'
   }
 }
 

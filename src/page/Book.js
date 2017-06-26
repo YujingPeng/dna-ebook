@@ -7,6 +7,8 @@ import { newBook, saveBook, getBookById, updateDiscover } from '../service'
 import personStore from '../store/personStore'
 import { color } from '../env'
 import moment from 'moment'
+import loading from '../components/loading'
+import {ListViewItem} from '../components/chapterList'
 
 @observer
 class Book extends Component {
@@ -15,7 +17,7 @@ class Book extends Component {
     const { name } = state.params || {}
     return {
       title: name,
-      headerStyle: { width: '100%', backgroundColor: color },
+      headerStyle: { width: '100%', backgroundColor: color, paddingTop: 20 },
       headerTintColor: '#ffffff'
     }
   };
@@ -39,33 +41,39 @@ class Book extends Component {
     this.init()
   }
 
+  componentWillUnmount () {
+    Toast.hide()
+  }
+
   @action
   init = async () => {
-    if (this.isExist) {
-      const result = await getBookById(this.params.id)
-      runInAction(() => {
-        // console.time('2')
-        // const bookJSON = result.book.toJSON()
-        // // const list = result.chapterList.map(item => item.toJSON())
-        // console.timeEnd('2')
-        this.book = result
-      })
-    } else {
-      const result = await newBook(this.params.id, this.params.uri)
-      runInAction(() => {
-        this.book = result
-      })
+    try {
+      // console.warn(this.params.uri)
+      await loading()
+      if (this.isExist) {
+        const result = await getBookById(this.params.id)
+        runInAction(() => {
+          this.book = result
+          Toast.hide()
+        })
+      } else {
+        const result = await newBook(this.params.id, this.params.uri)
+        runInAction(() => {
+          this.book = result
+          Toast.hide()
+        })
+      }
+    } catch (error) {
+      Toast.fail(error.message)
     }
   }
 
   // @action
   handleSave = async () => {
-    // Toast.loading('正在保存...', 0, () => {})
-
-    // this.book.save()
     await saveBook(toJS(this.book))
     runInAction(() => {
       this.isExist = true
+      personStore.refresh()
     })
     // Toast.hide()
   }
@@ -82,34 +90,56 @@ class Book extends Component {
     }
   }
 
+  handleChapterItemPress = ({ item, index }) => {
+    if (this.isExist) {
+      updateDiscover({
+        id: item.bookId,
+        discoverChapterId: item.id,
+        discoverPage: 0,
+        discoverChapterIndex: Number(index),
+        discoverChapterName: item.text
+      })
+      this.props.navigation.navigate('viewer', { id: item.id, pageIndex: 0, title: this.book.name, bookId: item.bookId })
+    } else {
+      Toast.info('请收藏后再阅读', 0.7)
+    }
+  }
+
   _renderRow = (item, sectionID, rowID) => {
     const rowItemPress = () => {
       if (this.isExist) {
-        updateDiscover({ id: item.bookId, discoverChapterId: item.id, discoverPage: 0, discoverChapterIndex: Number(rowID), discoverChapterName: item.text })
+        updateDiscover({
+          id: item.bookId,
+          discoverChapterId: item.id,
+          discoverPage: 0,
+          discoverChapterIndex: Number(rowID),
+          discoverChapterName: item.text
+        })
         this.props.navigation.navigate('viewer', { id: item.id, pageIndex: 0, title: this.book.name, bookId: item.bookId })
       } else {
         Toast.info('请收藏后再阅读', 0.7)
       }
     }
     return (
-      <TouchableOpacity key={item.id} onPress={rowItemPress}>
-        <View style={{ paddingVertical: 10, borderBottomWidth: 1, borderColor: '#cfcfcf', marginHorizontal: 10 }}>
-          <Text>{item.text}</Text>
-        </View>
-      </TouchableOpacity>
+      <ListViewItem rowID={rowID} item={item} onPress={rowItemPress} />
+      // <TouchableOpacity key={item.id} onPress={rowItemPress}>
+      //   <View style={{ paddingVertical: 10, borderBottomWidth: 1, borderColor: '#cfcfcf', marginHorizontal: 10 }}>
+      //     <Text>{item.text}</Text>
+      //   </View>
+      // </TouchableOpacity>
     )
   }
 
   render () {
-    return (
+    return this.book.updateAt ? (
       <ScrollView style={{ backgroundColor: '#ffffff' }}>
-        <StatusBar hidden={false} backgroundColor={color} />
+        <StatusBar hidden={false} backgroundColor={color} translucent />
         <View style={{ flexDirection: 'row', paddingHorizontal: 10, paddingTop: 10 }}>
           <View style={{ width: 72, height: 90 }}>
             {this.book.thumbImage !== '' ? <Image source={{ uri: this.book.thumbImage }} style={{ width: '100%', height: '100%' }} /> : null}
           </View>
           <View style={{ paddingHorizontal: 10 }}>
-            <Text style={{ color: '#696969', fontSize: 22 }}>{this.book.name}</Text>
+            <Text style={{ color: '#333', fontSize: 22 }}>{this.book.name}</Text>
             <Text style={{ color: '#999' }}>{this.book.author}</Text>
             <Text style={{ color: '#696969' }}>{this.book.latestChapter}</Text>
             <Text style={{ color: '#999' }}>{moment(this.book.updateAt).fromNow()}更新</Text>
@@ -118,25 +148,17 @@ class Book extends Component {
         <View style={{ paddingHorizontal: 10, paddingTop: 10 }}>
           <Text>{this.book.desc}</Text>
         </View>
-        <View style={{ flex: 1, flexDirection: 'row' }}>
-          <Button style={{ flex: 1, margin: 10 }} type='primary' onClick={this.handleRead}><Text>开始阅读</Text></Button>
+        <View style={{ flexDirection: 'row' }}>
+          <Button style={{ flex: 1, margin: 10, backgroundColor: color }} type='primary' onClick={this.handleRead}><Text>开始阅读</Text></Button>
           {
             this.isExist
               ? (<Button style={{ flex: 1, margin: 10, borderColor: '#ff0000' }} onClick={this.handleRemove}><Text>取消收藏</Text></Button>)
               : (<Button style={{ flex: 1, margin: 10 }} onClick={this.handleSave}><Text>收藏</Text></Button>)
           }
         </View>
-        <View>
-          <ListView
-            style={{ flex: 1 }}
-            initialListSize={50}
-            enableEmptySections
-            dataSource={this.DataSource}
-            renderRow={this._renderRow}
-          />
-        </View>
+        <ListView enableEmptySections initialListSize={10} renderRow={this._renderRow} dataSource={this.DataSource} />
       </ScrollView>
-    )
+    ) : null
   }
 }
 

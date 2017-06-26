@@ -1,17 +1,20 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, ListView, StatusBar } from 'react-native'
+import { View, ListView, StatusBar } from 'react-native'
 import ViewerModel from '../model/ViewerModel'
 import { observer } from 'mobx-react/native'
 import { observable, computed, action } from 'mobx'
-import { loading } from '../components/loading'
 import DrawerLayout from 'react-native-drawer-layout'
-import { bulkCacheChapterContent, getChapterList } from '../service'
 import { Toast } from 'antd-mobile'
+
+// import Icon from 'react-native-vector-icons/FontAwesome'
+
 import { theme } from '../env'
+import { bulkCacheChapterContent, getChapterList } from '../service'
+
+import loading from '../components/loading'
+import { ListViewItem } from '../components/chapterList'
 import Dock from '../components/dock'
-import ScreenArea from '../components/viewer/ScreenArea'
-import Pager from '../components/viewer/Pager'
-import Icon from 'react-native-vector-icons/FontAwesome'
+import { DownloadDock, SettingsDock, Pager, ScreenArea } from '../components/viewer'
 
 @observer
 class Viewer extends Component {
@@ -21,10 +24,14 @@ class Viewer extends Component {
     return visible ? {
       title,
       headerStyle: {
-        position: 'absolute', top: 0, zIndex: 100, width: '100%', backgroundColor: '#000000'
+        position: 'absolute', top: 0, width: '100%', backgroundColor: '#000000'
       },
       headerTintColor: '#ffffff'
     } : { header: null }
+  }
+
+  componentWillUnmount () {
+    Toast.hide()
   }
 
   viewer = new ViewerModel(this.props.navigation.state.params.id, this.props.navigation.state.params.bookId, this.props.navigation.state.params.title, this.props.navigation.state.params.pageIndex);
@@ -35,10 +42,24 @@ class Viewer extends Component {
   chapters = getChapterList(this.props.navigation.state.params.bookId, this.props.navigation.state.params.id)
 
   @observable
-  reanderItemView = null
+  dockItemViewMode = null
+
+  @observable
+  isDrawerOpen = false
 
   @computed get mode () {
     return this.viewer.isNightMode ? theme.night : theme.light
+  }
+
+  @computed get renderItemView () {
+    switch (this.dockItemViewMode) {
+      case 'settings':
+        return <SettingsDock onPress={() => { }} />
+      case 'download':
+        return <DownloadDock onPress={this.handleDownload} />
+      default:
+        return null
+    }
   }
 
   handlePrev = async () => {
@@ -57,86 +78,55 @@ class Viewer extends Component {
     if (this.props.navigation.state.params.visible) {
       this.handleMenu()
     } else if (this.viewer.nextIndex < this.viewer.total) {
-      // this.pageIndex++
       this.viewer.discover(this.viewer.pageIndex + 1)
     } else {
       await loading()
       await this.viewer.jump(1)
     }
   }
-
+  @action
   handleMenu = () => {
+    this.dockItemViewMode = ''
     this.props.navigation.setParams({ visible: !this.props.navigation.state.params.visible })
   }
 
   @action
-  handleDockPress = () => {
-    this.reanderItemView = !this.reanderItemView ? (
-      <View style={{ flex: 1, flexDirection: 'row', paddingBottom: 15, height: 45, margin: 15, justifyContent: 'space-between', borderBottomColor: '#e7e7e7', borderBottomWidth: 1 }}>
-        <TouchableOpacity onPress={() => { }} style={{ flex: 1, borderColor: '#e7e7e7', borderWidth: 1, marginHorizontal: 5, borderRadius: 3, justifyContent: 'center', alignItems: 'center' }} >
-          <Text style={{ color: '#fff' }}>Aa-</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => { }} style={{ flex: 1, borderColor: '#e7e7e7', borderWidth: 1, marginHorizontal: 5, borderRadius: 3, justifyContent: 'center', alignItems: 'center' }} >
-          <Text style={{ color: '#fff' }}>Aa+</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => { }} style={{ flex: 1, borderColor: '#e7e7e7', borderWidth: 1, marginHorizontal: 5, borderRadius: 3, justifyContent: 'center', alignItems: 'center' }} >
-          <Icon style={{ color: '#fff' }} name="align-justify" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => { }} style={{ flex: 1, borderColor: '#e7e7e7', borderWidth: 1, marginHorizontal: 5, borderRadius: 3, justifyContent: 'center', alignItems: 'center' }} >
-          <Icon style={{ color: '#fff' }} name="reorder" />
-        </TouchableOpacity>
-      </View>
-    ) : null
+  handleSettingsPress = () => {
+    this.dockItemViewMode = this.dockItemViewMode !== 'settings' ? 'settings' : ''
   }
   handleChangeMode = () => {
     this.viewer.isNightMode = !this.viewer.isNightMode
   }
-  handleDownload = (start, count) => {
+  handleDownload =async (start, count) => {
     Toast.info('开始缓存！', 0.5)
     // todo start end
-    bulkCacheChapterContent(this.viewer.bookId, this.viewer.id, start, count)
+    await bulkCacheChapterContent(this.viewer.bookId, this.viewer.id, start, count)
+    Toast.info('缓存完成', 0.5)
   }
 
   @action
-  handleDownloadBar = () => {
-    this.reanderItemView = !this.reanderItemView ? (
-      <View style={{ flex: 1, flexDirection: 'row', paddingBottom: 15, height: 45, margin: 15, justifyContent: 'space-between', borderBottomColor: '#e7e7e7', borderBottomWidth: 1 }}>
-        <TouchableOpacity onPress={() => { this.handleDownload(0) }} style={{ flex: 1, borderColor: '#e7e7e7', borderWidth: 1, marginHorizontal: 5, borderRadius: 3, justifyContent: 'center', alignItems: 'center' }} >
-          <Text style={{ color: '#fff' }}>全本</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => { this.handleDownload(null, 10) }} style={{ flex: 1, borderColor: '#e7e7e7', borderWidth: 1, marginHorizontal: 5, borderRadius: 3, justifyContent: 'center', alignItems: 'center' }} >
-          <Text style={{ color: '#fff' }}>10章</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => { this.handleDownload(null, 100) }} style={{ flex: 1, borderColor: '#e7e7e7', borderWidth: 1, marginHorizontal: 5, borderRadius: 3, justifyContent: 'center', alignItems: 'center' }} >
-          <Text style={{ color: '#fff' }}>100章</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => { this.handleDownload() }} style={{ flex: 1, borderColor: '#e7e7e7', borderWidth: 1, marginHorizontal: 5, borderRadius: 3, justifyContent: 'center', alignItems: 'center' }} >
-          <Text style={{ color: '#fff' }}>后面全部</Text>
-        </TouchableOpacity>
-      </View>
-    ) : null
+  handleDownloadPress = () => {
+    this.dockItemViewMode = this.dockItemViewMode !== 'download' ? 'download' : ''
   }
 
+  @action
   handleOpen = () => {
     this.drawer.openDrawer()
+    // this.isDrawerOpen = true
     this.props.navigation.setParams({ visible: false })
+  }
+
+  @action
+  handleEndReached = () => {
+
   }
 
   _renderRow = (item, sectionID, rowID) => {
     const rowItemPress = () => {
-      if (this.isExist) {
-        // updateDiscover({ id: item.bookId, discoverChapterId: item.id, discoverPage: 0, discoverChapterIndex: Number(rowID) })
-        this.props.navigation.navigate('viewer', { id: item.id, pageIndex: 0, title: this.book.name })
-      } else {
-        Toast.info('请收藏后再阅读', 0.7)
-      }
+      Toast.info('coming soom...', 0.7)
     }
     return (
-      <TouchableOpacity key={item.id} onPress={rowItemPress}>
-        <View style={{ paddingVertical: 10, borderBottomWidth: 1, borderColor: '#a9a9a9', marginHorizontal: 10 }}>
-          <Text style={{ color: this.mode.color }}>{item.text}</Text>
-        </View>
-      </TouchableOpacity>
+      <ListViewItem item={item} rowID={rowID} onPress={rowItemPress} />
     )
   }
 
@@ -144,8 +134,9 @@ class Viewer extends Component {
     <View style={{ flex: 1, backgroundColor: this.mode.backgroundColor }}>
       <ListView
         style={{ flex: 1 }}
-        initialListSize={50}
+        initialListSize={10}
         enableEmptySections
+        onEndReached={this.handleEndReached}
         dataSource={this.dataSource.cloneWithRows(this.chapters.slice(0))}
         renderRow={this._renderRow} />
     </View>
@@ -155,30 +146,31 @@ class Viewer extends Component {
     const { backgroundColor, color } = this.mode
 
     return (
-      <DrawerLayout
-        ref={ref => { this.drawer = ref }}
-        drawerWidth={90}
-        drawerLockMode='locked-closed'
-        renderNavigationView={this._reanderChapters}>
-        <View style={{ flex: 1, position: 'relative', backgroundColor }} >
-          <StatusBar animated hidden />
-          <Pager
-            dataSource={this.viewer.dataSource}
-            themeColor={color}
-            header={this.viewer.name}
-            footer={`第${this.viewer.nextIndex}/${this.viewer.total}章`} />
+      <View style={{ flex: 1, position: 'relative', backgroundColor }} >
+        <StatusBar animated hidden />
+        <Pager
+          dataSource={this.viewer.dataSource}
+          themeColor={color}
+          header={this.viewer.name}
+          footer={`第${this.viewer.nextIndex}/${this.viewer.total}章`} />
+        <DrawerLayout
+          ref={ref => { this.drawer = ref }}
+          drawerWidth={300}
+          drawerLockMode='locked-closed'
+          onDrawerClose={() => { this.isDrawerOpen = false }}
+          renderNavigationView={this._reanderChapters}>
           <ScreenArea
             onLeftPress={this.handlePrev}
             onRightPress={this.handleNext}
             onCenterPress={this.handleMenu} />
-          <Dock visible={this.props.navigation.state.params.visible} renderItemView={this.reanderItemView}>
-            <Dock.Item text="目录" icon="list" />
-            <Dock.Item text="夜间" icon="moon-o" onPress={this.handleChangeMode} />
-            <Dock.Item text="设置" icon="gear" onPress={this.handleDockPress} />
-            <Dock.Item text="缓存" icon="download" onPress={this.handleDownloadBar} />
-          </Dock>
-        </View>
-      </DrawerLayout>
+        </DrawerLayout>
+        <Dock visible={this.props.navigation.state.params.visible} renderItemView={this.renderItemView}>
+          <Dock.Item text="目录" icon="list" onPress={this.handleOpen} />
+          <Dock.Item text="夜间" icon="moon-o" onPress={this.handleChangeMode} />
+          <Dock.Item text="设置" icon="gear" onPress={this.handleSettingsPress} />
+          <Dock.Item text="缓存" icon="download" onPress={this.handleDownloadPress} />
+        </Dock>
+      </View>
 
     )
   }

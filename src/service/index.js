@@ -1,102 +1,137 @@
-import cheerio from 'cheerio-without-node-native'
-import uuid from 'react-native-uuid'
-import { TextDecoder } from 'text-encoding'
-import axios from 'axios'
+import moment from 'moment'
 import db from '../database'
-import { rules } from '../env'
+import {
+  load, matchRule,
+  generateBookModel, generateChapters, generateSearchModel, otherGenerateSearchModel
+} from './utils'
 
-const config = {
-  headers: {
-    'User-Agent:': 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50'
-  },
-  responseType: 'arraybuffer'
-}
-
-async function fetchData (uri) {
+/**
+ * 根据关键字和站点查询
+ * @param {String} name 关键字
+ * @param {String} site 站点的名字
+ */
+export async function search (keyword, site) {
   try {
-    return await axios.get(uri)
+    let href = site + keyword
+    const $body = await load(href)
+    let result = otherGenerateSearchModel($body, site)
+    // if (site.indexOf('http://zhannei.baidu.com') >= 0) {
+    //   $body('#results .result-item').each((i, item) => {
+    //     const model = generateSearchModel($body(item))
+    //     if (model) result.push(model)
+    //   })
+    // } else {
+    // result = otherGenerateSearchModel($body, site)
+    // }
+    return result
   } catch (error) {
-    throw error
+    console.warn(error)
+    return []
   }
 }
 
-export async function load (uri) {
-  try {
-    const rule = matchRule(uri) || {}
-    const encode = rule.encode || 'utf-8'
-    const res = await axios({ ...config, url: uri })
-    const buffer = res.data
-    // const res = await fetch(uri)
-    // const buffer = await res.arrayBuffer()
-    const decode = new TextDecoder(encode)
-    const resHtml = decode.decode(buffer)
-    return cheerio.load(resHtml)
-  } catch (error) {
-    throw error
-  }
-}
-export async function search (name, site) {
-  // http://zhannei.baidu.com/cse/search?q=&click=1&s=5334330359795686106&nsid=
-  let uri = `http://zhannei.baidu.com/cse/site?q=${name}&cc=${site}&stp=1`
-  const $ = await load(uri)
-  let result = []
-  $('#results>div.result').each((i, item) => {
-    const $name = $(item).find('h3>a')
-    const names = $name.text().split('_')
-    const name = names[0].replace('最新章节', '')
-    const uri = $name.attr('href')
-    result.push({
-      id: uuid.v4(),
-      name,
-      siteName: names[names.length - 1],
-      uri: uri,
-      thumbImage: getSearchThumbUri(site, uri)
-    })
+export function cachedSearchKeyword (keyword) {
+  db.write(() => {
+    const history = db.objectForPrimaryKey('SearchHistory', keyword)
+    if (history) {
+      history.updateAt = new Date()
+      history.times = history.times + 1
+    } else {
+      db.create('SearchHistory', { keyword })
+    }
   })
-  return result
 }
 
-export async function newBook (id, uri) {
+export async function getSearchHistory () {
+  return db.objects('SearchHistory').filtered(`isDeleted = false`).sorted('updateAt', true).slice(0, 10)
+}
+
+/**
+ * 创建新的书
+ * @param {String} id 主键
+ * @param {String} uri 详细页地址，用于判断是否存在该目录地址
+ */
+export async function newBook (id, uri, type) {
   // console.warn('爬取页面', uri)
   const rule = matchRule(uri)
   // console.warn('爬取页面', rule)
   if (!rule) return null
-  const $ = await load(uri)
-  let book = translator(rule, $, uri) || {}
+  const $body = await load(uri)
+  let book = generateBookModel($body, rule, uri) || {}
   book.id = id
   book.uri = uri
-  // book.updateAt =
-  const chapterList = translatorChapterMenu(rule, $, book.id) || []
+  book.type = type || ''
+  book.updateAt = book.updateAt || ''
+  // 爬取章节
+  const chapterList = generateChapters($body, rule, book.id) || []
   book.totalChapter = chapterList.length
-  book.thumbImageBase64 = ''
   book.discoverChapterId = chapterList[0].id
   book.latestChapter = chapterList[chapterList.length - 1].text
   book.discoverChapterName = chapterList[0].text
-  book.discoverChapterIndex = 0
-  book.discoverPage = 0
   book.chapters = chapterList
   // 详细页面点击收藏再保存到缓存
   return book
 }
 
-export function saveBook (book) {
-  return new Promise((resolve, reject) => {
-    // const { ...book } = model
-    // console.warn('saveBook', book)
-    db.write(() => {
-      db.create('Book', book)
-      // chapterList.forEach(item => {
-      //   db.create('Chapter', item)
-      // })
-      resolve(true)
-    })
+/**
+ *
+ * @param {String} id 章节主键
+ * @param {String} uri 目录地址
+ */
+export async function updateChapterList (id, uri) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const rule = matchRule(uri)
+      // console.warn('爬取页面', rule)
+      if (!rule) return null
+      const $body = await load(uri)
+      const chapterList = generateChapters($body, rule, id) || []
+      db.write(() => {
+        const book = db.objectForPrimaryKey('Book', id)
+        const start = book.totalChapter
+        if (start < chapterList.length) {
+          const updatelist = chapterList.slice(start)
+          book.chapters.push(...updatelist)
+          book.totalChapter = chapterList.length
+          book.latestChapter = chapterList[chapterList.length - 1].text
+        }
+        book.updateAt = moment().format('YYYY-MM-DD HH:mm:ss')
+        resolve(chapterList.length - start)
+      })
+    } catch (error) {
+      reject(error)
+    }
   })
 }
 
-export async function getBookList (params) {
+/**
+ * 保存
+ * @param {Object} book 数据库实体
+ */
+export function saveBook (book) {
+  return new Promise((resolve, reject) => {
+    try {
+      db.write(() => {
+        book.isCollect = true
+        db.create('Book', book)
+        resolve(true)
+      })
+    } catch (error) {
+      reject(error.message)
+    }
+  })
+}
+
+/** 书列表 */
+export async function getBookList () {
   return db.objects('Book')
 }
 
+/**
+ * 获取章节列表
+ * @param {Object} bookId 书主键
+ * @param {String} chapterId 章节主键
+ */
 export function getChapterList (bookId, chapterId) {
   const chapters = db.objects('Chapter').filtered(`bookId = "${bookId}"`)
   const currentIndex = chapters.findIndex(item => chapterId === item.id)
@@ -112,9 +147,13 @@ export function getChapterList (bookId, chapterId) {
     start = currentIndex - 10
     end = currentIndex + 10
   }
-  return chapters.slice(start, end)
+  return chapters
 }
 
+/**
+ * 根据Id获取内容
+ * @param {String} bookId 主键
+ */
 export async function getBookById (bookId) {
   return new Promise((resolve, reject) => {
     db.write(() => {
@@ -127,6 +166,10 @@ export async function getBookById (bookId) {
   })
 }
 
+/**
+ * 删除
+ * @param {String} bookId 主键
+ */
 export function removeBook (bookId) {
   return new Promise((resolve, reject) => {
     db.write(() => {
@@ -154,6 +197,7 @@ export async function getChapter (chapterId) {
         load(chapter.uri).then($ => {
           const content = $(rule.content).text()
           db.write(() => {
+            chapter.cached = true
             db.create('ChapterContent', { id: chapterId, bookId: chapter.bookId, content })
           })
           resolve({ name: chapter.text, bookId: chapter.bookId, content })
@@ -167,9 +211,9 @@ export async function getChapter (chapterId) {
 
 /**
  * 根据索引获取章节实体·
- * @param {UUID} bookId
- * @param {UUID} chapterId
- * @param {Number} index
+ * @param {String} bookId 书主键
+ * @param {String} chapterId 章节主键
+ * @param {Number} index 当前章节的索引
  */
 export async function getChapterByIndex (bookId, chapterId, index) {
   return new Promise((resolve, reject) => {
@@ -207,18 +251,18 @@ export async function updateDiscover (book) {
 }
 
 /**
- *
- * @param {UUID} bookId
- * @param {UUID} chapterId
- * @param {Number} start
- * @param {Number} count
+ * 批量缓存章节内容
+ * @param {String} bookId 书主键
+ * @param {String} chapterId 章节主键
+ * @param {Number} start 开始位置
+ * @param {Number} count 结束位置
  */
-export function bulkCacheChapterContent (bookId, chapterId, start, count) {
+export async function bulkCacheChapterContent (bookId, chapterId, start, count) {
   return new Promise(async (resolve, reject) => {
     try {
       const index = db.objects('Chapter').findIndex(item => chapterId === item.id)
-      const _start = start ? 0 : index + 1
-      const _end = count ? index + 1 + count : null
+      const _start = start || index + 1
+      const _end = !count ? -1 : index + 1 + count
       const chapters = db.objects('Chapter')
         .filtered(`bookId = "${bookId}"`)
         .slice(_start, _end)
@@ -229,74 +273,13 @@ export function bulkCacheChapterContent (bookId, chapterId, start, count) {
         const content = $(rule.content).text()
         db.write(() => {
           // console.warn(chapter.id)
+          chapter.cached = true
           db.create('ChapterContent', { id: chapter.id, bookId, content }, true)
         })
-        // resolve(true)
       }
+      resolve(true)
     } catch (error) {
       reject(error)
     }
   })
-}
-
-export function matchRule (uri) {
-  return Object.values(rules).find(item => uri.indexOf(item.host) >= 0)
-}
-
-// 转换详细
-function translator (rule, $, uri) {
-  const self = {}
-  const { info, thumbImage, host } = rule
-  for (let [k, v] of Object.entries(info)) {
-    if (v.pattern) {
-      const text = $(v.selector).text()
-      self[k] = text.replace(v.pattern, '')
-    } else {
-      self[k] = $(v).text()
-    }
-  }
-  let thumbImageUri = $(thumbImage).attr('src')
-  if (!thumbImageUri) {
-    self.thumbImage = getSearchThumbUri(host, uri)
-  } else {
-    self.thumbImage = `${host}${thumbImageUri}`
-  }
-
-  return self
-}
-
-// 转换目录
-function translatorChapterMenu (rule, $, bookId) {
-  const { host, firstChapterIndex } = rule
-  let list = []
-  $('#list>dl>dd>a').each((i, item) => {
-    if (i >= firstChapterIndex) {
-      const $elem = $(item)
-      let uri = host + $elem.attr('href')
-      let text = $elem.text()
-      const index = list.findIndex(item => item.uri === uri)
-      if (!!text && !!uri && index < 0) {
-        list.push({
-          id: uuid.v4(), uri, text, bookId
-        })
-      }
-    }
-  })
-  return list
-}
-
-/** 获取搜索列表预览图片 */
-function getSearchThumbUri (site, bookUri) {
-  if (!bookUri) return ''
-  const rule = matchRule(bookUri)
-  if (rule) {
-    let params = bookUri.split('/')
-    let bookHostId = params[params.length - 1] === '' ? params[params.length - 2] : params[params.length - 1]
-    let bookParams = bookHostId.split('_')
-    // let uri = `${rule.host}${rule.searchThumbImage}/${parseInt(bookParams[0]) + 1}/${bookParams[1]}/${bookParams[1]}.jpg`
-    let uri = rule.searchThumbImage(rule.host, bookParams[0], bookParams[1])
-    return uri
-  } else {
-    return ''
-  }
 }

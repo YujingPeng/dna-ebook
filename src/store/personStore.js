@@ -5,27 +5,51 @@
  * @Last Modified time: 2017-04-01 16:52:37
  */
 import { action, runInAction, observable } from 'mobx'
-import { getBookList } from '../service'
+import { getBookList, getSearchHistory } from '../service'
+import { rules } from '../env'
 
 /** 当前用户仓储 */
 class PersonStore {
   constructor () {
     this.init()
+
+    let host = []
+    for (var key in rules) {
+      if (rules.hasOwnProperty(key)) {
+        host.push({
+          label: rules[key].name,
+          value: rules[key].searchUri
+        })
+      }
+    }
+    this.currentSource = host[0].value
+    this.sites = host
   }
+
+  @observable sites = []
+
+  @observable currentSource = ''
 
   /**   书本列表   */
   @observable books = []
 
-  /**
-   * @type {BookModel}
-   */
-  @observable cacheBook = null
+  @observable searchHistory = []
 
   @action async init () {
-    const result = await getBookList()
+    const books = await getBookList()
+    const search = await getSearchHistory() || []
     runInAction(() => {
-      this.books.replace(result)
+      this.books.replace(books)
+      this.searchHistory.replace(search)
     })
+  }
+
+  @action cacheSearchHistory (keyword) {
+    const index = this.searchHistory.findIndex(item => keyword === item.keyword)
+    if (index >= 0) {
+      this.searchHistory.splice(index, 1)
+    }
+    this.searchHistory.unshift({keyword})
   }
 
   /**
@@ -77,21 +101,6 @@ class PersonStore {
     */
   @action isExist (uri) {
     return this.books.findIndex(item => item.uri === uri) >= 0
-  }
-
-  /**
-   * 更新阅读信息
-   */
-  @action async updateDiscover () {
-    if (this.cacheBook) {
-      // await BookService.saveBook(toJS(this.cacheBook))
-      // await this.refresh()
-    }
-  }
-
-  @action initCacheBook (book) {
-    // this.cacheBook = new BookModel()
-    // extendObservable(this.cacheBook, toJS(book))
   }
 }
 

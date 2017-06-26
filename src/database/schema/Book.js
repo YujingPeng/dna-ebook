@@ -1,23 +1,5 @@
 
-class Book {
-  // toJSON () {
-  //   return {
-  //     id: this.id,
-  //     uri: this.uri,
-  //     name: this.name,
-  //     desc: this.desc,
-  //     author: this.author,
-  //     updateAt: this.updateAt,
-  //     latestChapter: this.latestChapter,
-  //     thumbImage: this.thumbImage,
-  //     thumbImageBase64: this.thumbImageBase64,
-  //     totalChapter: this.totalChapter,
-  //     discoverChapterId: this.discoverChapterId,
-  //     discoverChapterIndex: this.discoverChapterIndex,
-  //     discoverPage: this.discoverPage
-  //   }
-  // }
-}
+class Book {}
 
 Book.schema = {
   name: 'Book',
@@ -28,15 +10,25 @@ Book.schema = {
     name: 'string',
     desc: 'string',
     author: 'string',
+    type: 'string',
+    /** 更新时间 */
     updateAt: 'string',
+    /** 是否已收藏，预留字段 */
+    isCollect: {type: 'bool', default: true},
+    /** 最新章节 */
     latestChapter: 'string',
     thumbImage: 'string',
-    thumbImageBase64: 'string',
+    /** 预留字段，做预览图缓存准备 */
+    thumbImageBase64: { type: 'string', default: '' },
     totalChapter: 'int',
+    /** 阅读相关信息 */
     discoverChapterId: 'string',
-    discoverChapterIndex: 'int',
+    discoverChapterIndex: { type: 'int', default: 0 },
     discoverChapterName: 'string',
-    discoverPage: 'int',
+    discoverPage: { type: 'int', default: 0 },
+    /** 章节目录地址，如果为空，则应该取uri的地址 */
+    chapterMenuUri: 'string',
+    /** 章节列表 */
     chapters: { type: 'list', objectType: 'Chapter' }
   }
 }

@@ -1,4 +1,4 @@
-CHANGES
+CHANGE LOG
 
 #### templete
 ```
@@ -24,6 +24,10 @@ CHANGES
 - separation components in viewer page
 - bulk cache chapter
 - viewer page bottom dock
+- upgrade UI
+
+## optimization
+- when the page Unmount remove loading component
 
 # 0.2.2
 ## New features and enhancements
