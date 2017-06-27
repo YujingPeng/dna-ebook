@@ -19,14 +19,11 @@ http://reactnative.cn/docs/0.44/getting-started.html
 https://github.com/Manweill/dna-ebook/blob/develop/CHANGE.MD
 
 ## TODO LIST
-- [x] bulk cache chapter
-- [x] upgrade `antd-mobild` to 1.3.X
-- [x] upgrade `react-native` to 0.45.x
-- [x] add choice source options in search page
-- [x] viewer page bottom dock
-      add bottom bar and it has `NightMode` `choice chapter` `cache chapter` `settings`
-- [x] design UI
-- [x] optimize loading component
-- [x] search history and last search result
-- [x] add refresh chapters list
+- [ ] bugfix and optimize
+- [ ] Viewer page new implement (support TouchMove)
+- [ ] upgrade BookInfo UI
+- [ ] Viewer menus button redirect to new page
+- [ ] add new book source
+- [ ] settings saving in db
 - [ ] upgrade ListView to FlatList
+- [ ] 抓取百度的推荐列表或者追书的推荐列表
