@@ -118,11 +118,9 @@ class Home extends Component {
   _keyExtractor = (item, index) => item.id;
 
   render () {
-    const encoderstr = urlencode('万古', 'gbk')
     return (
       <View style={{ flex: 1, backgroundColor: '#F5F5F5' }}>
         <StatusBar hidden={false} backgroundColor={color} translucent />
-        <Text>{encoderstr}</Text>
         <FlatList
           data={personStore.books.slice(0)}
           renderItem={this._renderRow}
