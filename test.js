@@ -82,3 +82,8 @@
 // }
 
 // test()
+// %CD%F2%B9%C5
+
+// var urlencode = require('urlencode')
+// console.log(urlencode('万古')) // default is utf8
+// console.log(urlencode('万古', 'gbk')) // '%CB%D5%C7%A7'

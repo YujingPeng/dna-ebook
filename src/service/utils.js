@@ -83,10 +83,12 @@ export function generateBookModel ($body, rule, uri) {
   const { info, thumbImage, chapterMenuUri } = rule
   for (let [k, v] of Object.entries(info)) {
     if (v.pattern) {
-      const text = $body(v.selector).text()
-      self[k] = text.replace(v.pattern, '')
+      const text = $body.find(v.selector).text()
+      self[k] = text.replace(v.pattern, '').trim()
+    } else if (v.attr) {
+      self[k] = $body.find(v.selector).attr(v.attr)
     } else {
-      self[k] = $body(v).text()
+      self[k] = $body.find(v).text().trim()
     }
   }
 
@@ -107,9 +109,9 @@ export function generateChapters ($body, rule, bookId) {
   let list = []
   $body('#list>dl>dd>a').each((i, item) => {
     if (i >= firstChapterIndex) {
-      const $bodyelem = $body(item)
-      let uri = host + $bodyelem.attr('href')
-      let text = $bodyelem.text()
+      const $item = $body(item)
+      let uri = host + $item.attr('href')
+      let text = $item.text()
       const index = list.findIndex(item => item.uri === uri)
       if (!!text && !!uri && index < 0) {
         list.push({
@@ -152,7 +154,7 @@ export function generateSearchModel ($body) {
 export function otherGenerateSearchModel ($body, site) {
   try {
     const rule = Object.values(rules).find(item => item.searchUri === site)
-    const {searchItem, searchInfo} = rule
+    const { searchItem, searchInfo } = rule
     let result = []
     const keys = Object.entries(searchInfo)
     $body(searchItem).each((i, item) => {
