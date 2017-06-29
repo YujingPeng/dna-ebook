@@ -1,27 +1,39 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native'
+import { bulkCacheChapterContent } from '../../service'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import settingStore from '../../store/settingStore'
 
 export class SettingsDock extends PureComponent {
-  static propTypes = {
-    onPress: PropTypes.func.isRequired
+  handleSizePlus = () => {
+    settingStore.saveSetting({ fontSize: settingStore.fontSize + 2 })
   }
 
+  handleSizeMinus = () => {
+    settingStore.saveSetting({ fontSize: settingStore.fontSize - 2 })
+  }
+
+  handleLineHeightLoose = () => {
+    settingStore.saveSetting({ lineHight: 1.5 })
+  }
+
+  handleLineHeightCrowded = () => {
+    settingStore.saveSetting({ lineHight: 1 })
+  }
   render () {
-    // const handePress = this.props.onPress || function () { }
     return (
       <View style={styles.container}>
-        <TouchableOpacity style={styles.item} >
+        <TouchableOpacity style={styles.item} onPress={this.handleSizeMinus}>
           <Text style={{ color: '#fff' }}>Aa-</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item} >
+        <TouchableOpacity style={styles.item} onPress={this.handleSizePlus}>
           <Text style={{ color: '#fff' }}>Aa+</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item} >
+        <TouchableOpacity style={styles.item} onPress={this.handleLineHeightCrowded}>
           <Icon style={{ color: '#fff' }} name="align-justify" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity style={styles.item} onPress={this.handleLineHeightLoose}>
           <Icon style={{ color: '#fff' }} name="reorder" />
         </TouchableOpacity>
       </View>
@@ -34,15 +46,15 @@ export class DownloadDock extends PureComponent {
     onPress: PropTypes.func.isRequired
   }
 
-  handleAll=() => {
+  handleAll = () => {
     this.props.onPress(1)
   }
 
-  handle10=() => {
+  handle10 = () => {
     this.props.onPress(null, 10)
   }
 
-  handle100=() => {
+  handle100 = () => {
     this.props.onPress(null, 100)
   }
 

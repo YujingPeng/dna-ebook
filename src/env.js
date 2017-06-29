@@ -90,7 +90,7 @@ const biquge = {
 
 const booktxt = {
   host: 'http://www.booktxt.net',
-  name: '顶点文学',
+  name: '顶点文学 (推荐) ',
   encode: 'gbk',
   content: '#content',
   info: {
@@ -147,5 +147,6 @@ const booktxt = {
 }
 
 export const rules = {
-  'booktxt.net': booktxt
+  'booktxt.net': booktxt,
+  'kanshuge.la': kanshuge
 }

@@ -6,7 +6,7 @@ import { search, cachedSearchKeyword } from '../service'
 import { SearchBar, Toast, Popup, Radio, List, Tag } from 'antd-mobile'
 import { color } from '../env'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import personStore from '../store/personStore'
+import settingStore from '../store/settingStore'
 import moment from 'moment'
 
 @observer
@@ -27,7 +27,7 @@ class Search extends Component {
   bookName = ''
 
   @computed get History () {
-    const history = personStore.searchHistory || []
+    const history = settingStore.searchHistory || []
     return history.slice()
   }
 
@@ -43,9 +43,9 @@ class Search extends Component {
   @action
   handleSearch = async () => {
     try {
-      personStore.cacheSearchHistory(this.bookName)
+      settingStore.cacheSearchHistory(this.bookName)
       cachedSearchKeyword(this.bookName)
-      let result = await search(this.bookName, personStore.currentSource)
+      let result = await search(this.bookName, settingStore.sourceName)
       if (result.length > 0) {
         runInAction(() => {
           this.bookList = result
@@ -100,9 +100,9 @@ class Search extends Component {
               <Text style={{ color: '#999', fontSize: 14 }}>
                 <Text >{item.author}</Text>
                 {' | '}
-                <Text >{item.type}</Text>
+                <Text >{item.type || '其他类型'}</Text>
                 {' | '}
-                <Text>{moment(item.updateAt).fromNow()}更新</Text>
+                <Text>{moment(item.updateAt, 'YYYY-MM-DD HH:mm:ss').fromNow()}更新</Text>
               </Text>
               <Text numberOfLines={1} style={{ fontSize: 16 }}>{item.desc}</Text>
               <Text>
@@ -154,17 +154,17 @@ class Search extends Component {
 }
 
 class PopupContent extends React.Component {
-  onSel = (sel) => {
-    personStore.currentSource = sel
+  onSel = (sourceName) => {
+    settingStore.saveSetting({sourceName})
     this.props.onClose()
   };
   render () {
     return (
       <List renderHeader={() => `请选择书源`}>
         {
-          personStore.sites.map(item => (
+          settingStore.sites.map(item => (
             <Radio.RadioItem key={item.value}
-              checked={personStore.currentSource === item.value} onChange={() => this.onSel(item.value)} >
+              checked={settingStore.sourceName === item.value} onChange={() => this.onSel(item.value)} >
               <Text>{item.label}</Text>
             </Radio.RadioItem>
           ))

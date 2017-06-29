@@ -11,6 +11,7 @@ Book.schema = {
     desc: 'string',
     author: 'string',
     type: 'string',
+    orderBy: { type: 'int', default: Date.now() },
     /** 更新时间 */
     updateAt: 'string',
     /** 是否已收藏，预留字段 */

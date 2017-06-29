@@ -9,6 +9,7 @@ import { Toast } from 'antd-mobile'
 // import Icon from 'react-native-vector-icons/FontAwesome'
 
 import { theme } from '../env'
+import settingStore from '../store/settingStore'
 import { bulkCacheChapterContent, getChapterList } from '../service'
 
 import loading from '../components/loading'
@@ -48,7 +49,7 @@ class Viewer extends Component {
   isDrawerOpen = false
 
   @computed get mode () {
-    return this.viewer.isNightMode ? theme.night : theme.light
+    return settingStore.nightMode ? theme.night : theme.light
   }
 
   @computed get renderItemView () {
@@ -95,9 +96,9 @@ class Viewer extends Component {
     this.dockItemViewMode = this.dockItemViewMode !== 'settings' ? 'settings' : ''
   }
   handleChangeMode = () => {
-    this.viewer.isNightMode = !this.viewer.isNightMode
+    settingStore.saveSetting({ nightMode: !settingStore.nightMode })
   }
-  handleDownload =async (start, count) => {
+  handleDownload = async (start, count) => {
     Toast.info('开始缓存！', 0.5)
     // todo start end
     await bulkCacheChapterContent(this.viewer.bookId, this.viewer.id, start, count)
@@ -166,7 +167,7 @@ class Viewer extends Component {
         </DrawerLayout>
         <Dock visible={this.props.navigation.state.params.visible} renderItemView={this.renderItemView}>
           <Dock.Item text="目录" icon="list" onPress={this.handleOpen} />
-          <Dock.Item text="夜间" icon="moon-o" onPress={this.handleChangeMode} />
+          <Dock.Item text={settingStore.nightMode ? '白天' : '夜间'} icon={settingStore.nightMode ? 'sun-o' : 'moon-o'} onPress={this.handleChangeMode} />
           <Dock.Item text="设置" icon="gear" onPress={this.handleSettingsPress} />
           <Dock.Item text="缓存" icon="download" onPress={this.handleDownloadPress} />
         </Dock>

@@ -122,7 +122,7 @@ export function generateChapters ($body, rule, bookId) {
  * 生成查询列表模型
  * @param {Object} $body cheerio上下文
  */
-export function generateSearchModel ($body) {
+export function otherGenerateSearchModel ($body) {
   try {
     const $name = $body.find('h3>a')
     const uri = $name.attr('href')
@@ -146,7 +146,7 @@ export function generateSearchModel ($body) {
  *
  * @param {*} params
  */
-export function otherGenerateSearchModel ($body, site) {
+export function generateSearchModel ($body, site) {
   try {
     const rule = Object.values(rules).find(item => item.searchUri === site)
     const { searchItem, searchInfo } = rule

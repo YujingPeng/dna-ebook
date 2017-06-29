@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import moment from 'moment'
 import { observer } from 'mobx-react/native'
 import { action, observable, runInAction } from 'mobx'
-import urlencode from 'urlencode'
 
 import { SwipeAction, Toast } from 'antd-mobile'
 import { FlatList, Image, ListView, StatusBar, Text, TouchableOpacity, View } from 'react-native'
