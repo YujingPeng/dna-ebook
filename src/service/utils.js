@@ -3,9 +3,18 @@ import cheerio from 'cheerio-without-node-native'
 import uuid from 'react-native-uuid'
 import { TextDecoder } from 'text-encoding'
 import { rules } from '../env'
+
+axios.defaults.responseType = 'arraybuffer'
+axios.defaults.headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50'
 /** 处理网络请求的相应错误 */
 axios.interceptors.response.use(function (response) {
   // Do something with response data
+  const rule = matchRule(response.config.url) || {}
+  const encode = rule.encode || 'utf-8'
+  const buffer = response.data
+  const decode = new TextDecoder(encode)
+  const resHtml = decode.decode(buffer)
+  response.data = resHtml
   return response
 }, function (error) {
   // Do something with response error
@@ -15,13 +24,6 @@ axios.interceptors.response.use(function (response) {
   }
   return Promise.reject(new Error(message))
 })
-
-const config = {
-  headers: {
-    'User-Agent:': 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50'
-  },
-  responseType: 'arraybuffer'
-}
 
 /** 拉取数据 */
 export async function fetchData (uri) {
@@ -36,17 +38,10 @@ export async function fetchData (uri) {
  * 加载页面内容
  * @param {String} uri 页面地址
  */
-export async function load (uri) {
+export async function load (url) {
   try {
-    const rule = matchRule(uri) || {}
-    const encode = rule.encode || 'utf-8'
-    const res = await axios({ ...config, url: uri })
-    const buffer = res.data
-    // const res = await fetch(uri)
-    // const buffer = await res.arrayBuffer()
-    const decode = new TextDecoder(encode)
-    const resHtml = decode.decode(buffer)
-    return cheerio.load(resHtml)
+    const res = await axios({url})
+    return cheerio.load(res.data)
   } catch (error) {
     throw error
   }
@@ -83,12 +78,12 @@ export function generateBookModel ($body, rule, uri) {
   const { info, thumbImage, chapterMenuUri } = rule
   for (let [k, v] of Object.entries(info)) {
     if (v.pattern) {
-      const text = $body.find(v.selector).text()
+      const text = $body(v.selector).text()
       self[k] = text.replace(v.pattern, '').trim()
     } else if (v.attr) {
-      self[k] = $body.find(v.selector).attr(v.attr)
+      self[k] = $body(v.selector).attr(v.attr)
     } else {
-      self[k] = $body.find(v).text().trim()
+      self[k] = $body(v).text().trim()
     }
   }
 
@@ -109,9 +104,9 @@ export function generateChapters ($body, rule, bookId) {
   let list = []
   $body('#list>dl>dd>a').each((i, item) => {
     if (i >= firstChapterIndex) {
-      const $item = $body(item)
-      let uri = host + $item.attr('href')
-      let text = $item.text()
+      const $bodyelem = $body(item)
+      let uri = host + $bodyelem.attr('href')
+      let text = $bodyelem.text()
       const index = list.findIndex(item => item.uri === uri)
       if (!!text && !!uri && index < 0) {
         list.push({
