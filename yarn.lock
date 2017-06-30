@@ -2570,13 +2570,9 @@ iconv-lite@0.4.13:
   version "0.4.13"
   resolved "http://r.cnpmjs.org/iconv-lite/download/iconv-lite-0.4.13.tgz#1f88aba4ab0b1508e8312acc39345f36e992e2f2"
 
-iconv-lite@^0.4.17, iconv-lite@^0.4.18, iconv-lite@~0.4.11:
+iconv-lite@^0.4.17, iconv-lite@^0.4.18, iconv-lite@~0.4.11, iconv-lite@~0.4.13:
   version "0.4.18"
   resolved "http://r.cnpmjs.org/iconv-lite/download/iconv-lite-0.4.18.tgz#23d8656b16aae6742ac29732ea8f0336a4789cf2"
-
-iconv-lite@~0.4.13:
-  version "0.4.17"
-  resolved "http://r.cnpmjs.org/iconv-lite/download/iconv-lite-0.4.17.tgz#4fdaa3b38acbc2c031b045d0edcdfe1ecab18c8d"
 
 ieee754@^1.1.4:
   version "1.1.8"
@@ -4583,9 +4579,9 @@ readline2@^1.0.1:
     is-fullwidth-code-point "^1.0.0"
     mute-stream "0.0.5"
 
-realm@^1.3.1:
-  version "1.3.1"
-  resolved "http://r.cnpmjs.org/realm/download/realm-1.3.1.tgz#02a955fc47940e216b72414b606b691a92a798ad"
+realm@^1.8.3:
+  version "1.8.3"
+  resolved "http://r.cnpmjs.org/realm/download/realm-1.8.3.tgz#e385421b16cb03a21699ecf9072956b43200df25"
   dependencies:
     extract-zip "^1.6.0"
     ini "^1.3.4"

@@ -3,7 +3,7 @@ import SearchPage from './page/Search'
 import BookPage from './page/Book'
 import HomePage from './page/Home'
 import ViewerPage from './page/Viewer'
-import { enableLogging } from 'mobx-logger'
+// import { enableLogging } from 'mobx-logger'
 
 import moment from 'moment'
 import 'moment/locale/zh-cn'
