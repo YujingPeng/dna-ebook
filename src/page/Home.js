@@ -119,7 +119,7 @@ class Home extends Component {
   render () {
     return (
       <View style={{ flex: 1, backgroundColor: '#F5F5F5' }}>
-        <StatusBar hidden={false} backgroundColor={color} translucent />
+        <StatusBar hidden={false} backgroundColor={color} translucent barStyle='light-content' />
         <FlatList
           data={personStore.books.slice(0)}
           renderItem={this._renderRow}

@@ -125,7 +125,7 @@ class Search extends Component {
     })
     return (
       <View style={{ flex: 1, paddingTop: 20 }}>
-        <StatusBar hidden={false} backgroundColor={color} />
+        <StatusBar hidden={false} backgroundColor={color} barStyle='dark-content' />
         <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity onPress={this.handleChangeSource} style={{ width: 40, paddingLeft: 15, paddingRight: 5, justifyContent: 'center', backgroundColor: '#efeff4' }}>
             <Icon style={{ color }} name="reorder" size={20} />

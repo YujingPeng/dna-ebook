@@ -133,7 +133,7 @@ class Book extends Component {
   render () {
     return this.book.updateAt ? (
       <ScrollView style={{ backgroundColor: '#ffffff' }}>
-        <StatusBar hidden={false} backgroundColor={color} translucent />
+        <StatusBar hidden={false} backgroundColor={color} translucent barStyle='light-content' />
         <View style={{ flexDirection: 'row', paddingHorizontal: 10, paddingTop: 10 }}>
           <View style={{ width: 72, height: 90 }}>
             {this.book.thumbImage !== '' ? <Image source={{ uri: this.book.thumbImage }} style={{ width: '100%', height: '100%' }} /> : null}
