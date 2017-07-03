@@ -2347,7 +2347,7 @@ glob-parent@^2.0.0:
   dependencies:
     is-glob "^2.0.0"
 
-glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.1.2:
+glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.1.1, glob@^7.1.2:
   version "7.1.2"
   resolved "http://r.cnpmjs.org/glob/download/glob-7.1.2.tgz#c19c9df9a028702d678612384a6552404c636d15"
   dependencies:
@@ -2355,17 +2355,6 @@ glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.1.2:
     inflight "^1.0.4"
     inherits "2"
     minimatch "^3.0.4"
-    once "^1.3.0"
-    path-is-absolute "^1.0.0"
-
-glob@^7.1.1:
-  version "7.1.1"
-  resolved "http://r.cnpmjs.org/glob/download/glob-7.1.1.tgz#805211df04faaf1c63a3600306cdf5ade50b2ec8"
-  dependencies:
-    fs.realpath "^1.0.0"
-    inflight "^1.0.4"
-    inherits "2"
-    minimatch "^3.0.2"
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
@@ -3659,7 +3648,7 @@ node-notifier@^5.0.2:
     shellwords "^0.1.0"
     which "^1.2.12"
 
-node-pre-gyp@^0.6.30:
+node-pre-gyp@^0.6.30, node-pre-gyp@^0.6.36:
   version "0.6.36"
   resolved "http://r.cnpmjs.org/node-pre-gyp/download/node-pre-gyp-0.6.36.tgz#db604112cb74e0d477554e9b505b17abddfab786"
   dependencies:
@@ -4583,9 +4572,9 @@ readline2@^1.0.1:
     is-fullwidth-code-point "^1.0.0"
     mute-stream "0.0.5"
 
-realm@^1.3.1:
-  version "1.3.1"
-  resolved "http://r.cnpmjs.org/realm/download/realm-1.3.1.tgz#02a955fc47940e216b72414b606b691a92a798ad"
+realm@^1.8.3:
+  version "1.8.3"
+  resolved "http://r.cnpmjs.org/realm/download/realm-1.8.3.tgz#e385421b16cb03a21699ecf9072956b43200df25"
   dependencies:
     extract-zip "^1.6.0"
     ini "^1.3.4"
