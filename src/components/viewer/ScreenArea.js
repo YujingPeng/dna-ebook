@@ -9,7 +9,7 @@ class ScreenArea extends React.PureComponent {
     onRightPress: PropTypes.func
   }
   render () {
-    const {onLeftPress, onRightPress, onCenterPress} = this.props
+    const { onLeftPress, onRightPress, onCenterPress } = this.props
     return (
       <View style={styles.container} >
         <TouchableOpacity style={styles.item} onPress={onLeftPress} />
@@ -26,10 +26,10 @@ class ScreenArea extends React.PureComponent {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, opacity: 0.3, height: '100%', width: '100%', flexDirection: 'row'
+    flex: 1, opacity: 0.3, height: '100%', width: '100%'
   },
   item: {
-    flex: 1
+    flex: 1, flexDirection: 'row'
   }
 })
 
