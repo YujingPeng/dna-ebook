@@ -55,8 +55,19 @@ class PersonStore {
     * @param {any} uri 要判断的地址
     * @returns {bool}
     */
-  @action isExist (uri) {
+  @action
+  isExist (uri) {
     return this.books.findIndex(item => item.uri === uri) >= 0
+  }
+
+  /**
+   * 根据书地址获取Id
+   * @param {String} uri 地址
+   */
+  @action
+  getBookIdByUri (uri) {
+    const book = this.books.find(item => item.uri === uri) || {}
+    return book.id
   }
 }
 

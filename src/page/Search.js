@@ -92,7 +92,7 @@ class Search extends Component {
           <View style={{ width: 72, height: 90 }}>
             {item.thumbImage !== '' ? <Image source={{ uri: item.thumbImage }} style={{ width: 72, height: 90 }} /> : null}
           </View>
-          <View style={{ flex: 1, paddingLeft: 15 }}>
+          <View style={{ flex: 1, paddingLeft: 15, justifyContent: 'space-around' }}>
             <View>
               <Text>
                 <Text style={{ color: '#333', fontSize: 20 }}>{item.name}</Text>

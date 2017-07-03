@@ -21,21 +21,40 @@ export class SettingsDock extends PureComponent {
   handleLineHeightCrowded = () => {
     settingStore.saveSetting({ lineHight: 1 })
   }
+
+  handleShowTouchArea = () => {
+
+  }
+
+  handleAutoChange = () => {
+
+  }
+
   render () {
     return (
       <View style={styles.container}>
-        <TouchableOpacity style={styles.item} onPress={this.handleSizeMinus}>
-          <Text style={{ color: '#fff' }}>Aa-</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.item} onPress={this.handleSizePlus}>
-          <Text style={{ color: '#fff' }}>Aa+</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.item} onPress={this.handleLineHeightCrowded}>
-          <Icon style={{ color: '#fff' }} name="align-justify" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.item} onPress={this.handleLineHeightLoose}>
-          <Icon style={{ color: '#fff' }} name="reorder" />
-        </TouchableOpacity>
+        <View style={styles.box}>
+          <TouchableOpacity style={styles.item} onPress={this.handleSizeMinus}>
+            <Text style={{ color: '#fff' }}>Aa-</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.item} onPress={this.handleSizePlus}>
+            <Text style={{ color: '#fff' }}>Aa+</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.item} onPress={this.handleLineHeightCrowded}>
+            <Icon style={{ color: '#fff' }} name="align-justify" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.item} onPress={this.handleLineHeightLoose}>
+            <Icon style={{ color: '#fff' }} name="reorder" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.box}>
+          <TouchableOpacity style={styles.item} onPress={this.handleShowTouchArea}>
+            <Text style={{ color: '#fff' }}>显示触控区域</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.item} onPress={this.handleAutoChange}>
+            <Text style={{ color: '#fff' }}>自动切换日夜间主题</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     )
   }
@@ -64,7 +83,7 @@ export class DownloadDock extends PureComponent {
 
   render () {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, styles.box]}>
         <TouchableOpacity onPress={this.handleAll} style={styles.item} >
           <Text style={{ color: '#fff' }}>全本</Text>
         </TouchableOpacity>
@@ -84,14 +103,18 @@ export class DownloadDock extends PureComponent {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     borderBottomColor: '#e7e7e7',
-    borderBottomWidth: 1,
+    borderBottomWidth: 1
+  },
+  box: {
     flex: 1,
     flexDirection: 'row',
-    height: 45,
+    height: 40,
+    marginHorizontal: 15,
+    marginTop: 10,
     justifyContent: 'space-between',
-    margin: 15,
-    paddingBottom: 15
+    paddingBottom: 10
   },
   item: {
     alignItems: 'center',

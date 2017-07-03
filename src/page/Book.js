@@ -26,7 +26,7 @@ class Book extends Component {
   params = this.props.navigation.state.params
 
   @observable
-  isExist = personStore.isExist(this.props.navigation.state.params.uri);
+  isExist = personStore.isExist(this.params.uri);
   // 'http://www.biquge.com/43_43821/'
   // book = new BookModel(this.props.navigation.state.params.id, this.props.navigation.state.params.uri)
   @observable
@@ -48,10 +48,10 @@ class Book extends Component {
   @action
   init = async () => {
     try {
-      // console.warn(this.params.uri)
       await loading()
       if (this.isExist) {
-        const result = await getBookById(this.params.id)
+        const id = personStore.getBookIdByUri(this.params.uri)
+        const result = await getBookById(id)
         runInAction(() => {
           this.book = result
           Toast.hide()
@@ -68,7 +68,7 @@ class Book extends Component {
     }
   }
 
-  // @action
+  @action
   handleSave = async () => {
     await saveBook(toJS(this.book))
     runInAction(() => {
@@ -131,7 +131,7 @@ class Book extends Component {
   }
 
   render () {
-    return this.book.updateAt ? (
+    return this.book && this.book.updateAt ? (
       <ScrollView style={{ backgroundColor: '#ffffff' }}>
         <StatusBar hidden={false} backgroundColor={color} translucent barStyle='light-content' />
         <View style={{ flexDirection: 'row', paddingHorizontal: 10, paddingTop: 10 }}>

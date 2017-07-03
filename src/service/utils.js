@@ -92,7 +92,7 @@ export function generateBookModel ($body, rule, uri) {
   if (!thumbImageUri) {
     self.thumbImage = generateThumbUri(uri)
   } else {
-    self.thumbImage = `$body{host}$body{thumbImageUri}`
+    self.thumbImage = thumbImageUri
   }
 
   return self

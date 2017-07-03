@@ -121,9 +121,9 @@ ansi@^0.3.0, ansi@~0.3.1:
   version "0.3.1"
   resolved "http://r.cnpmjs.org/ansi/download/ansi-0.3.1.tgz#0c42d4fb17160d5a9af1e484bace1c66922c1b21"
 
-antd-mobile@^1.3.1:
-  version "1.4.0"
-  resolved "http://r.cnpmjs.org/antd-mobile/download/antd-mobile-1.4.0.tgz#5943a1edb53703da8a231fb68781ce9d6dc94e61"
+antd-mobile@^1.4.1:
+  version "1.4.1"
+  resolved "http://r.cnpmjs.org/antd-mobile/download/antd-mobile-1.4.1.tgz#37680129f82c5d782bc9ee885a5a2acf42289f18"
   dependencies:
     array-tree-filter "~1.0.0"
     babel-runtime "6.x"
@@ -131,8 +131,7 @@ antd-mobile@^1.3.1:
     create-react-class "^15.5.2"
     moment "~2.18.1"
     normalize.css "^7.0.0"
-    object-assign "~4.1.0"
-    omit.js "~0.1.0"
+    omit.js "~1.0.0"
     prop-types "^15.5.8"
     rc-checkbox "~2.0.0"
     rc-collapse "~1.7.0"
@@ -3756,11 +3755,11 @@ object.omit@^2.0.0, object.omit@~2.0.0:
     for-own "^0.1.4"
     is-extendable "^0.1.1"
 
-omit.js@~0.1.0:
-  version "0.1.0"
-  resolved "http://r.cnpmjs.org/omit.js/download/omit.js-0.1.0.tgz#9786a21a6d6c316fa35bb14e7101eeee21c52044"
+omit.js@~1.0.0:
+  version "1.0.0"
+  resolved "http://r.cnpmjs.org/omit.js/download/omit.js-1.0.0.tgz#e013cb86a7517b9cf6f7cfb0ddb4297256a99288"
   dependencies:
-    object-assign "^4.1.0"
+    babel-runtime "^6.23.0"
 
 on-finished@~2.3.0:
   version "2.3.0"

@@ -102,7 +102,7 @@ class Home extends Component {
             <View style={{ width: 40, height: 50 }}>
               {item.thumbImage !== '' ? <Image source={{ uri: item.thumbImage }} style={{ width: 40, height: 50 }} /> : null}
             </View>
-            <View style={{ marginHorizontal: 10 }}>
+            <View style={{ marginHorizontal: 10, justifyContent: 'space-around' }}>
               <Text style={{ color: '#333', fontSize: 18 }}>
                 {item.name}
                 <Text style={{ color: '#999', fontSize: 12 }}> {item.author} {((item.discoverChapterIndex + 1) / item.totalChapter * 100).toFixed(2)}%</Text>
