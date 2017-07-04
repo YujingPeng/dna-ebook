@@ -23,7 +23,7 @@ const Screen = StackNavigator({
   book: { screen: BookPage },
   viewer: { screen: ViewerPage }
 }, {
-  initialRouteName: 'page',
+  initialRouteName: 'home',
   headerMode: 'screen'
 })
 // const config = {

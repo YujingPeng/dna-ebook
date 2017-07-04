@@ -9,11 +9,23 @@ function zhcnCode (s) {
   return /[^\x00-\xff]/.test(s)
 }
 
+function AZCode (s) {
+  return /[\x41-\x5a]/.test(s)
+}
+
+/**
+ * 获取一个字符的大小
+ * @param {String} char 要判断的字符
+ * @param {Number} fontSize 初始大小，以中文字大小为准
+ */
+function getCharSize (char, fontSize) {
+  return zhcnCode(char) ? fontSize : AZCode(char) ? fontSize * 0.8 : fontSize * 0.6
+}
 const lineHeight = 30
 let fontSize = 18
 // 取整
 // const lineEnd = parseInt(ScreenWidth / 20)
-const lineMax = Math.round((ScreenHeight - 100) / lineHeight)
+const lineMax = Math.round((ScreenHeight - 70) / lineHeight)
 const lineWidth = ScreenWidth - 18
 const textStyles = {
   fontSize, lineHeight
@@ -93,17 +105,16 @@ class ChapterModel {
   @observable
   list = []
 
+  @observable
+  pagers = []
+
   constructor (id, bookId, title, pageIndex) {
-    console.log('dsdasd')
     this.id = id
     this.name = title
     this.pageIndex = pageIndex
     if (id) {
       this.get()
     }
-    // getChapterList(bookId, id).then(res => {
-    //   this.list = res
-    // })
   }
 
   @computed get total () {
@@ -126,15 +137,19 @@ class ChapterModel {
       runInAction(() => {
         this.name = result.name
         this.bookId = result.bookId
-        // console.log(result.content)
         this.content = result.content.replace(/\r\n/g, '')
         let content = this.content.split('    ')
         let lines = []
         for (let i = 0; i < content.length; i++) {
-        // console.warn(JSON.stringify(content[i]))
           lines = lines.concat(lineFeed(content[i], 'row_' + i))
         }
-        this.lines = lines
+        let pagers = []
+        const total = Math.ceil(lines.length / lineMax)
+        for (var i = 0; i < total; i++) {
+          pagers.push({ key: 'page' + i, context: lines.slice(lineMax * i, lineMax * (i + 1)) })
+        }
+        this.lines.replace(lines)
+        this.pagers.replace(pagers)
         Toast.hide()
       })
     } catch (error) {

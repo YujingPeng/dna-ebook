@@ -15,7 +15,8 @@ import { bulkCacheChapterContent, getChapterList } from '../service'
 import loading from '../components/loading'
 import { ListViewItem } from '../components/chapterList'
 import Dock from '../components/dock'
-import { DownloadDock, SettingsDock, Pager, ScreenArea } from '../components/viewer'
+import { DownloadDock, SettingsDock } from '../components/viewer'
+import Pager from '../components/pager'
 
 @observer
 class Viewer extends Component {
@@ -147,24 +148,27 @@ class Viewer extends Component {
     const { backgroundColor, color } = this.mode
 
     return (
-      <View style={{ flex: 1, position: 'relative', backgroundColor }} >
+      <View style={{ flex: 1, backgroundColor }} >
         <StatusBar animated hidden />
         <Pager
+          context={this.viewer.pagers.slice()}
+          onLeftPress={this.handlePrev}
+          onRightPress={this.handleNext}
+          onCenterPress={this.handleMenu}
+        />
+        {/* <Pager
           dataSource={this.viewer.dataSource}
           themeColor={color}
           header={this.viewer.name}
-          footer={`第${this.viewer.nextIndex}/${this.viewer.total}章`} />
-        <DrawerLayout
+          footer={`第${this.viewer.nextIndex}/${this.viewer.total}章`} /> */}
+        {/* <DrawerLayout
           ref={ref => { this.drawer = ref }}
           drawerWidth={300}
           drawerLockMode='locked-closed'
           onDrawerClose={() => { this.isDrawerOpen = false }}
-          renderNavigationView={this._reanderChapters}>
-          <ScreenArea
-            onLeftPress={this.handlePrev}
-            onRightPress={this.handleNext}
-            onCenterPress={this.handleMenu} />
-        </DrawerLayout>
+          renderNavigationView={this._reanderChapters}> */}
+
+        {/* </DrawerLayout> */}
         <Dock visible={this.props.navigation.state.params.visible} renderItemView={this.renderItemView}>
           <Dock.Item text="目录" icon="list" onPress={this.handleOpen} />
           <Dock.Item text={settingStore.nightMode ? '白天' : '夜间'} icon={settingStore.nightMode ? 'sun-o' : 'moon-o'} onPress={this.handleChangeMode} />
