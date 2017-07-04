@@ -3,6 +3,7 @@ import SearchPage from './page/Search'
 import BookPage from './page/Book'
 import HomePage from './page/Home'
 import ViewerPage from './page/Viewer'
+import PagerPage from './page/PagerPage'
 // import { enableLogging } from 'mobx-logger'
 
 import moment from 'moment'
@@ -17,11 +18,12 @@ moment.locale('zh-cn')
 
 const Screen = StackNavigator({
   home: { screen: HomePage },
+  page: { screen: PagerPage },
   search: { screen: SearchPage },
   book: { screen: BookPage },
   viewer: { screen: ViewerPage }
 }, {
-  initialRouteName: 'home',
+  initialRouteName: 'page',
   headerMode: 'screen'
 })
 // const config = {

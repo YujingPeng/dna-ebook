@@ -1,6 +1,6 @@
-import { action, observable, runInAction, extendObservable } from 'mobx'
+import { action, observable, runInAction, extendObservable, computed } from 'mobx'
 import { getSettings, saveSettings, getSearchHistory } from '../service'
-import { rules } from '../env'
+import { rules, theme } from '../env'
 
 class SettingStore {
   constructor () {
@@ -50,10 +50,14 @@ class SettingStore {
 
   /** 搜索历史 */
   @observable
-   searchHistory = []
+  searchHistory = []
+
+  @computed get theme () {
+    return this.nightMode ? theme.night : theme.light
+  }
 
   @action
-   async init () {
+  async init () {
     const settings = await getSettings()
     const search = await getSearchHistory() || []
     runInAction(() => {
@@ -63,7 +67,7 @@ class SettingStore {
   }
 
   @action
-   cacheSearchHistory (keyword) {
+  cacheSearchHistory (keyword) {
     const index = this.searchHistory.findIndex(item => keyword === item.keyword)
     if (index >= 0) {
       this.searchHistory.splice(index, 1)
@@ -73,7 +77,7 @@ class SettingStore {
 
   /** 保存设置 */
   @action
-   async saveSetting (setting) {
+  async saveSetting (setting) {
     extendObservable(this, setting)
     setting.id = this.id
     saveSettings(setting)
