@@ -27,13 +27,9 @@ let fontSize = 18
 // const lineEnd = parseInt(ScreenWidth / 20)
 const lineMax = Math.round((ScreenHeight - 70) / lineHeight)
 const lineWidth = ScreenWidth - 18
-const textStyles = {
-  fontSize, lineHeight
-}
-const textFirstStyles = {
-  ...textStyles, paddingLeft: fontSize * 2
-}
 
+const LINE_INDENT = '\t\t\t\t\t'
+const LINE_WRAP = '\n'
 /**
  *  字符串换行处理
  * @param {string} str 要拆分的字符串
@@ -49,22 +45,14 @@ function lineFeed (str: string, keyPrefix: string) {
   let start = 0
   let size = 0
   for (let i = 0, length = chars.length; i < length; i++) {
-    size = zhcnCode(chars[i]) ? fontSize : fontSize / 2
+    size = getCharSize(chars[i], fontSize)
     if ((linefeed + size) >= lineEnd) {
       // i--
       if (result.length === 0) {
-        result.push({
-          key: keyPrefix + '_' + i,
-          style: textFirstStyles,
-          children: chars.slice(start, i).join('')
-        })
+        result.push(LINE_INDENT + chars.slice(start, i).join('') + LINE_WRAP)
         lineEnd = lineWidth
       } else {
-        result.push({
-          key: keyPrefix + '_' + i,
-          style: textStyles,
-          children: chars.slice(start, i).join('')
-        })
+        result.push(chars.slice(start, i).join('') + LINE_WRAP)
       }
       start = i
       linefeed = size
@@ -72,11 +60,11 @@ function lineFeed (str: string, keyPrefix: string) {
       linefeed += size
     }
   }
-  result.push({
-    key: keyPrefix + '_',
-    style: result.length === 0 ? textFirstStyles : textStyles,
-    children: chars.slice(start).join('')
-  })
+  result.push(
+    result.length === 0
+      ? LINE_INDENT + chars.slice(start).join('') + LINE_WRAP
+      : chars.slice(start).join('') + LINE_WRAP
+  )
   return result
 }
 
@@ -146,7 +134,7 @@ class ChapterModel {
         let pagers = []
         const total = Math.ceil(lines.length / lineMax)
         for (var i = 0; i < total; i++) {
-          pagers.push({ key: 'page' + i, context: lines.slice(lineMax * i, lineMax * (i + 1)) })
+          pagers.push({ key: 'page' + i, context: lines.slice(lineMax * i, lineMax * (i + 1)).join('') })
         }
         this.lines.replace(lines)
         this.pagers.replace(pagers)

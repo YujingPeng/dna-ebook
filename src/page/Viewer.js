@@ -152,6 +152,7 @@ class Viewer extends Component {
         <StatusBar animated hidden />
         <Pager
           context={this.viewer.pagers.slice()}
+          initPage={1}
           onLeftPress={this.handlePrev}
           onRightPress={this.handleNext}
           onCenterPress={this.handleMenu}
