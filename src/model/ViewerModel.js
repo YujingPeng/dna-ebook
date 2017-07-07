@@ -1,9 +1,17 @@
 import { observable, action, runInAction, computed } from 'mobx'
+import { Platform, Dimensions } from 'react-native'
 import { getChapter, getChapterByIndex, updateDiscover } from '../service'
 import { Toast } from 'antd-mobile'
-var Dimensions = require('Dimensions')
 var ScreenWidth = Dimensions.get('window').width
 const ScreenHeight = Dimensions.get('window').height
+
+const lineHeight = 30
+let fontSize = 18
+
+const OFFSET = Platform.OS === 'ios' ? 70 : 40
+const AZCODE_FONTSIZE = Platform.OS === 'ios' ? fontSize : fontSize * 0.8
+const LINE_INDENT = Platform.OS === 'ios' ? '\t' : '\t\t\t\t\t'
+const LINE_WRAP = '\n'
 
 function zhcnCode (s) {
   return /[^\x00-\xff]/.test(s)
@@ -19,17 +27,13 @@ function AZCode (s) {
  * @param {Number} fontSize 初始大小，以中文字大小为准
  */
 function getCharSize (char, fontSize) {
-  return zhcnCode(char) ? fontSize : AZCode(char) ? fontSize * 0.8 : fontSize * 0.6
+  return zhcnCode(char) ? fontSize : AZCode(char) ? AZCODE_FONTSIZE : fontSize * 0.6
 }
-const lineHeight = 30
-let fontSize = 18
+
 // 取整
-// const lineEnd = parseInt(ScreenWidth / 20)
-const lineMax = Math.round((ScreenHeight - 40) / lineHeight)
+const lineMax = Math.round((ScreenHeight - OFFSET) / lineHeight)
 const lineWidth = ScreenWidth - 18
 
-const LINE_INDENT = '\t\t\t\t\t'
-const LINE_WRAP = '\n'
 /**
  *  字符串换行处理
  * @param {string} str 要拆分的字符串
