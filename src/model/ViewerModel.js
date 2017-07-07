@@ -25,7 +25,7 @@ const lineHeight = 30
 let fontSize = 18
 // 取整
 // const lineEnd = parseInt(ScreenWidth / 20)
-const lineMax = Math.round((ScreenHeight - 70) / lineHeight)
+const lineMax = Math.round((ScreenHeight - 40) / lineHeight)
 const lineWidth = ScreenWidth - 18
 
 const LINE_INDENT = '\t\t\t\t\t'
@@ -179,25 +179,28 @@ class ChapterModel {
 
   @action
   async jump (index) {
-    const result = await getChapterByIndex(this.bookId, this.id, index)
-    if (result) {
-      runInAction(async () => {
-        this.id = result.chapterId
-        await this.get()
-        runInAction(() => {
-          this.pageIndex = index < 0 ? (this.total - 1) : 0
-          updateDiscover({
-            id: this.bookId,
-            discoverPage: this.pageIndex,
-            discoverChapterId: result.chapterId,
-            discoverChapterIndex: result.index,
-            discoverChapterName: result.text
+    return new Promise(async (resolve, reject) => {
+      const result = await getChapterByIndex(this.bookId, this.id, index)
+      if (result) {
+        runInAction(async () => {
+          this.id = result.chapterId
+          await this.get()
+          runInAction(() => {
+            this.pageIndex = index < 0 ? (this.total - 1) : 0
+            updateDiscover({
+              id: this.bookId,
+              discoverPage: this.pageIndex,
+              discoverChapterId: result.chapterId,
+              discoverChapterIndex: result.index,
+              discoverChapterName: result.text
+            })
+            return resolve(this.pageIndex)
           })
         })
-      })
-    } else {
-      Toast.info(index > 0 ? '已经是最后一章了' : '已经是第一章了', 0.7)
-    }
+      } else {
+        Toast.info(index > 0 ? '已经是最后一章了' : '已经是第一章了', 0.7)
+      }
+    })
   }
 
   @action

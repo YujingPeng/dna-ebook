@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, ListView, StatusBar } from 'react-native'
+import { View, ListView, StatusBar, Dimensions, StyleSheet, Text, FlatList } from 'react-native'
 import ViewerModel from '../model/ViewerModel'
 import { observer } from 'mobx-react/native'
 import { observable, computed, action } from 'mobx'
@@ -15,8 +15,9 @@ import { bulkCacheChapterContent, getChapterList } from '../service'
 import loading from '../components/loading'
 import { ListViewItem } from '../components/chapterList'
 import Dock from '../components/dock'
-import { DownloadDock, SettingsDock } from '../components/viewer'
+import { DownloadDock, SettingsDock, ScreenArea } from '../components/viewer'
 import Pager from '../components/pager'
+const deviceWidth = Dimensions.get('window').width
 
 @observer
 class Viewer extends Component {
@@ -39,6 +40,9 @@ class Viewer extends Component {
   viewer = new ViewerModel(this.props.navigation.state.params.id, this.props.navigation.state.params.bookId, this.props.navigation.state.params.title, this.props.navigation.state.params.pageIndex);
 
   dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
+
+  @observable
+  refreshed = false
 
   @observable
   chapters = getChapterList(this.props.navigation.state.params.bookId, this.props.navigation.state.params.id)
@@ -68,11 +72,13 @@ class Viewer extends Component {
     if (this.props.navigation.state.params.visible) {
       this.handleMenu()
     } else if (this.viewer.pageIndex > 0) {
-      // this.pageIndex--
+      this.paper.scrollToIndex({ viewPosition: 0, index: this.viewer.pageIndex - 1 })
       this.viewer.discover(this.viewer.pageIndex - 1)
     } else {
+      this.refreshed = true
       await loading()
       await this.viewer.jump(-1)
+      this.refreshed = false
     }
   }
 
@@ -80,10 +86,13 @@ class Viewer extends Component {
     if (this.props.navigation.state.params.visible) {
       this.handleMenu()
     } else if (this.viewer.nextIndex < this.viewer.total) {
+      this.paper.scrollToIndex({ viewPosition: 0, index: this.viewer.pageIndex + 1 })
       this.viewer.discover(this.viewer.pageIndex + 1)
     } else {
+      this.refreshed = true
       await loading()
       await this.viewer.jump(1)
+      this.refreshed = false
     }
   }
   @action
@@ -144,24 +153,62 @@ class Viewer extends Component {
     </View>
   )
 
+  _renderItem = ({ item, index }) => {
+    return (
+      <View style={styles.pagerContainer}>
+        <View style={styles.context}>
+          <Text style={{ fontSize: 18, lineHeight: 30, color: this.mode.color }}>
+            {item.context}
+          </Text>
+        </View>
+        <ScreenArea
+          onLeftPress={this.handlePrev}
+          onRightPress={this.handleNext}
+          onCenterPress={this.handleMenu} />
+      </View>
+
+    )
+  }
+  _getItemLayout = (data, index) => {
+    return { length: deviceWidth, offset: deviceWidth * index, index }
+  }
+
   render () {
-    const { backgroundColor, color } = this.mode
+    const { backgroundColor } = this.mode
 
     return (
       <View style={{ flex: 1, backgroundColor }} >
         <StatusBar animated hidden />
-        <Pager
-          context={this.viewer.pagers.slice()}
+        <View style={styles.header} >
+          <Text style={{ color: '#696969' }}>{this.viewer.name}</Text>
+        </View>
+        <View style={{ flex: 1 }}>
+          {
+            !this.refreshed && (
+            <FlatList
+              extraData={this.mode}
+              horizontal
+              pagingEnabled
+              ref={(ref) => { this.paper = ref }}
+              initialScrollIndex={this.viewer.pageIndex}
+              getItemLayout={this._getItemLayout}
+              data={this.viewer.pagers}
+              renderItem={this._renderItem}
+              showsHorizontalScrollIndicator={false}
+              onScrollEndDrag={this.handleScroll}
+            />)
+          }
+        </View>
+        <View style={styles.footer} >
+          <Text style={{ alignSelf: 'flex-end', color: '#696969' }}>{`${this.viewer.nextIndex}/${this.viewer.total}`}</Text>
+        </View>
+        {/* <Pager
+          data={this.viewer.pagers.slice()}
           initPage={1}
           onLeftPress={this.handlePrev}
           onRightPress={this.handleNext}
           onCenterPress={this.handleMenu}
-        />
-        {/* <Pager
-          dataSource={this.viewer.dataSource}
-          themeColor={color}
-          header={this.viewer.name}
-          footer={`第${this.viewer.nextIndex}/${this.viewer.total}章`} /> */}
+        /> */}
         {/* <DrawerLayout
           ref={ref => { this.drawer = ref }}
           drawerWidth={300}
@@ -181,5 +228,23 @@ class Viewer extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1, height: '100%', width: '100%'
+  },
+  pagerContainer: {
+    position: 'relative', width: deviceWidth, flex: 1
+  },
+  header: {
+    paddingTop: 8, paddingLeft: 17, height: 30
+  },
+  footer: {
+    paddingRight: 18, height: 30
+  },
+  context: {
+    paddingLeft: 17, zIndex: -1, position: 'absolute'
+  }
+})
 
 export default Viewer
