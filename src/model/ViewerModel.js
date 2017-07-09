@@ -9,7 +9,6 @@ const lineHeight = 30
 let fontSize = 18
 
 const OFFSET = Platform.OS === 'ios' ? 70 : 40
-const AZCODE_FONTSIZE = Platform.OS === 'ios' ? fontSize : fontSize * 0.8
 const LINE_INDENT = Platform.OS === 'ios' ? '\t' : '\t\t\t\t\t'
 const LINE_WRAP = '\n'
 
@@ -27,7 +26,7 @@ function AZCode (s) {
  * @param {Number} fontSize 初始大小，以中文字大小为准
  */
 function getCharSize (char, fontSize) {
-  return zhcnCode(char) ? fontSize : AZCode(char) ? AZCODE_FONTSIZE : fontSize * 0.6
+  return Platform.OS === 'ios' ? fontSize : zhcnCode(char) ? fontSize : AZCode(char) ? fontSize * 0.8 : fontSize * 0.6
 }
 
 // 取整
@@ -140,7 +139,7 @@ class ChapterModel {
         for (var i = 0; i < total; i++) {
           pagers.push({ key: 'page' + i, context: lines.slice(lineMax * i, lineMax * (i + 1)).join('') })
         }
-        this.lines.replace(lines)
+        // this.lines.replace(lines)
         this.pagers.replace(pagers)
         Toast.hide()
       })

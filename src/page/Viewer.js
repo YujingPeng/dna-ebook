@@ -16,7 +16,6 @@ import loading from '../components/loading'
 import { ListViewItem } from '../components/chapterList'
 import Dock from '../components/dock'
 import { DownloadDock, SettingsDock, ScreenArea } from '../components/viewer'
-import Pager from '../components/pager'
 const deviceWidth = Dimensions.get('window').width
 
 @observer
@@ -122,9 +121,9 @@ class Viewer extends Component {
 
   @action
   handleOpen = () => {
-    this.drawer.openDrawer()
-    // this.isDrawerOpen = true
-    this.props.navigation.setParams({ visible: false })
+    // this.drawer.openDrawer()
+    // // this.isDrawerOpen = true
+    // this.props.navigation.setParams({ visible: false })
   }
 
   @action
@@ -202,21 +201,6 @@ class Viewer extends Component {
         <View style={styles.footer} >
           <Text style={{ alignSelf: 'flex-end', color: '#696969' }}>{`${this.viewer.nextIndex}/${this.viewer.total}`}</Text>
         </View>
-        {/* <Pager
-          data={this.viewer.pagers.slice()}
-          initPage={1}
-          onLeftPress={this.handlePrev}
-          onRightPress={this.handleNext}
-          onCenterPress={this.handleMenu}
-        /> */}
-        {/* <DrawerLayout
-          ref={ref => { this.drawer = ref }}
-          drawerWidth={300}
-          drawerLockMode='locked-closed'
-          onDrawerClose={() => { this.isDrawerOpen = false }}
-          renderNavigationView={this._reanderChapters}> */}
-
-        {/* </DrawerLayout> */}
         <Dock visible={this.props.navigation.state.params.visible} renderItemView={this.renderItemView}>
           <Dock.Item text="目录" icon="list" onPress={this.handleOpen} />
           <Dock.Item text={settingStore.nightMode ? '白天' : '夜间'} icon={settingStore.nightMode ? 'sun-o' : 'moon-o'} onPress={this.handleChangeMode} />
