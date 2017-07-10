@@ -99,6 +99,9 @@ class ChapterModel {
   @observable
   pagers = []
 
+  @observable
+  total=1
+
   constructor (id, bookId, title, pageIndex) {
     this.id = id
     this.name = title
@@ -106,11 +109,6 @@ class ChapterModel {
     if (id) {
       this.get()
     }
-  }
-
-  @computed get total () {
-    const length = Math.ceil(this.lines.length / lineMax)
-    return length === 0 ? 1 : length
   }
 
   @computed get nextIndex () {
@@ -139,7 +137,7 @@ class ChapterModel {
         for (var i = 0; i < total; i++) {
           pagers.push({ key: 'page' + i, context: lines.slice(lineMax * i, lineMax * (i + 1)).join('') })
         }
-        // this.lines.replace(lines)
+        this.total = total
         this.pagers.replace(pagers)
         Toast.hide()
       })

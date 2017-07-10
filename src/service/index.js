@@ -64,20 +64,8 @@ export async function getBookById (bookId) {
  */
 export function getChapterList (bookId, chapterId) {
   const chapters = db.objects('Chapter').filtered(`bookId = "${bookId}"`)
-  const currentIndex = chapters.findIndex(item => chapterId === item.id)
-  let end = 0
-  let start = 0
-  if ((currentIndex + 10) > chapters.length) {
-    start = currentIndex - 20
-    end = chapters.length
-  } else if ((currentIndex - 10) <= 0) {
-    start = 0
-    end = 20
-  } else {
-    start = currentIndex - 10
-    end = currentIndex + 10
-  }
-  return chapters
+  const currentIndex = !chapterId ? 0 : chapters.findIndex(item => chapterId === item.id)
+  return {chapters, index: currentIndex}
 }
 
 /**

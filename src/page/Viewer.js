@@ -44,9 +44,6 @@ class Viewer extends Component {
   refreshed = false
 
   @observable
-  chapters = getChapterList(this.props.navigation.state.params.bookId, this.props.navigation.state.params.id)
-
-  @observable
   dockItemViewMode = null
 
   @observable
@@ -121,9 +118,7 @@ class Viewer extends Component {
 
   @action
   handleOpen = () => {
-    // this.drawer.openDrawer()
-    // // this.isDrawerOpen = true
-    // this.props.navigation.setParams({ visible: false })
+    this.props.navigation.navigate('chapter', { bookId: this.viewer.bookId, chapterId: this.viewer.id, name: this.props.navigation.state.params.title })
   }
 
   @action

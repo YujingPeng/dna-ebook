@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, ListView, TouchableOpacity, Image, Text, StatusBar } from 'react-native'
+import { View, ListView, TouchableOpacity, Image, Text, StatusBar, Platform } from 'react-native'
 import { observer } from 'mobx-react/native'
 import { action, observable, runInAction, computed } from 'mobx'
 import { search, cachedSearchKeyword } from '../service'
@@ -125,7 +125,7 @@ class Search extends Component {
     })
     return (
       <View style={{ flex: 1, paddingTop: 20 }}>
-        <StatusBar hidden={false} backgroundColor={color} barStyle='dark-content' />
+        <StatusBar hidden={false} backgroundColor={color} barStyle={Platform.OS === 'ios' ? 'dark-content' : 'light-content'} />
         <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity onPress={this.handleChangeSource} style={{ width: 40, paddingLeft: 15, paddingRight: 5, justifyContent: 'center', backgroundColor: '#efeff4' }}>
             <Icon style={{ color }} name="reorder" size={20} />

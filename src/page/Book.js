@@ -1,24 +1,32 @@
 import React, { Component } from 'react'
 import { View, Text, Image, ScrollView, ListView, TouchableOpacity, StatusBar } from 'react-native'
 import { observer } from 'mobx-react/native'
-import { Button, Toast } from 'antd-mobile'
+import { Button, Toast, Tag } from 'antd-mobile'
 import { observable, action, runInAction, computed, toJS } from 'mobx'
 import { newBook, saveBook, getBookById, updateDiscover } from '../service'
 import personStore from '../store/personStore'
 import { color } from '../env'
 import moment from 'moment'
 import loading from '../components/loading'
-import {ListViewItem} from '../components/chapterList'
+import { ListViewItem } from '../components/chapterList'
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 @observer
 class Book extends Component {
   static navigationOptions = ({ navigation }) => {
     const { state = {} } = navigation
-    const { name } = state.params || {}
+    const { name, id } = state.params || {}
     return {
       title: name,
       headerStyle: { width: '100%', backgroundColor: color, paddingTop: 20 },
-      headerTintColor: '#ffffff'
+      headerTintColor: '#ffffff',
+      headerRight: (
+        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+          <TouchableOpacity style={{ paddingHorizontal: 15 }} onPress={() => { navigation.navigate('chapter', { bookId: id, name }) }}>
+            <Text style={{ fontSize: 18, color: '#fff' }}>目录</Text>
+          </TouchableOpacity>
+        </View>
+      )
     }
   };
 
@@ -31,11 +39,6 @@ class Book extends Component {
   // book = new BookModel(this.props.navigation.state.params.id, this.props.navigation.state.params.uri)
   @observable
   book = {}
-
-  @computed get DataSource () {
-    const chapters = this.book.chapters || []
-    return this.dataSource.cloneWithRows(chapters.slice(0))
-  }
 
   componentWillMount () {
     this.init()
@@ -105,59 +108,59 @@ class Book extends Component {
     }
   }
 
-  _renderRow = (item, sectionID, rowID) => {
-    const rowItemPress = () => {
-      if (this.isExist) {
-        updateDiscover({
-          id: item.bookId,
-          discoverChapterId: item.id,
-          discoverPage: 0,
-          discoverChapterIndex: Number(rowID),
-          discoverChapterName: item.text
-        })
-        this.props.navigation.navigate('viewer', { id: item.id, pageIndex: 0, title: this.book.name, bookId: item.bookId })
-      } else {
-        Toast.info('请收藏后再阅读', 0.7)
-      }
-    }
-    return (
-      <ListViewItem rowID={rowID} item={item} onPress={rowItemPress} />
-      // <TouchableOpacity key={item.id} onPress={rowItemPress}>
-      //   <View style={{ paddingVertical: 10, borderBottomWidth: 1, borderColor: '#cfcfcf', marginHorizontal: 10 }}>
-      //     <Text>{item.text}</Text>
-      //   </View>
-      // </TouchableOpacity>
-    )
-  }
-
   render () {
     return this.book && this.book.updateAt ? (
-      <ScrollView style={{ backgroundColor: '#ffffff' }}>
-        <StatusBar hidden={false} backgroundColor={color} translucent barStyle='light-content' />
-        <View style={{ flexDirection: 'row', paddingHorizontal: 10, paddingTop: 10 }}>
-          <View style={{ width: 72, height: 90 }}>
-            {this.book.thumbImage !== '' ? <Image source={{ uri: this.book.thumbImage }} style={{ width: '100%', height: '100%' }} /> : null}
+      <View style={{ flex: 1 }}>
+        <ScrollView style={{ backgroundColor: '#ffffff' }}>
+          <StatusBar hidden={false} backgroundColor={color} translucent barStyle='light-content' />
+          <View style={{ flexDirection: 'row', marginTop: 15, paddingHorizontal: 15 }}>
+            <View style={{ width: 104, height: 130 }}>
+              {this.book.thumbImage !== '' ? <Image source={{ uri: this.book.thumbImage }} style={{ width: '100%', height: '100%' }} /> : null}
+            </View>
+            <View style={{ paddingHorizontal: 10 }}>
+              <Text style={{ color: '#333', fontSize: 22 }}>{this.book.name}</Text>
+              <Text style={{ color: '#999', marginTop: 10 }}>{this.book.author}</Text>
+              <Text style={{ color: '#696969', marginTop: 10 }}>{this.book.latestChapter}</Text>
+              <Text style={{ color: '#999', marginTop: 10 }}>{moment(this.book.updateAt).fromNow()}更新</Text>
+            </View>
           </View>
-          <View style={{ paddingHorizontal: 10 }}>
-            <Text style={{ color: '#333', fontSize: 22 }}>{this.book.name}</Text>
-            <Text style={{ color: '#999' }}>{this.book.author}</Text>
-            <Text style={{ color: '#696969' }}>{this.book.latestChapter}</Text>
-            <Text style={{ color: '#999' }}>{moment(this.book.updateAt).fromNow()}更新</Text>
+          <View style={{ paddingHorizontal: 15, marginTop: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text>{'其他类型'}</Text>
+            <Text>{'168万字'}</Text>
+            <Text>{'连载中'}</Text>
+            <Text>{'定点文学'}</Text>
           </View>
+          <View style={{ padding: 15, paddingTop: 20, marginTop: 15, borderTopColor: '#e7e7e7', borderTopWidth: 1 }}>
+            <View style={{ paddingLeft: 5, borderLeftColor: color, borderLeftWidth: 3 }}>
+              <Text style={{ fontSize: 16, color: '#333' }}>简介</Text>
+            </View>
+            <View style={{ marginTop: 15 }}>
+              <Text style={{ fontSize: 16 }}>{this.book.desc.trim()}</Text>
+            </View>
+          </View>
+          <View style={{ padding: 15, paddingTop: 20, marginTop: 15, borderTopColor: '#e7e7e7', borderTopWidth: 1 }}>
+            <View style={{ paddingLeft: 5, borderLeftColor: color, borderLeftWidth: 3 }}>
+              <Text style={{ fontSize: 16, color: '#333' }}>标签</Text>
+            </View>
+            <View style={{ marginTop: 15, flex: 1, flexDirection: 'row', justifyContent: 'flex-start' }}>
+              <View style={{ padding: 5 }}>
+                <Tag>{this.book.author}</Tag>
+              </View>
+              <View style={{ padding: 5 }}>
+                <Tag>{this.book.name}</Tag>
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+        <View style={{ flexDirection: 'row', height: 50 }}>
+          <TouchableOpacity style={{ flex: 1, backgroundColor: color }} onPress={this.handleRead}>
+            <Text style={{ color: '#fff', textAlign: 'center', lineHeight: 40, fontSize: 20 }}>开始阅读</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{ flex: 1, backgroundColor: '#eee' }} onPress={this.handleSave}>
+            <Text style={{ color, textAlign: 'center', fontSize: 20, lineHeight: 40 }}>{this.isExist ? '取消收藏' : '收藏'}</Text>
+          </TouchableOpacity>
         </View>
-        <View style={{ paddingHorizontal: 10, paddingTop: 10 }}>
-          <Text>{this.book.desc}</Text>
-        </View>
-        <View style={{ flexDirection: 'row' }}>
-          <Button style={{ flex: 1, margin: 10, backgroundColor: color }} type='primary' onClick={this.handleRead}><Text>开始阅读</Text></Button>
-          {
-            this.isExist
-              ? (<Button style={{ flex: 1, margin: 10, borderColor: '#ff0000' }} onClick={this.handleRemove}><Text>取消收藏</Text></Button>)
-              : (<Button style={{ flex: 1, margin: 10 }} onClick={this.handleSave}><Text>收藏</Text></Button>)
-          }
-        </View>
-        <ListView enableEmptySections initialListSize={10} renderRow={this._renderRow} dataSource={this.DataSource} />
-      </ScrollView>
+      </View>
     ) : null
   }
 }
