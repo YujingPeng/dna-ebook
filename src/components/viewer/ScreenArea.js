@@ -26,10 +26,10 @@ class ScreenArea extends React.PureComponent {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, opacity: 0.3, height: '100%', width: '100%'
+    flex: 1, opacity: 0.3, height: '100%', width: '100%', flexDirection: 'row'
   },
   item: {
-    flex: 1, flexDirection: 'row'
+    flex: 1
   }
 })
 
