@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { View, ListView, StatusBar } from 'react-native'
 import { observer } from 'mobx-react/native'
 import { observable, runInAction, computed } from 'mobx'
-import { Toast } from 'antd-mobile'
 import { getChapterList, updateDiscover } from '../service'
 import { color } from '../env'
 import { ListViewItem } from '../components/chapterList'
@@ -40,18 +39,14 @@ export default class chapters extends Component {
 
   _renderRow = (item, sectionID, rowID) => {
     const rowItemPress = () => {
-      if (this.isExist) {
-        updateDiscover({
-          id: item.bookId,
-          discoverChapterId: item.id,
-          discoverPage: 0,
-          discoverChapterIndex: Number(rowID),
-          discoverChapterName: item.text
-        })
-        this.props.navigation.navigate('viewer', { id: item.id, pageIndex: 0, title: this.book.name, bookId: item.bookId })
-      } else {
-        Toast.info('请收藏后再阅读', 0.7)
-      }
+      updateDiscover({
+        id: item.bookId,
+        discoverChapterId: item.id,
+        discoverPage: 0,
+        discoverChapterIndex: Number(rowID),
+        discoverChapterName: item.text
+      })
+      this.props.navigation.navigate('viewer', { id: item.id, pageIndex: 0, title: this.book.name, bookId: item.bookId })
     }
     return (
       <ListViewItem rowID={rowID} item={item} onPress={rowItemPress} />
