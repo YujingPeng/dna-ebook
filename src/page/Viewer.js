@@ -189,7 +189,6 @@ class Viewer extends Component {
               data={this.viewer.pagers}
               renderItem={this._renderItem}
               showsHorizontalScrollIndicator={false}
-              onScrollEndDrag={this.handleScroll}
             />)
           }
         </View>

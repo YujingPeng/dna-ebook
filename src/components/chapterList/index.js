@@ -25,6 +25,7 @@ class ChapterList extends React.Component {
 class ListItem extends React.PureComponent {
   static propTypes = {
     item: PropTypes.object.isRequired,
+    index: PropTypes.number.isRequired,
     onPress: PropTypes.func
   }
   handlePress = () => {
@@ -37,8 +38,8 @@ class ListItem extends React.PureComponent {
   render () {
     const { item } = this.props
     return (
-      <TouchableOpacity key={item.id} onPress={this.handlePress}>
-        <View style={{ paddingVertical: 10, borderBottomWidth: 1, borderColor: '#cfcfcf', marginHorizontal: 10 }}>
+      <TouchableOpacity onPress={this.handlePress}>
+        <View style={{ paddingVertical: 10, borderBottomWidth: 1, borderColor: '#cfcfcf', marginHorizontal: 10, height: 40, justifyContent: 'center' }}>
           <Text>{item.text}</Text>
         </View>
       </TouchableOpacity>
@@ -70,4 +71,4 @@ class ListViewItem extends React.PureComponent {
   }
 }
 
-export {ListViewItem}
+export { ListViewItem, ListItem }
