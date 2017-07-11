@@ -102,7 +102,7 @@ class Search extends Component {
                 {' | '}
                 <Text >{item.type || '其他类型'}</Text>
                 {' | '}
-                <Text>{moment(item.updateAt, 'YYYY-MM-DD HH:mm:ss').fromNow()}更新</Text>
+                <Text>{item.updateAt ? moment(item.updateAt, 'YYYY-MM-DD HH:mm:ss').fromNow() + '更新' : '暂无更新时间'}</Text>
               </Text>
               <Text numberOfLines={1} style={{ fontSize: 16 }}>{item.desc}</Text>
               <Text>

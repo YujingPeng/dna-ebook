@@ -40,6 +40,11 @@ class Book extends Component {
   @observable
   book = {}
 
+  @computed get updateTime () {
+    const time = moment(this.book.updateAt, 'YYYY-MM-DD HH:mm:ss')
+    return time.isValid() ? time.fromNow() + '更新' : this.book.updateAt
+  }
+
   componentWillMount () {
     this.init()
   }
@@ -121,7 +126,7 @@ class Book extends Component {
               <Text style={{ color: '#333', fontSize: 22 }}>{this.book.name}</Text>
               <Text style={{ color: '#999', marginTop: 10 }}>{this.book.author}</Text>
               <Text style={{ color: '#696969', marginTop: 10 }}>{this.book.latestChapter}</Text>
-              <Text style={{ color: '#999', marginTop: 10 }}>{moment(this.book.updateAt).fromNow()}更新</Text>
+              <Text style={{ color: '#999', marginTop: 10 }}>{this.updateTime}</Text>
             </View>
           </View>
           <View style={{ paddingHorizontal: 15, marginTop: 15, flexDirection: 'row', justifyContent: 'space-between' }}>

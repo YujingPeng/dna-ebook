@@ -40,7 +40,7 @@ export async function fetchData (uri) {
  */
 export async function load (url) {
   try {
-    const res = await axios({url})
+    const res = await axios({ url })
     return cheerio.load(res.data)
   } catch (error) {
     throw error
@@ -100,12 +100,12 @@ export function generateBookModel ($body, rule, uri) {
 
 // 转换目录
 export function generateChapters ($body, rule, bookId) {
-  const { host, firstChapterIndex } = rule
+  const { host, firstChapterIndex, chapterMenu, chapterMenuUriHost } = rule
   let list = []
-  $body('#list>dl>dd>a').each((i, item) => {
+  $body(chapterMenu).each((i, item) => {
     if (i >= firstChapterIndex) {
       const $bodyelem = $body(item)
-      let uri = host + $bodyelem.attr('href')
+      let uri = chapterMenuUriHost ? host + $bodyelem.attr('href') : $bodyelem.attr('href')
       let text = $bodyelem.text()
       const index = list.findIndex(item => item.uri === uri)
       if (!!text && !!uri && index < 0) {

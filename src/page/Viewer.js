@@ -38,8 +38,6 @@ class Viewer extends Component {
 
   viewer = new ViewerModel(this.props.navigation.state.params.id, this.props.navigation.state.params.bookId, this.props.navigation.state.params.title, this.props.navigation.state.params.pageIndex);
 
-  dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
-
   @observable
   refreshed = false
 
@@ -134,18 +132,6 @@ class Viewer extends Component {
       <ListViewItem item={item} rowID={rowID} onPress={rowItemPress} />
     )
   }
-
-  _reanderChapters = () => (
-    <View style={{ flex: 1, backgroundColor: this.mode.backgroundColor }}>
-      <ListView
-        style={{ flex: 1 }}
-        initialListSize={10}
-        enableEmptySections
-        onEndReached={this.handleEndReached}
-        dataSource={this.dataSource.cloneWithRows(this.chapters.slice(0))}
-        renderRow={this._renderRow} />
-    </View>
-  )
 
   _renderItem = ({ item, index }) => {
     return (

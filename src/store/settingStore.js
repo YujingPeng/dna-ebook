@@ -61,7 +61,7 @@ class SettingStore {
     const settings = await getSettings()
     const search = await getSearchHistory() || []
     runInAction(() => {
-      extendObservable(this, settings)
+      extendObservable(this, {...settings})
       this.searchHistory.replace(search)
     })
   }

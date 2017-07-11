@@ -95,6 +95,8 @@ class Home extends Component {
         style: { backgroundColor: '#F4333C', color: '#F5F5F5' }
       }]
     }
+    const time = moment(item.updateAt, 'YYYY-MM-DD HH:mm:ss')
+
     return (
       <SwipeAction {...SwipeActionConfig} >
         <TouchableOpacity onPress={rowItemPress} style={{ backgroundColor: '#F5F5F5' }}>
@@ -107,7 +109,7 @@ class Home extends Component {
                 {item.name}
                 <Text style={{ color: '#999', fontSize: 12 }}> {item.author} {((item.discoverChapterIndex + 1) / item.totalChapter * 100).toFixed(2)}%</Text>
               </Text>
-              <Text><Text style={{ color: '#999', fontSize: 12 }}>{moment(item.updateAt).fromNow()}更新：</Text>{item.latestChapter}</Text>
+              <Text><Text style={{ color: '#999', fontSize: 12 }}>{time.isValid() && time.fromNow()}更新：</Text>{item.latestChapter}</Text>
             </View>
           </View>
         </TouchableOpacity>
