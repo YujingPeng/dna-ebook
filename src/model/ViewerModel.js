@@ -9,7 +9,7 @@ const lineHeight = 30
 let fontSize = 18
 
 const OFFSET = Platform.OS === 'ios' ? 70 : 40
-const LINE_INDENT = Platform.OS === 'ios' ? '\t' : '\t\t\t\t\t'
+const LINE_INDENT = Platform.OS === 'ios' ? '    ' : '        '
 const LINE_WRAP = '\n'
 
 function zhcnCode (s) {

@@ -81,7 +81,6 @@ export async function getChapter (chapterId) {
         resolve({ name: chapter.text, bookId: chapter.bookId, content: chapterContent.content })
       } else {
         const rule = matchRule(chapter.uri)
-        console.warn(chapterId, chapter.uri)
         load(chapter.uri).then($ => {
           const content = $(rule.content).text()
           db.write(() => {
