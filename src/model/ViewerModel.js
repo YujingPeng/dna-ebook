@@ -105,18 +105,14 @@ class ChapterModel {
   constructor (id, bookId, title, pageIndex) {
     this.id = id
     this.name = title
-    this.pageIndex = pageIndex
+    this.pageIndex = pageIndex || 0
     if (id) {
       this.get()
     }
   }
 
   @computed get nextIndex () {
-    return this.pageIndex + 1
-  }
-
-  @computed get dataSource () {
-    return this.lines.slice(lineMax * this.pageIndex, lineMax * (this.pageIndex + 1))
+    return (this.pageIndex + 1) || 1
   }
 
   @action
