@@ -13,6 +13,7 @@ class SettingStore {
         })
       }
     }
+    host[0].label += '(推荐)'
     this.sourceName = host[0].value
     this.sites = host
     this.init()

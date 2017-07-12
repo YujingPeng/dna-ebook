@@ -2,7 +2,7 @@ import { StackNavigator } from 'react-navigation'
 import SearchPage from './page/Search'
 import BookPage from './page/Book'
 import HomePage from './page/Home'
-import ViewerPage from './page/Viewer'
+import ReaderPage from './page/Reader'
 import Chapters from './page/Chapters'
 // import { enableLogging } from 'mobx-logger'
 
@@ -15,7 +15,7 @@ const Screen = StackNavigator({
   chapter: { screen: Chapters },
   search: { screen: SearchPage },
   book: { screen: BookPage },
-  viewer: { screen: ViewerPage }
+  reader: { screen: ReaderPage }
 }, {
   initialRouteName: 'home',
   headerMode: 'screen'

@@ -1,19 +1,15 @@
 import React, { Component } from 'react'
-import { View, ListView, StatusBar, Dimensions, StyleSheet, Text, FlatList } from 'react-native'
+import { View, StatusBar, Dimensions, StyleSheet, Text, FlatList } from 'react-native'
 import ViewerModel from '../model/ViewerModel'
 import { observer } from 'mobx-react/native'
 import { observable, computed, action } from 'mobx'
-import DrawerLayout from 'react-native-drawer-layout'
 import { Toast } from 'antd-mobile'
-
-// import Icon from 'react-native-vector-icons/FontAwesome'
 
 import { theme } from '../env'
 import settingStore from '../store/settingStore'
-import { bulkCacheChapterContent, getChapterList } from '../service'
+import { bulkCacheChapterContent } from '../service'
 
 import loading from '../components/loading'
-import { ListViewItem } from '../components/chapterList'
 import Dock from '../components/dock'
 import { DownloadDock, SettingsDock, ScreenArea } from '../components/viewer'
 const deviceWidth = Dimensions.get('window').width
@@ -124,15 +120,6 @@ class Viewer extends Component {
 
   }
 
-  _renderRow = (item, sectionID, rowID) => {
-    const rowItemPress = () => {
-      Toast.info('coming soom...', 0.7)
-    }
-    return (
-      <ListViewItem item={item} rowID={rowID} onPress={rowItemPress} />
-    )
-  }
-
   _renderItem = ({ item, index }) => {
     return (
       <View style={styles.pagerContainer}>
@@ -178,6 +165,7 @@ class Viewer extends Component {
             />)
           }
         </View>
+
         <View style={styles.footer} >
           <Text style={{ alignSelf: 'flex-end', color: '#696969' }}>{`${this.viewer.nextIndex}/${this.viewer.total}`}</Text>
         </View>

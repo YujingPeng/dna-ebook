@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import moment from 'moment'
 import { observer } from 'mobx-react/native'
 import { action, observable, runInAction } from 'mobx'
 
@@ -10,6 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import { color } from '../env'
 import { removeBook, updateChapterList } from '../service'
 import personStore from '../store/personStore'
+import BookItem from '../components/item/BookItem'
 
 @observer
 class Home extends Component {
@@ -55,7 +55,7 @@ class Home extends Component {
     })
   }
 
-  handleItemRefresh =async (id, chapterMenuUri) => {
+  handleItemRefresh = async (id, chapterMenuUri) => {
     try {
       const total = await updateChapterList(id, chapterMenuUri)
       if (total > 0) {
@@ -69,9 +69,9 @@ class Home extends Component {
     }
   }
 
-  _renderRow = ({item}) => {
+  _renderRow = ({ item, index }) => {
     const rowItemPress = () => {
-      this.props.navigation.navigate('viewer', {
+      this.props.navigation.navigate('reader', {
         id: item.discoverChapterId,
         title: item.name,
         pageIndex: item.discoverPage,
@@ -80,12 +80,11 @@ class Home extends Component {
     }
 
     const SwipeActionConfig = {
-      autoClose: true,
-      left: [ {
+      left: [{
         text: '更新',
         onPress: () => this.handleItemRefresh(item.id, item.uri)
-      } ],
-      right: [ {
+      }],
+      right: [{
         text: '详细',
         onPress: () => this.props.navigation.navigate('book', { id: item.id, uri: item.uri, name: item.name })
       },
@@ -95,24 +94,10 @@ class Home extends Component {
         style: { backgroundColor: '#F4333C', color: '#F5F5F5' }
       }]
     }
-    const time = moment(item.updateAt, 'YYYY-MM-DD HH:mm:ss')
 
     return (
-      <SwipeAction {...SwipeActionConfig} >
-        <TouchableOpacity onPress={rowItemPress} style={{ backgroundColor: '#F5F5F5' }}>
-          <View style={{ flex: 1, marginLeft: 15, flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, borderColor: '#e7e7e7' }}>
-            <View style={{ width: 40, height: 50, borderWidth: 1, borderColor: '#e7e7e7' }}>
-              {item.thumbImage !== '' ? <Image source={{ uri: item.thumbImage }} style={{ width: 40, height: 50 }} /> : null}
-            </View>
-            <View style={{ marginHorizontal: 10, justifyContent: 'space-around' }}>
-              <Text style={{ color: '#333', fontSize: 18 }}>
-                {item.name}
-                <Text style={{ color: '#999', fontSize: 12 }}> {item.author} {((item.discoverChapterIndex + 1) / item.totalChapter * 100).toFixed(2)}%</Text>
-              </Text>
-              <Text numberOfLines={1}><Text style={{ color: '#999', fontSize: 12 }}>{time.isValid() && time.fromNow()}更新：</Text>{item.latestChapter}</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
+      <SwipeAction autoClose {...SwipeActionConfig} >
+        <BookItem item={item} index={index} onPress={rowItemPress} />
       </SwipeAction>
     )
   }

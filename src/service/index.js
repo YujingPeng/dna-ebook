@@ -6,6 +6,11 @@ import {
   generateBookModel, generateChapters, generateSearchModel
 } from './utils'
 
+export function getBookSourceName (uri) {
+  const source = matchRule(uri) || {}
+  return source.name || ''
+}
+
 /**
  * 根据关键字和站点查询
  * @param {String} name 关键字

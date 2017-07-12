@@ -1,6 +1,6 @@
 export default {
   host: 'http://www.booktxt.net',
-  name: '顶点文学 (推荐) ',
+  name: '顶点文学',
   encode: 'gbk',
   content: '#content',
   info: {

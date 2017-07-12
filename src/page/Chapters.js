@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { View, ListView, StatusBar, FlatList } from 'react-native'
+import { View, StatusBar, FlatList } from 'react-native'
 import { observer } from 'mobx-react/native'
-import { observable, runInAction, computed } from 'mobx'
+import { observable, runInAction } from 'mobx'
 import { getChapterList, updateDiscover } from '../service'
 import { color } from '../env'
-import { ListViewItem, ListItem } from '../components/chapterList'
+import ChapterItem from '../components/item/ChapterItem'
 
 @observer
 export default class chapters extends Component {
@@ -17,17 +17,11 @@ export default class chapters extends Component {
     }
   }
 
-  // dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
-
   @observable
   chapters = []
 
   @observable
   chapterIndex = 0
-
-  // @computed get DataSource () {
-  //   return this.dataSource.cloneWithRows(this.chapters.slice())
-  // }
 
   componentWillMount () {
     this.init()
@@ -59,10 +53,10 @@ export default class chapters extends Component {
         discoverChapterIndex: Number(index),
         discoverChapterName: item.text
       })
-      this.props.navigation.navigate('viewer', { id: item.id, pageIndex: 0, title: this.props.navigation.state.params.name, bookId: item.bookId })
+      this.props.navigation.navigate('reader', { id: item.id, pageIndex: 0, title: this.props.navigation.state.params.name, bookId: item.bookId })
     }
     return (
-      <ListItem index={index} item={item} onPress={rowItemPress} />
+      <ChapterItem index={index} item={item} onPress={rowItemPress} />
     )
   }
   render () {

@@ -11,6 +11,8 @@ Book.schema = {
     desc: 'string',
     author: 'string',
     type: 'string',
+    ending: {type: 'bool', default: false},
+    words: {type: 'int', default: 0},
     orderBy: { type: 'int', default: Date.now() },
     /** 更新时间 */
     updateAt: 'string',

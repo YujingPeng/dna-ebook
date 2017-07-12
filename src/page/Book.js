@@ -1,15 +1,13 @@
 import React, { Component } from 'react'
 import { View, Text, Image, ScrollView, ListView, TouchableOpacity, StatusBar } from 'react-native'
 import { observer } from 'mobx-react/native'
-import { Button, Toast, Tag } from 'antd-mobile'
+import { Toast, Tag } from 'antd-mobile'
 import { observable, action, runInAction, computed, toJS } from 'mobx'
-import { newBook, saveBook, getBookById, updateDiscover } from '../service'
+import { newBook, saveBook, getBookById, updateDiscover, getBookSourceName } from '../service'
 import personStore from '../store/personStore'
 import { color } from '../env'
 import moment from 'moment'
 import loading from '../components/loading'
-import { ListViewItem } from '../components/chapterList'
-import Icon from 'react-native-vector-icons/FontAwesome'
 
 @observer
 class Book extends Component {
@@ -39,6 +37,9 @@ class Book extends Component {
   // book = new BookModel(this.props.navigation.state.params.id, this.props.navigation.state.params.uri)
   @observable
   book = {}
+
+  @observable
+  bookSource = getBookSourceName(this.params.uri)
 
   @computed get updateTime () {
     const time = moment(this.book.updateAt, 'YYYY-MM-DD HH:mm:ss')
@@ -92,7 +93,7 @@ class Book extends Component {
 
   handleRead = () => {
     if (this.isExist) {
-      this.props.navigation.navigate('viewer', { id: this.book.discoverChapterId, title: this.book.name, pageIndex: this.book.discoverPage, bookId: this.book.id })
+      this.props.navigation.navigate('reader', { id: this.book.discoverChapterId, title: this.book.name, pageIndex: this.book.discoverPage, bookId: this.book.id })
     } else {
       Toast.info('请收藏后再阅读', 0.7)
     }
@@ -107,7 +108,7 @@ class Book extends Component {
         discoverChapterIndex: Number(index),
         discoverChapterName: item.text
       })
-      this.props.navigation.navigate('viewer', { id: item.id, pageIndex: 0, title: this.book.name, bookId: item.bookId })
+      this.props.navigation.navigate('reader', { id: item.id, pageIndex: 0, title: this.book.name, bookId: item.bookId })
     } else {
       Toast.info('请收藏后再阅读', 0.7)
     }
@@ -133,7 +134,7 @@ class Book extends Component {
             <Text>{'其他类型'}</Text>
             <Text>{'168万字'}</Text>
             <Text>{'连载中'}</Text>
-            <Text>{'定点文学'}</Text>
+            <Text>{this.bookSource}</Text>
           </View>
           <View style={{ padding: 15, paddingTop: 20, marginTop: 15, borderTopColor: '#e7e7e7', borderTopWidth: 1 }}>
             <View style={{ paddingLeft: 5, borderLeftColor: color, borderLeftWidth: 3 }}>
