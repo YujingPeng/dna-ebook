@@ -19,11 +19,11 @@ http://reactnative.cn/docs/0.44/getting-started.html
 https://github.com/Manweill/dna-ebook/blob/develop/CHANGE.MD
 
 ## TODO LIST
-- [ ] bugfix and optimize
-- [ ] Viewer page new implement (support TouchMove)
-- [ ] upgrade BookInfo UI
-- [ ] Viewer menus button redirect to new page
-- [ ] add new book source
+- [x] bugfix and optimize
+- [x] Viewer page new implement (support TouchMove)
+- [x] upgrade BookInfo UI
+- [x] Viewer menus button redirect to new page
+- [x] add new book source
 - [ ] settings saving in db
-- [ ] upgrade ListView to FlatList
+- [x] upgrade ListView to FlatList
 - [ ] 抓取百度的推荐列表或者追书的推荐列表
