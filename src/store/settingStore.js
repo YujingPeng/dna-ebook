@@ -57,6 +57,10 @@ class SettingStore {
     return this.nightMode ? theme.night : theme.light
   }
 
+  @computed get indentWidth () {
+    return this.fontSize * 2
+  }
+
   @action
   async init () {
     const settings = await getSettings()

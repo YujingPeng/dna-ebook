@@ -49,7 +49,7 @@ export default class chapters extends Component {
       updateDiscover({
         id: item.bookId,
         discoverChapterId: item.id,
-        discoverPage: 0,
+        discoverPage: 1,
         discoverChapterIndex: Number(index),
         discoverChapterName: item.text
       })

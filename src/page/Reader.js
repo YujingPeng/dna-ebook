@@ -168,7 +168,7 @@ class Viewer extends Component {
     return (
       <View style={styles.pagerContainer}>
         <View style={styles.context}>
-          <Text style={{ fontSize: 18, lineHeight: 30, color: this.mode.color }}>
+          <Text style={{ fontSize: settingStore.fontSize, lineHeight: 30, color: this.mode.color }}>
             {item.context}
           </Text>
         </View>
@@ -177,13 +177,11 @@ class Viewer extends Component {
           onRightPress={this.handleNext}
           onCenterPress={this.handleMenu} />
       </View>
-
     )
   }
 
   render () {
     const { backgroundColor } = this.mode
-    console.log(this.viewer.pageIndex)
     return (
       <View style={{ flex: 1, backgroundColor }} >
         <StatusBar animated hidden />
@@ -227,7 +225,7 @@ const styles = StyleSheet.create({
     flex: 1, height: '100%', width: '100%'
   },
   pagerContainer: {
-    position: 'relative', width: deviceWidth, flex: 1
+    position: 'relative', width: deviceWidth, flex: 1, backgroundColor: '#efefef'
   },
   header: {
     paddingTop: 8, paddingLeft: 17, height: 30
@@ -236,7 +234,7 @@ const styles = StyleSheet.create({
     paddingRight: 18, height: 30
   },
   context: {
-    paddingLeft: 17, zIndex: -1, position: 'absolute'
+    zIndex: -1, position: 'absolute', paddingLeft: settingStore.fontSize
   }
 })
 
