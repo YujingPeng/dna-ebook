@@ -119,12 +119,12 @@ class Book extends Component {
         <ScrollView style={{ backgroundColor: '#ffffff' }}>
           <StatusBar hidden={false} backgroundColor={color} translucent barStyle='light-content' />
           <View style={{ flexDirection: 'row', marginTop: 15, paddingHorizontal: 15 }}>
-            <View style={{ width: 104, height: 130 }}>
+            <View style={{ width: 104, height: 130, borderWidth: 1, borderColor: '#e7e7e7' }}>
               {this.book.thumbImage !== '' ? <Image source={{ uri: this.book.thumbImage }} style={{ width: '100%', height: '100%' }} /> : null}
             </View>
-            <View style={{ paddingHorizontal: 10 }}>
+            <View style={{ paddingLeft: 10, flex: 1 }}>
               <Text style={{ color: '#333', fontSize: 22 }}>{this.book.name}</Text>
-              <Text style={{ color: '#999', marginTop: 10 }}>{this.book.author}</Text>
+              <Text style={{ color: '#999', marginTop: 10 }} >{this.book.author}</Text>
               <Text style={{ color: '#696969', marginTop: 10 }}>{this.book.latestChapter}</Text>
               <Text style={{ color: '#999', marginTop: 10 }}>{this.updateTime}</Text>
             </View>

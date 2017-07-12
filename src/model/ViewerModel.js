@@ -26,7 +26,7 @@ function AZCode (s) {
  * @param {Number} fontSize 初始大小，以中文字大小为准
  */
 function getCharSize (char, fontSize) {
-  return Platform.OS === 'ios' ? fontSize : zhcnCode(char) ? fontSize : AZCode(char) ? fontSize * 0.8 : fontSize * 0.6
+  return Platform.OS === 'ios' ? fontSize : zhcnCode(char) ? fontSize : AZCode(char) ? fontSize * 0.9 : fontSize * 0.7
 }
 
 // 取整
