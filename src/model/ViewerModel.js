@@ -13,11 +13,11 @@ const LINE_INDENT = '        '
 const LINE_WRAP = '\n'
 
 function zhcnCode (s) {
-  return /[^\x00-\xff]/.test(s)
+  return /[\u3400-\u4DB5\u4E00-\u9FA5\u9FA6-\u9FBB\uF900-\uFA2D\uFA30-\uFA6A\uFA70-\uFAD9\uFF00-\uFFEF\u2E80-\u2EFF\u3000-\u303F\u31C0-\u31EF\u2F00-\u2FDF\u2FF0-\u2FFF\u3100-\u312F\u31A0-\u31BF\u3040-\u309F\u30A0-\u30FF\u31F0-\u31FF\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\u4DC0-\u4DFF\uA000-\uA48F\uA490-\uA4CF\u2800-\u28FF\u3200-\u32FF\u3300-\u33FF\u2700-\u27BF\u2600-\u26FF\uFE10-\uFE1F\uFE30-\uFE4F]/.test(s)
 }
 
-function AZCode (s) {
-  return /[\x41-\x5a]/.test(s)
+function HalfCode (s) {
+  return /[,.?:;'!"\-a-z]/.test(s)
 }
 
 /**
@@ -26,7 +26,7 @@ function AZCode (s) {
  * @param {Number} fontSize 初始大小，以中文字大小为准
  */
 function getCharSize (char, fontSize) {
-  return Platform.OS === 'ios' ? fontSize : zhcnCode(char) ? fontSize : AZCode(char) ? fontSize * 0.9 : fontSize * 0.7
+  return zhcnCode(char) ? fontSize : HalfCode(char) ? fontSize * 0.7 : fontSize * 0.9
 }
 
 // 取整
@@ -97,18 +97,18 @@ class ChapterModel {
   list = []
 
   @observable
-  pagers = []
+  pagers = [{ key: 'page0', context: '正在加载...' }, { key: 'page1', context: '正在加载...' }]
 
   @observable
-  total=1
+  total = 1
 
   constructor (id, bookId, title, pageIndex) {
     this.id = id
     this.name = title
     this.pageIndex = pageIndex || 0
-    if (id) {
-      this.get()
-    }
+    // if (id) {
+    //   this.get()
+    // }
   }
 
   @computed get nextIndex () {
@@ -128,11 +128,12 @@ class ChapterModel {
         for (let i = 0; i < content.length; i++) {
           lines = lines.concat(lineFeed(content[i], 'row_' + i))
         }
-        let pagers = []
+        let pagers = [{ key: 'page0', context: '正在加载...' }]
         const total = Math.ceil(lines.length / lineMax)
         for (var i = 0; i < total; i++) {
-          pagers.push({ key: 'page' + i, context: lines.slice(lineMax * i, lineMax * (i + 1)).join('') })
+          pagers.push({ key: 'page' + i + 1, context: lines.slice(lineMax * i, lineMax * (i + 1)).join('') })
         }
+        pagers.push({ key: 'page' + total + 1, context: '' })
         this.total = total
         this.pagers.replace(pagers)
         Toast.hide()
@@ -183,7 +184,7 @@ class ChapterModel {
           this.id = result.chapterId
           await this.get()
           runInAction(() => {
-            this.pageIndex = index < 0 ? (this.total - 1) : 0
+            this.pageIndex = index < 0 ? this.total : 1
             updateDiscover({
               id: this.bookId,
               discoverPage: this.pageIndex,

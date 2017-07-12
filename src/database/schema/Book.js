@@ -28,7 +28,7 @@ Book.schema = {
     discoverChapterId: 'string',
     discoverChapterIndex: { type: 'int', default: 0 },
     discoverChapterName: 'string',
-    discoverPage: { type: 'int', default: 0 },
+    discoverPage: { type: 'int', default: 1 },
     /** 章节目录地址，如果为空，则应该取uri的地址 */
     chapterMenuUri: 'string',
     /** 章节列表 */

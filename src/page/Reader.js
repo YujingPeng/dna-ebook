@@ -28,9 +28,15 @@ class Viewer extends Component {
     } : { header: null }
   }
 
+  componentWillMount () {
+    this.init()
+  }
+
   componentWillUnmount () {
     Toast.hide()
   }
+
+  _preScrollX = 0
 
   viewer = new ViewerModel(this.props.navigation.state.params.id, this.props.navigation.state.params.bookId, this.props.navigation.state.params.title, this.props.navigation.state.params.pageIndex);
 
@@ -58,10 +64,19 @@ class Viewer extends Component {
     }
   }
 
+  @action
+  init = async () => {
+    this.refreshed = true
+    // await loading()
+    await this.viewer.get()
+    this.refreshed = false
+    // this.paper.scrollToIndex({viewPosition: 0, index: this.viewer.pageIndex + 1})
+  }
+
   handlePrev = async () => {
     if (this.props.navigation.state.params.visible) {
       this.handleMenu()
-    } else if (this.viewer.pageIndex > 0) {
+    } else if (this.viewer.pageIndex > 1) {
       this.paper.scrollToIndex({ viewPosition: 0, index: this.viewer.pageIndex - 1 })
       this.viewer.discover(this.viewer.pageIndex - 1)
     } else {
@@ -75,7 +90,7 @@ class Viewer extends Component {
   handleNext = async () => {
     if (this.props.navigation.state.params.visible) {
       this.handleMenu()
-    } else if (this.viewer.nextIndex < this.viewer.total) {
+    } else if (this.viewer.pageIndex < this.viewer.total) {
       this.paper.scrollToIndex({ viewPosition: 0, index: this.viewer.pageIndex + 1 })
       this.viewer.discover(this.viewer.pageIndex + 1)
     } else {
@@ -85,6 +100,35 @@ class Viewer extends Component {
       this.refreshed = false
     }
   }
+
+  _getItemLayout = (data, index) => {
+    return { length: deviceWidth, offset: deviceWidth * index, index }
+  }
+
+  @action
+  handleScroll = async (e) => {
+    let { x } = e.nativeEvent.contentOffset
+    let position = Math.floor(x / deviceWidth)
+    if (x === this._preScrollX) return
+    this._preScrollX = x
+    let offset = x / deviceWidth - position
+    if (offset === 0) {
+      if (position > this.viewer.total) {
+        this.refreshed = true
+        await loading()
+        await this.viewer.jump(1)
+        this.refreshed = false
+      } else if (position < 1) {
+        this.refreshed = true
+        await loading()
+        await this.viewer.jump(-1)
+        this.refreshed = false
+      } else {
+        this.viewer.discover(position)
+      }
+    }
+  }
+
   @action
   handleMenu = () => {
     this.dockItemViewMode = ''
@@ -116,7 +160,7 @@ class Viewer extends Component {
   }
 
   @action
-  handleEndReached = () => {
+  handleEndReached = (event) => {
 
   }
 
@@ -136,13 +180,10 @@ class Viewer extends Component {
 
     )
   }
-  _getItemLayout = (data, index) => {
-    return { length: deviceWidth, offset: deviceWidth * index, index }
-  }
 
   render () {
     const { backgroundColor } = this.mode
-
+    console.log(this.viewer.pageIndex)
     return (
       <View style={{ flex: 1, backgroundColor }} >
         <StatusBar animated hidden />
@@ -162,12 +203,12 @@ class Viewer extends Component {
               data={this.viewer.pagers}
               renderItem={this._renderItem}
               showsHorizontalScrollIndicator={false}
+              onScroll={this.handleScroll}
             />)
           }
         </View>
-
         <View style={styles.footer} >
-          <Text style={{ alignSelf: 'flex-end', color: '#696969' }}>{`${this.viewer.nextIndex}/${this.viewer.total}`}</Text>
+          <Text style={{ alignSelf: 'flex-end', color: '#696969' }}>{`${this.viewer.pageIndex}/${this.viewer.total}`}</Text>
         </View>
         <Dock visible={this.props.navigation.state.params.visible} renderItemView={this.renderItemView}>
           <Dock.Item text="目录" icon="list" onPress={this.handleOpen} />
