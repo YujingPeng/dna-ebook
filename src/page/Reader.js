@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     flex: 1, height: '100%', width: '100%'
   },
   pagerContainer: {
-    position: 'relative', width: deviceWidth, flex: 1, backgroundColor: '#efefef'
+    position: 'relative', width: deviceWidth, flex: 1
   },
   header: {
     paddingTop: 8, paddingLeft: 17, height: 30
