@@ -6,8 +6,8 @@ import settingStore from '../store/settingStore'
 const ScreenWidth = Dimensions.get('window').width
 const ScreenHeight = Dimensions.get('window').height
 
-const lineHeight = 30
-let fontSize = 18
+// const lineHeight = 30
+// let fontSize = 18
 
 const OFFSET = Platform.OS === 'ios' ? 70 : 40
 const LINE_INDENT = '        '
@@ -32,7 +32,7 @@ function getCharSize (char, fontSize) {
 
 // 取整
 
-const lineMax = Math.round((ScreenHeight - OFFSET) / lineHeight)
+const lineMax = Math.round((ScreenHeight - OFFSET) / settingStore.lineHight)
 const lineWidth = ScreenWidth - settingStore.fontSize * 3
 
 /**
@@ -50,7 +50,7 @@ function lineFeed (str: string, keyPrefix: string) {
   let start = 0
   let size = 0
   for (let i = 0, length = chars.length; i < length; i++) {
-    size = Math.ceil(getCharSize(chars[i], fontSize))
+    size = Math.ceil(getCharSize(chars[i], settingStore.fontSize))
     if ((linefeed + size) >= lineEnd) {
       if (result.length === 0) {
         result.push(LINE_INDENT + chars.slice(start, i).join('') + LINE_WRAP)
