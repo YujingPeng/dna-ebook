@@ -10,9 +10,16 @@ CHANGE LOG
 ## New features and enhancements
 {changes}
 ```
+# 0.4.0
+- bugfix and optimize
+- Viewer page new implement (support TouchMove)
+- upgrade BookInfo UI
+- Viewer menus button redirect to new page
+- add new book source
+- upgrade ListView to FlatList
 
 # 0.3.0
-## Bu Fixes
+## Bug Fixes
 - fix set discovertPage with the last pager when jump previous chapter
 ## New features and enhancements
 - new app logo
