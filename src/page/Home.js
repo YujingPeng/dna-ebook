@@ -72,11 +72,15 @@ class Home extends Component {
   _renderRow = ({ item, index }) => {
     const rowItemPress = () => {
       this.props.navigation.navigate('reader', {
-        id: item.discoverChapterId,
+        chapterId: item.discoverChapterId,
         title: item.name,
         pageIndex: item.discoverPage,
         bookId: item.id
       })
+    }
+
+    const handleLongPress = () => {
+      this.props.navigation.navigate('book', { id: item.id, uri: item.uri, name: item.name })
     }
 
     const SwipeActionConfig = {
@@ -97,7 +101,7 @@ class Home extends Component {
 
     return (
       <SwipeAction autoClose {...SwipeActionConfig} >
-        <BookItem item={item} index={index} onPress={rowItemPress} />
+        <BookItem item={item} index={index} onPress={rowItemPress} onLongPress={handleLongPress} />
       </SwipeAction>
     )
   }

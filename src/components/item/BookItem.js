@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { View, Text, TouchableOpacity, SwipeAction, Image } from 'react-native'
+import { View, Text, TouchableOpacity, Image } from 'react-native'
 import moment from 'moment'
 
 class BookItem extends React.PureComponent {
@@ -16,11 +16,18 @@ class BookItem extends React.PureComponent {
     }
   }
 
+  handleLongPress = () => {
+    if (this.props.onLongPress) {
+      const { item, index } = this.props
+      this.props.onLongPress({ item, index })
+    }
+  }
+
   render () {
     const { item } = this.props
     const time = moment(item.updateAt, 'YYYY-MM-DD HH:mm:ss')
     return (
-      <TouchableOpacity onPress={this.handlePress} style={{ backgroundColor: '#F5F5F5' }}>
+      <TouchableOpacity onPress={this.handlePress} style={{ backgroundColor: '#F5F5F5' }} onLongPress={this.handleLongPress}>
         <View style={{ flex: 1, marginLeft: 15, flexDirection: 'row', paddingVertical: 10, borderBottomWidth: 1, borderColor: '#e7e7e7' }}>
           <View style={{ width: 40, height: 50, borderWidth: 1, borderColor: '#e7e7e7' }}>
             {item.thumbImage !== '' ? <Image source={{ uri: item.thumbImage }} style={{ width: 40, height: 50 }} /> : null}

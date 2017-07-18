@@ -38,7 +38,7 @@ class Viewer extends Component {
 
   _preScrollX = 0
 
-  viewer = new ViewerModel(this.props.navigation.state.params.id, this.props.navigation.state.params.bookId, this.props.navigation.state.params.title, this.props.navigation.state.params.pageIndex);
+  viewer = new ViewerModel(this.props.navigation.state.params.chapterId, this.props.navigation.state.params.bookId, this.props.navigation.state.params.title, this.props.navigation.state.params.pageIndex);
 
   @observable
   refreshed = false
