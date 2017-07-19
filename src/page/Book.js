@@ -93,22 +93,7 @@ class Book extends Component {
 
   handleRead = () => {
     if (this.isExist) {
-      this.props.navigation.navigate('reader', { id: this.book.discoverChapterId, title: this.book.name, pageIndex: this.book.discoverPage, bookId: this.book.id })
-    } else {
-      Toast.info('请收藏后再阅读', 0.7)
-    }
-  }
-
-  handleChapterItemPress = ({ item, index }) => {
-    if (this.isExist) {
-      updateDiscover({
-        id: item.bookId,
-        discoverChapterId: item.id,
-        discoverPage: 0,
-        discoverChapterIndex: Number(index),
-        discoverChapterName: item.text
-      })
-      this.props.navigation.navigate('reader', { id: item.id, pageIndex: 0, title: this.book.name, bookId: item.bookId })
+      this.props.navigation.navigate('reader', { chapterId: this.book.discoverChapterId, title: this.book.name, pageIndex: this.book.discoverPage, bookId: this.book.id })
     } else {
       Toast.info('请收藏后再阅读', 0.7)
     }
