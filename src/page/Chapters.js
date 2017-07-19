@@ -53,7 +53,7 @@ export default class chapters extends Component {
         discoverChapterIndex: Number(index),
         discoverChapterName: item.text
       })
-      this.props.navigation.navigate('reader', { id: item.id, pageIndex: 0, title: this.props.navigation.state.params.name, bookId: item.bookId })
+      this.props.navigation.navigate('reader', { chapterId: item.id, pageIndex: 0, title: this.props.navigation.state.params.name, bookId: item.bookId })
     }
     return (
       <ChapterItem index={index} item={item} onPress={rowItemPress} />
