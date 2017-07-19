@@ -33,7 +33,7 @@ function getCharSize (char, fontSize) {
 // 取整
 
 const lineMax = Math.round((ScreenHeight - OFFSET) / settingStore.lineHight)
-const lineWidth = ScreenWidth - settingStore.fontSize * 2
+const lineWidth = ScreenWidth - settingStore.fontSize * 2.5
 
 /**
  *  字符串换行处理

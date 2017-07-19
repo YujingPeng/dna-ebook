@@ -1171,7 +1171,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = cn.dnaebook;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.dna.ebook;
 				PRODUCT_NAME = dnaebook;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1198,7 +1198,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = cn.dnaebook;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.dna.ebook;
 				PRODUCT_NAME = dnaebook;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
