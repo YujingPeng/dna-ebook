@@ -21,6 +21,6 @@ https://github.com/Manweill/dna-ebook/blob/develop/CHANGE.MD
 ## TODO LIST
 - [ ] settings saving in db
 - [ ] 抓取百度的推荐列表或者追书的推荐列表
-- [ ] use readStore substitution ViewerModel
+- [ ] use readingStore substitution ViewerModel
 - [ ] optimize bulk cache chapter content
 - [ ] fill book info
