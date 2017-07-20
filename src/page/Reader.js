@@ -1,17 +1,18 @@
 import React, { Component } from 'react'
 import { View, StatusBar, Dimensions, StyleSheet, Text, FlatList } from 'react-native'
-import ViewerModel from '../model/ViewerModel'
 import { observer } from 'mobx-react/native'
 import { observable, computed, action } from 'mobx'
 import { Toast } from 'antd-mobile'
 
 import { theme } from '../env'
 import settingStore from '../store/settingStore'
+import readingStore from '../store/readingStore'
 import { bulkCacheChapterContent } from '../service'
 
 import loading from '../components/loading'
 import Dock from '../components/dock'
 import { DownloadDock, SettingsDock, ScreenArea } from '../components/viewer'
+
 const deviceWidth = Dimensions.get('window').width
 
 @observer
@@ -38,7 +39,7 @@ class Viewer extends Component {
 
   _preScrollX = 0
 
-  viewer = new ViewerModel(this.props.navigation.state.params.chapterId, this.props.navigation.state.params.bookId, this.props.navigation.state.params.title, this.props.navigation.state.params.pageIndex);
+  // viewer = new ViewerModel(this.props.navigation.state.params.chapterId, this.props.navigation.state.params.bookId, this.props.navigation.state.params.title, this.props.navigation.state.params.pageIndex);
 
   @observable
   refreshed = false
@@ -66,23 +67,24 @@ class Viewer extends Component {
 
   @action
   init = async () => {
+    const {chapterId, pageIndex} = this.props.navigation.state.params
     this.refreshed = true
     // await loading()
-    await this.viewer.get()
+    await readingStore.get(chapterId, pageIndex)
     this.refreshed = false
-    // this.paper.scrollToIndex({viewPosition: 0, index: this.viewer.pageIndex + 1})
+    // this.paper.scrollToIndex({viewPosition: 0, index: readingStore.pageIndex + 1})
   }
 
   handlePrev = async () => {
     if (this.props.navigation.state.params.visible) {
       this.handleMenu()
-    } else if (this.viewer.pageIndex > 1) {
-      this.paper.scrollToIndex({ viewPosition: 0, index: this.viewer.pageIndex - 1 })
-      this.viewer.discover(this.viewer.pageIndex - 1)
+    } else if (readingStore.pageIndex > 1) {
+      this.paper.scrollToIndex({ viewPosition: 0, index: readingStore.pageIndex - 1 })
+      readingStore.discover(readingStore.pageIndex - 1)
     } else {
       this.refreshed = true
       await loading()
-      await this.viewer.jump(-1)
+      await readingStore.jump(-1)
       this.refreshed = false
     }
   }
@@ -90,13 +92,13 @@ class Viewer extends Component {
   handleNext = async () => {
     if (this.props.navigation.state.params.visible) {
       this.handleMenu()
-    } else if (this.viewer.pageIndex < this.viewer.total) {
-      this.paper.scrollToIndex({ viewPosition: 0, index: this.viewer.pageIndex + 1 })
-      this.viewer.discover(this.viewer.pageIndex + 1)
+    } else if (readingStore.pageIndex < readingStore.total) {
+      this.paper.scrollToIndex({ viewPosition: 0, index: readingStore.pageIndex + 1 })
+      readingStore.discover(readingStore.pageIndex + 1)
     } else {
       this.refreshed = true
       await loading()
-      await this.viewer.jump(1)
+      await readingStore.jump(1)
       this.refreshed = false
     }
   }
@@ -113,18 +115,18 @@ class Viewer extends Component {
     this._preScrollX = x
     let offset = x / deviceWidth - position
     if (offset === 0) {
-      if (position > this.viewer.total) {
+      if (position > readingStore.total) {
         this.refreshed = true
         await loading()
-        await this.viewer.jump(1)
+        await readingStore.jump(1)
         this.refreshed = false
       } else if (position < 1) {
         this.refreshed = true
         await loading()
-        await this.viewer.jump(-1)
+        await readingStore.jump(-1)
         this.refreshed = false
       } else {
-        this.viewer.discover(position)
+        readingStore.discover(position)
       }
     }
   }
@@ -145,7 +147,7 @@ class Viewer extends Component {
   handleDownload = async (start, count) => {
     Toast.info('开始缓存！', 0.5)
     // todo start end
-    await bulkCacheChapterContent(this.viewer.bookId, this.viewer.id, start, count)
+    await bulkCacheChapterContent(readingStore.bookId, readingStore.chapterId, start, count)
     Toast.info('缓存完成', 0.5)
   }
 
@@ -156,7 +158,7 @@ class Viewer extends Component {
 
   @action
   handleOpen = () => {
-    this.props.navigation.navigate('chapter', { bookId: this.viewer.bookId, chapterId: this.viewer.id, name: this.props.navigation.state.params.title })
+    this.props.navigation.navigate('chapter', { bookId: readingStore.bookId, chapterId: readingStore.chapterId, name: this.props.navigation.state.params.title })
   }
 
   @action
@@ -167,7 +169,7 @@ class Viewer extends Component {
   _renderItem = ({ item, index }) => {
     return (
       <View style={styles.pagerContainer}>
-        <View style={styles.context}>
+        <View style={[styles.context, {paddingLeft: (settingStore.fontSize * 3 / 2)}]}>
           <Text style={{ fontSize: settingStore.fontSize, lineHeight: 30, color: this.mode.color }}>
             {item.context}
           </Text>
@@ -186,7 +188,7 @@ class Viewer extends Component {
       <View style={{ flex: 1, backgroundColor }} >
         <StatusBar animated hidden />
         <View style={styles.header} >
-          <Text style={{ color: '#696969' }}>{this.viewer.name}</Text>
+          <Text style={{ color: '#696969' }}>{readingStore.chapterName}</Text>
         </View>
         <View style={{ flex: 1 }}>
           {
@@ -196,9 +198,9 @@ class Viewer extends Component {
               horizontal
               pagingEnabled
               ref={(ref) => { this.paper = ref }}
-              initialScrollIndex={this.viewer.pageIndex}
+              initialScrollIndex={readingStore.pageIndex}
               getItemLayout={this._getItemLayout}
-              data={this.viewer.pagers}
+              data={readingStore.pagers}
               renderItem={this._renderItem}
               showsHorizontalScrollIndicator={false}
               onScroll={this.handleScroll}
@@ -206,7 +208,7 @@ class Viewer extends Component {
           }
         </View>
         <View style={styles.footer} >
-          <Text style={{ alignSelf: 'flex-end', color: '#696969' }}>{`${this.viewer.pageIndex}/${this.viewer.total}`}</Text>
+          <Text style={{ alignSelf: 'flex-end', color: '#696969' }}>{`${readingStore.pageIndex}/${readingStore.total}`}</Text>
         </View>
         <Dock visible={this.props.navigation.state.params.visible} renderItemView={this.renderItemView}>
           <Dock.Item text="目录" icon="list" onPress={this.handleOpen} />
@@ -234,7 +236,7 @@ const styles = StyleSheet.create({
     paddingRight: 18, height: 30
   },
   context: {
-    zIndex: -1, position: 'absolute', paddingLeft: settingStore.fontSize
+    zIndex: -1, position: 'absolute', alignItems: 'center', flex: 1
   }
 })
 
