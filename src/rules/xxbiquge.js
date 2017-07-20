@@ -9,6 +9,10 @@ export default {
       selector: '#info > p:nth-child(2)',
       pattern: '作    者：'
     },
+    ending: {
+      selector: '#info > p:nth-child(3)',
+      contains: '已完结'
+    },
     updateAt: {
       selector: '#info > p:nth-child(4)',
       pattern: '最后更新：'

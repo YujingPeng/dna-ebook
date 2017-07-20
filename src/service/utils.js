@@ -72,6 +72,37 @@ export function matchRule (uri) {
   return Object.values(rules).find(item => uri.indexOf(item.host) >= 0)
 }
 
+/**
+ *
+ * @param {*} params
+ */
+export function generateSearchModel ($body, site) {
+  try {
+    const rule = Object.values(rules).find(item => item.searchUri === site)
+    const { searchItem, searchInfo } = rule
+    let result = []
+    const keys = Object.entries(searchInfo)
+    $body(searchItem).each((i, item) => {
+      const $item = $body(item)
+      let self = { id: uuid.v4() }
+      for (let [k, v] of keys) {
+        if (v.pattern) {
+          const text = $item.find(v.selector).text()
+          self[k] = text.replace(v.pattern, '').trim()
+        } else if (v.attr) {
+          self[k] = $item.find(v.selector).attr(v.attr)
+        } else {
+          self[k] = $item.find(v).text().trim()
+        }
+      }
+      result.push(self)
+    })
+    return result
+  } catch (error) {
+    return null
+  }
+}
+
 // 转换详细
 export function generateBookModel ($body, rule, uri) {
   const self = {}
@@ -82,6 +113,8 @@ export function generateBookModel ($body, rule, uri) {
       self[k] = text.replace(v.pattern, '').trim()
     } else if (v.attr) {
       self[k] = $body(v.selector).attr(v.attr)
+    } else if (v.contains) {
+      self[k] = $body(v.selector).text().trim().indexOf(v.contains) >= 0
     } else {
       self[k] = $body(v).text().trim()
     }
@@ -141,37 +174,6 @@ export function otherGenerateSearchModel ($body) {
       latestChapter: $body.find('.result-game-item-info>p:nth-child(4)').text().replace('最新章节：', '').trim(),
       desc: $body.find('.result-game-item-desc').text()
     }
-  } catch (error) {
-    return null
-  }
-}
-
-/**
- *
- * @param {*} params
- */
-export function generateSearchModel ($body, site) {
-  try {
-    const rule = Object.values(rules).find(item => item.searchUri === site)
-    const { searchItem, searchInfo } = rule
-    let result = []
-    const keys = Object.entries(searchInfo)
-    $body(searchItem).each((i, item) => {
-      const $item = $body(item)
-      let self = { id: uuid.v4() }
-      for (let [k, v] of keys) {
-        if (v.pattern) {
-          const text = $item.find(v.selector).text()
-          self[k] = text.replace(v.pattern, '').trim()
-        } else if (v.attr) {
-          self[k] = $item.find(v.selector).attr(v.attr)
-        } else {
-          self[k] = $item.find(v).text().trim()
-        }
-      }
-      result.push(self)
-    })
-    return result
   } catch (error) {
     return null
   }

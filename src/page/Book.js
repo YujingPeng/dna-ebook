@@ -51,6 +51,10 @@ class Book extends Component {
     return _tags
   }
 
+  @computed get status () {
+    return this.book.ending ? '已完结' : '连载中'
+  }
+
   componentWillMount () {
     this.init()
   }
@@ -122,7 +126,7 @@ class Book extends Component {
           <View style={{ paddingHorizontal: 15, marginTop: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text>{this.book.type || '其他类型'}</Text>
             <Text>{'168万字'}</Text>
-            <Text>{'连载中'}</Text>
+            <Text>{this.status}</Text>
             <Text>{this.bookSource}</Text>
           </View>
           <View style={{ padding: 15, paddingTop: 20, marginTop: 15, borderTopColor: '#e7e7e7', borderTopWidth: 1 }}>
