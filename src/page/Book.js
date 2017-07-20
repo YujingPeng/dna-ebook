@@ -18,14 +18,7 @@ class Book extends Component {
     return {
       title: name,
       headerStyle: { width: '100%', backgroundColor: color, paddingTop: 20 },
-      headerTintColor: '#ffffff',
-      headerRight: (
-        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-          <TouchableOpacity style={{ paddingHorizontal: 15 }} onPress={() => { navigation.navigate('chapter', { bookId: id, name }) }}>
-            <Text style={{ fontSize: 18, color: '#fff' }}>目录</Text>
-          </TouchableOpacity>
-        </View>
-      )
+      headerTintColor: '#ffffff'
     }
   };
 
