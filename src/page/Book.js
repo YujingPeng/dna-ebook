@@ -3,7 +3,7 @@ import { View, Text, Image, ScrollView, ListView, TouchableOpacity, StatusBar } 
 import { observer } from 'mobx-react/native'
 import { Toast, Tag } from 'antd-mobile'
 import { observable, action, runInAction, computed, toJS } from 'mobx'
-import { newBook, saveBook, getBookById, updateDiscover, getBookSourceName } from '../service'
+import { newBook, storeUp, getBookById, getBookSourceName } from '../service'
 import personStore from '../store/personStore'
 import { color } from '../env'
 import moment from 'moment'
@@ -33,8 +33,7 @@ class Book extends Component {
 
   @observable
   isExist = personStore.isExist(this.params.uri);
-  // 'http://www.biquge.com/43_43821/'
-  // book = new BookModel(this.props.navigation.state.params.id, this.props.navigation.state.params.uri)
+
   @observable
   book = {}
 
@@ -44,6 +43,12 @@ class Book extends Component {
   @computed get updateTime () {
     const time = moment(this.book.updateAt, 'YYYY-MM-DD HH:mm:ss')
     return time.isValid() ? time.fromNow() + '更新' : this.book.updateAt
+  }
+
+  @computed get tags () {
+    let _tags = [this.book.author, this.book.name]
+    if (this.book.type) _tags.push(this.book.type)
+    return _tags
   }
 
   componentWillMount () {
@@ -66,7 +71,7 @@ class Book extends Component {
           Toast.hide()
         })
       } else {
-        const result = await newBook(this.params.id, this.params.uri)
+        const result = await newBook(this.params.id, this.params.uri, this.params.options)
         runInAction(() => {
           this.book = result
           Toast.hide()
@@ -79,24 +84,23 @@ class Book extends Component {
 
   @action
   handleSave = async () => {
-    await saveBook(toJS(this.book))
+    await storeUp(this.params.id)
     runInAction(() => {
       this.isExist = true
       personStore.refresh()
     })
-    // Toast.hide()
   }
 
-  handleRemove = () => {
-    // todo
+  handleRemove = async () => {
+    await storeUp(this.params.id, false)
+    runInAction(() => {
+      this.isExist = false
+      personStore.refresh()
+    })
   }
 
   handleRead = () => {
-    if (this.isExist) {
-      this.props.navigation.navigate('reader', { chapterId: this.book.discoverChapterId, title: this.book.name, pageIndex: this.book.discoverPage, bookId: this.book.id })
-    } else {
-      Toast.info('请收藏后再阅读', 0.7)
-    }
+    this.props.navigation.navigate('reader', { chapterId: this.book.discoverChapterId, title: this.book.name, pageIndex: this.book.discoverPage, bookId: this.book.id })
   }
 
   render () {
@@ -116,7 +120,7 @@ class Book extends Component {
             </View>
           </View>
           <View style={{ paddingHorizontal: 15, marginTop: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text>{'其他类型'}</Text>
+            <Text>{this.book.type || '其他类型'}</Text>
             <Text>{'168万字'}</Text>
             <Text>{'连载中'}</Text>
             <Text>{this.bookSource}</Text>
@@ -134,12 +138,13 @@ class Book extends Component {
               <Text style={{ fontSize: 16, color: '#333' }}>标签</Text>
             </View>
             <View style={{ marginTop: 15, flex: 1, flexDirection: 'row', justifyContent: 'flex-start' }}>
-              <View style={{ padding: 5 }}>
-                <Tag>{this.book.author}</Tag>
-              </View>
-              <View style={{ padding: 5 }}>
-                <Tag>{this.book.name}</Tag>
-              </View>
+              {
+                this.tags.map(tag => (
+                  <View key={tag} style={{ padding: 5 }}>
+                    <Tag>{tag}</Tag>
+                  </View>
+                ))
+              }
             </View>
           </View>
         </ScrollView>

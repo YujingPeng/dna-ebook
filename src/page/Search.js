@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import { View, ListView, TouchableOpacity, Image, Text, StatusBar, Platform } from 'react-native'
 import { observer } from 'mobx-react/native'
 import { action, observable, runInAction, computed } from 'mobx'
-import { search, cachedSearchKeyword } from '../service'
 import { SearchBar, Toast, Popup, Radio, List, Tag } from 'antd-mobile'
-import { color } from '../env'
 import Icon from 'react-native-vector-icons/FontAwesome'
+import { color } from '../env'
+import { search, cachedSearchKeyword } from '../service'
 import settingStore from '../store/settingStore'
-import moment from 'moment'
+import {SearchItem} from '../components/item'
 
 @observer
 class Search extends Component {
@@ -68,11 +68,8 @@ class Search extends Component {
     this.props.navigation.goBack()
   }
 
-  onMaskClose = () => {
-
-  }
   handleChangeSource = () => {
-    Popup.show(<PopupContent onClose={() => Popup.hide()} />, { animationType: 'slide-up', onMaskClose: this.onMaskClose })
+    Popup.show(<PopupContent onClose={() => Popup.hide()} />, { animationType: 'slide-up', onMaskClose: () => {} })
   }
 
   @action
@@ -83,35 +80,11 @@ class Search extends Component {
 
   renderRow = (item) => {
     const rowItemPress = () => {
-      this.props.navigation.navigate('book', { id: item.id, uri: item.uri, name: item.name })
+      this.props.navigation.navigate('book', { id: item.id, uri: item.uri, name: item.name, options: item })
     }
 
     return (
-      <TouchableOpacity key={item.id} onPress={rowItemPress}>
-        <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row', paddingVertical: 12, paddingLeft: 15, borderBottomWidth: 1, borderColor: '#cfcfcf' }}>
-          <View style={{ width: 72, height: 90 }}>
-            {item.thumbImage !== '' ? <Image source={{ uri: item.thumbImage }} style={{ width: 72, height: 90 }} /> : null}
-          </View>
-          <View style={{ flex: 1, paddingLeft: 15, justifyContent: 'space-around' }}>
-            <View>
-              <Text>
-                <Text style={{ color: '#333', fontSize: 20 }}>{item.name}</Text>
-              </Text>
-              <Text style={{ color: '#999', fontSize: 14 }}>
-                <Text >{item.author}</Text>
-                {' | '}
-                <Text >{item.type || '其他类型'}</Text>
-                {' | '}
-                <Text>{item.updateAt ? moment(item.updateAt, 'YYYY-MM-DD HH:mm:ss').fromNow() + '更新' : '暂无更新时间'}</Text>
-              </Text>
-              <Text numberOfLines={1} style={{ fontSize: 16 }}>{item.desc}</Text>
-              <Text>
-                <Text style={{ fontSize: 14, color: '#999' }}>{item.latestChapter}</Text>
-              </Text>
-            </View>
-          </View>
-        </View>
-      </TouchableOpacity>
+      <SearchItem item={item} onPress={rowItemPress} />
     )
   }
 

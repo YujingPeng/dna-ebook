@@ -118,6 +118,10 @@ export function generateChapters ($body, rule, bookId) {
   return list
 }
 
+export function getBookSourceName (uri) {
+  const source = matchRule(uri) || {}
+  return source.name || ''
+}
 /**
  * 生成查询列表模型
  * @param {Object} $body cheerio上下文

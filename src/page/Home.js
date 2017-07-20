@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import { color } from '../env'
 import { removeBook, updateChapterList } from '../service'
 import personStore from '../store/personStore'
-import BookItem from '../components/item/BookItem'
+import { BookItem } from '../components/item'
 
 @observer
 class Home extends Component {

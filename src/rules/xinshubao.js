@@ -45,10 +45,6 @@ export default {
       selector: '.result-game-item-info>p:nth-child(2)',
       pattern: '类型：'
     },
-    // updateAt: {
-    //   selector: '.result-game-item-info>p:nth-child(3)',
-    //   pattern: '更新时间：'
-    // },
     latestChapter: {
       selector: '.result-game-item-info>p:nth-child(4)',
       pattern: '最新章节：'

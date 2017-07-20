@@ -4,7 +4,7 @@ import { observer } from 'mobx-react/native'
 import { observable, runInAction } from 'mobx'
 import { getChapterList, updateDiscover } from '../service'
 import { color } from '../env'
-import ChapterItem from '../components/item/ChapterItem'
+import { ChapterItem } from '../components/item'
 
 @observer
 export default class chapters extends Component {
