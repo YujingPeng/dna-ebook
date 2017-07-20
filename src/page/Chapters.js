@@ -5,6 +5,7 @@ import { observable, runInAction } from 'mobx'
 import { getChapterList, updateDiscover } from '../service'
 import { color } from '../env'
 import { ChapterItem } from '../components/item'
+import readingStore from '../store/readingStore'
 
 @observer
 export default class chapters extends Component {
@@ -40,11 +41,11 @@ export default class chapters extends Component {
     })
   }
 
-  _getItemLayout = (data, index) => {
+  getItemLayout = (data, index) => {
     return { length: 40, offset: 40 * index, index }
   }
 
-  _renderRow = ({ item, index }) => {
+  renderRow = ({ item, index }) => {
     const rowItemPress = () => {
       updateDiscover({
         id: item.bookId,
@@ -53,7 +54,8 @@ export default class chapters extends Component {
         discoverChapterIndex: Number(index),
         discoverChapterName: item.text
       })
-      this.props.navigation.navigate('reader', { chapterId: item.id, pageIndex: 0, title: this.props.navigation.state.params.name, bookId: item.bookId })
+      readingStore.get(item.id, 1)
+      this.props.navigation.goBack()
     }
     return (
       <ChapterItem index={index} item={item} onPress={rowItemPress} />
@@ -66,10 +68,10 @@ export default class chapters extends Component {
         <FlatList
           extraData={this.chapters}
           ref={(ref) => { this.chapterRef = ref }}
-          renderItem={this._renderRow}
+          renderItem={this.renderRow}
           data={this.chapters.slice()}
           keyExtractor={this.keyExtractor}
-          getItemLayout={this._getItemLayout}
+          getItemLayout={this.getItemLayout}
         />
       </View>
     )
