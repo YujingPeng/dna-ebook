@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import { color } from '../env'
 import { removeBook, updateChapterList, updateDiscover } from '../service'
 import personStore from '../store/personStore'
+import readingStore from '../store/readingStore'
 import { BookItem } from '../components/item'
 
 @observer
@@ -68,9 +69,10 @@ class Home extends Component {
   }
 
   _renderRow = ({ item, index }) => {
-    const rowItemPress = () => {
-      updateDiscover({id: item.id, orderBy: Date.now()})
+    const rowItemPress = async () => {
+      updateDiscover({ id: item.id, orderBy: Date.now() })
       personStore.refresh()
+      await readingStore.get(item.discoverChapterId, item.discoverPage)
       this.props.navigation.navigate('reader', {
         chapterId: item.discoverChapterId,
         title: item.name,

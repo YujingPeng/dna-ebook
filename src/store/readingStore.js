@@ -87,7 +87,7 @@ class ReadingStore {
   /** 总数 */
   @observable total = 1
   @action
-  async get (chapterId, pageIndex) {
+  async get (chapterId, pageIndex, cb) {
     try {
       const result = await getChapter(chapterId || this.chapterId)
       runInAction(() => {
@@ -118,6 +118,9 @@ class ReadingStore {
         this.total = total
         this.pagers.replace(pagers)
         Toast.hide()
+        if (cb) {
+          cb()
+        }
       })
     } catch (error) {
       Toast.fail('加载失败!!!')
@@ -130,7 +133,23 @@ class ReadingStore {
    */
   @action
   async jump (index) {
-
+    return new Promise(async (resolve, reject) => {
+      const result = await getChapterByIndex(this.bookId, this.chapterId, index)
+      if (result) {
+        const chapterId = result.chapterId
+        const pageIndex = index < 0 ? this.total : 1
+        updateDiscover({
+          id: this.bookId,
+          discoverPage: pageIndex,
+          discoverChapterId: result.chapterId,
+          discoverChapterIndex: result.index,
+          discoverChapterName: result.text
+        })
+        await this.get(chapterId, pageIndex, resolve)
+      } else {
+        Toast.info(index > 0 ? '已经是最后一章了' : '已经是第一章了', 0.7)
+      }
+    })
   }
 
   /**

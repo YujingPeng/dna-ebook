@@ -67,11 +67,11 @@ class Viewer extends Component {
 
   @action
   init = async () => {
-    const {chapterId, pageIndex} = this.props.navigation.state.params
-    this.refreshed = true
-    // await loading()
-    await readingStore.get(chapterId, pageIndex)
-    this.refreshed = false
+    // const {chapterId, pageIndex} = this.props.navigation.state.params
+    // this.refreshed = true
+    // // await loading()
+    // await readingStore.get(chapterId, pageIndex)
+    // // this.refreshed = false
     // this.paper.scrollToIndex({viewPosition: 0, index: readingStore.pageIndex + 1})
   }
 
@@ -123,7 +123,7 @@ class Viewer extends Component {
       } else if (position < 1) {
         this.refreshed = true
         await loading()
-        await readingStore.jump(-1)
+        readingStore.jump(-1)
         this.refreshed = false
       } else {
         readingStore.discover(position)
