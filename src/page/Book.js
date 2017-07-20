@@ -5,6 +5,7 @@ import { Toast, Tag } from 'antd-mobile'
 import { observable, action, runInAction, computed, toJS } from 'mobx'
 import { newBook, storeUp, getBookById, getBookSourceName } from '../service'
 import personStore from '../store/personStore'
+import readingStore from '../store/readingStore'
 import { color } from '../env'
 import moment from 'moment'
 import loading from '../components/loading'
@@ -103,7 +104,8 @@ class Book extends Component {
     })
   }
 
-  handleRead = () => {
+  handleRead = async () => {
+    await readingStore.get(this.book.discoverChapterId, this.book.discoverPage)
     this.props.navigation.navigate('reader', { chapterId: this.book.discoverChapterId, title: this.book.name, pageIndex: this.book.discoverPage, bookId: this.book.id })
   }
 
