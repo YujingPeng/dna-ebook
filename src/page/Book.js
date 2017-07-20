@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { View, Text, Image, ScrollView, ListView, TouchableOpacity, StatusBar } from 'react-native'
 import { observer } from 'mobx-react/native'
 import { Toast, Tag } from 'antd-mobile'
-import { observable, action, runInAction, computed, toJS } from 'mobx'
+import { observable, action, runInAction, computed } from 'mobx'
 import { newBook, storeUp, getBookById, getBookSourceName } from '../service'
 import personStore from '../store/personStore'
 import readingStore from '../store/readingStore'
@@ -14,7 +14,7 @@ import loading from '../components/loading'
 class Book extends Component {
   static navigationOptions = ({ navigation }) => {
     const { state = {} } = navigation
-    const { name, id } = state.params || {}
+    const { name } = state.params || {}
     return {
       title: name,
       headerStyle: { width: '100%', backgroundColor: color, paddingTop: 20 },
@@ -22,7 +22,6 @@ class Book extends Component {
     }
   };
 
-  dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
   params = this.props.navigation.state.params
 
   @observable

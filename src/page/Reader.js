@@ -123,7 +123,7 @@ class Viewer extends Component {
       } else if (position < 1) {
         this.refreshed = true
         await loading()
-        readingStore.jump(-1)
+        await readingStore.jump(-1)
         this.refreshed = false
       } else {
         readingStore.discover(position)

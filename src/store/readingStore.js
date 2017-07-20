@@ -88,43 +88,44 @@ class ReadingStore {
   @observable total = 1
   @action
   async get (chapterId, pageIndex, cb) {
-    try {
-      const result = await getChapter(chapterId || this.chapterId)
-      runInAction(() => {
-        if (pageIndex) {
-          this.pageIndex = pageIndex
-        }
-        if (chapterId) {
-          this.chapterId = chapterId
-        }
-        this.chapterName = result.name
-        this.bookId = result.bookId
-        this.content = result.content.replace(/\r\n/g, '')
-        // 处理章节内容
-        let content = this.content.split('    ')
-        let lines = []
-        for (let i = 0; i < content.length; i++) {
-          lines = lines.concat(lineFeed(content[i]))
-        }
-        let pagers = [{ key: 'page0', context: '' }]
-        const total = Math.ceil(lines.length / lineMax)
-        for (var i = 0; i < total; i++) {
-          pagers.push({
-            key: 'page' + i + 1,
-            context: lines.slice(lineMax * i, lineMax * (i + 1)).join('')
-          })
-        }
-        pagers.push({ key: 'page' + total + 1, context: '' })
-        this.total = total
-        this.pagers.replace(pagers)
-        Toast.hide()
-        if (cb) {
-          cb()
-        }
-      })
-    } catch (error) {
-      Toast.fail('加载失败!!!')
-    }
+    return new Promise(async (resolve, reject) => {
+      try {
+        const result = await getChapter(chapterId || this.chapterId)
+        runInAction(() => {
+          this.chapterName = result.name
+          this.bookId = result.bookId
+          this.content = result.content.replace(/\r\n/g, '')
+          // 处理章节内容
+          let content = this.content.split('    ')
+          let lines = []
+          for (let i = 0; i < content.length; i++) {
+            lines = lines.concat(lineFeed(content[i]))
+          }
+          let pagers = [{ key: 'page0', context: '' }]
+          const total = Math.ceil(lines.length / lineMax)
+          for (var i = 0; i < total; i++) {
+            pagers.push({
+              key: 'page' + i + 1,
+              context: lines.slice(lineMax * i, lineMax * (i + 1)).join('')
+            })
+          }
+          pagers.push({ key: 'page' + total + 1, context: '' })
+          this.total = total
+          this.pagers.replace(pagers)
+          if (pageIndex) {
+            this.pageIndex = pageIndex
+          }
+          if (chapterId) {
+            this.chapterId = chapterId
+          }
+          Toast.hide()
+          resolve(true)
+        })
+      } catch (error) {
+        Toast.fail('加载失败!!!')
+        reject(error)
+      }
+    })
   }
 
   /**
@@ -137,6 +138,7 @@ class ReadingStore {
       const result = await getChapterByIndex(this.bookId, this.chapterId, index)
       if (result) {
         const chapterId = result.chapterId
+        await this.get(chapterId)
         const pageIndex = index < 0 ? this.total : 1
         updateDiscover({
           id: this.bookId,
@@ -145,7 +147,10 @@ class ReadingStore {
           discoverChapterIndex: result.index,
           discoverChapterName: result.text
         })
-        await this.get(chapterId, pageIndex, resolve)
+        runInAction(() => {
+          this.pageIndex = pageIndex
+          resolve(true)
+        })
       } else {
         Toast.info(index > 0 ? '已经是最后一章了' : '已经是第一章了', 0.7)
       }
