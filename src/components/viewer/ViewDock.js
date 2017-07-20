@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native'
-import { bulkCacheChapterContent } from '../../service'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import settingStore from '../../store/settingStore'
 
