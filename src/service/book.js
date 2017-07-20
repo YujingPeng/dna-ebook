@@ -5,7 +5,7 @@ import {
 } from './utils'
 /** 书列表 */
 export async function getBookList () {
-  return db.objects('Book').filtered(`isCollect = true`)
+  return db.objects('Book').filtered(`isCollect = true`).sorted('orderBy', true)
 }
 
 /**
@@ -36,7 +36,7 @@ export async function newBook (id, uri, options) {
       if (!rule) return null
       const $body = await load(uri)
       let info = generateBookModel($body, rule, uri) || {}
-      let result = { ...options, ...info }
+      let result = { ...info, ...options }
       result.id = id
       result.uri = uri
       result.updateAt = info.updateAt || ''
@@ -57,7 +57,7 @@ export async function newBook (id, uri, options) {
       // 详细页面点击收藏再保存到缓存
       resolve(result)
     } catch (error) {
-      reject(error.message)
+      reject(error)
     }
   })
   // console.warn('爬取页面', uri)

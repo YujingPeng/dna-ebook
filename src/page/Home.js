@@ -3,11 +3,11 @@ import { observer } from 'mobx-react/native'
 import { action, observable, runInAction } from 'mobx'
 
 import { SwipeAction, Toast } from 'antd-mobile'
-import { FlatList, Image, ListView, StatusBar, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, StatusBar, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
 import { color } from '../env'
-import { removeBook, updateChapterList } from '../service'
+import { removeBook, updateChapterList, updateDiscover } from '../service'
 import personStore from '../store/personStore'
 import { BookItem } from '../components/item'
 
@@ -34,8 +34,6 @@ class Home extends Component {
       )
     }
   };
-
-  dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
 
   @observable
   refreshing = false
@@ -71,6 +69,8 @@ class Home extends Component {
 
   _renderRow = ({ item, index }) => {
     const rowItemPress = () => {
+      updateDiscover({id: item.id, orderBy: Date.now()})
+      personStore.refresh()
       this.props.navigation.navigate('reader', {
         chapterId: item.discoverChapterId,
         title: item.name,
