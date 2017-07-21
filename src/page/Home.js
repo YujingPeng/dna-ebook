@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { observer } from 'mobx-react/native'
 import { action, observable, runInAction } from 'mobx'
 
-import { SwipeAction, Toast } from 'antd-mobile'
+import { SwipeAction, Toast, WhiteSpace  } from 'antd-mobile'
 import { FlatList, Image, ListView, StatusBar, Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
@@ -86,7 +86,8 @@ class Home extends Component {
     const SwipeActionConfig = {
       left: [{
         text: '更新',
-        onPress: () => this.handleItemRefresh(item.id, item.uri)
+        onPress: () => this.handleItemRefresh(item.id, item.uri),
+        style: { backgroundColor: '#4cd964', color: '#F5F5F5' }
       }],
       right: [{
         text: '详细',
@@ -109,9 +110,10 @@ class Home extends Component {
 
   render () {
     return (
-      <View style={{ flex: 1, backgroundColor: '#F5F5F5' }}>
+      <View style={{ flex: 1, backgroundColor: '#efeff4' }}>
         <StatusBar hidden={false} backgroundColor={color} translucent barStyle='light-content' />
         <FlatList
+          style={{marginTop:15,marginBottom:15,backgroundColor: '#efeff4'}}
           data={personStore.books.slice(0)}
           renderItem={this._renderRow}
           keyExtractor={this._keyExtractor}
